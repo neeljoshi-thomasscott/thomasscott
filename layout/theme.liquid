@@ -74,7 +74,6 @@
 
     {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> {% endcomment %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 
     {{ 'style.css' | asset_url | stylesheet_tag }}
     {{ 'custom.css' | asset_url | stylesheet_tag }}
@@ -437,12 +436,9 @@
 
     {%- comment -%} ===== THIRD-PARTY SCRIPTS ===== {%- endcomment -%}
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes-umd.js"></script>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
     <script src="{{ 'custom.js' | asset_url }}" defer></script>
 
     {% if cart.item_count > 0 %}
@@ -915,27 +911,6 @@
       });
     }).observe(document.body, { childList: true, subtree: true });
 
-    // ================================================================
-    // 6. RECOMMENDATION SLICK — mobile only
-    // ================================================================
-    window.addEventListener('load', function () {
-      if (window.innerWidth >= 768) return;
-      var tries = 0;
-      var interval = setInterval(function () {
-        tries++;
-        if (tries > 50) { clearInterval(interval); return; } // 5s timeout
-        if (typeof jQuery === 'undefined' || typeof jQuery.fn.slick === 'undefined') return;
-        clearInterval(interval);
-        if (!jQuery('.recommendation-grid').hasClass('slick-initialized')) {
-          jQuery('.recommendation-grid').slick({
-            slidesToShow: 2.2, slidesToScroll: 1,
-            arrows: false, dots: false, infinite: false, speed: 500
-          });
-        }
-      }, 100);
-    });
-
-    
     // ================================================================
 // FIX: Clear popup-overlay state on back navigation
 // ================================================================
