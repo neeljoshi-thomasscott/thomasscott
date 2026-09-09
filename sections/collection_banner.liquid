@@ -1,0 +1,108 @@
+<div class="blog-slider">
+  {% for block in section.blocks %}
+
+    <div class="item">
+      <div class="blog-banner-item relative">
+
+        <picture class="picture">
+
+          {% if block.settings.mobile_banner != blank %}
+            <source
+              media="(max-width:767px)"
+              srcset="{{ block.settings.mobile_banner | image_url: width: 767 }}"
+            >
+          {% endif %}
+
+          {% if block.settings.desktop_banner != blank %}
+            <source
+              media="(min-width:768px)"
+              srcset="{{ block.settings.desktop_banner | image_url: width: 1920 }}"
+            >
+
+            <img
+              src="{{ block.settings.desktop_banner | image_url: width: 1920 }}"
+              alt="{{ block.settings.heading | escape }}"
+              width="1920"
+              height="750"
+              class="w-full"
+            >
+          {% endif %}
+
+        </picture>
+
+        <div class="blog-banner-content">
+
+          {% if block.settings.heading != blank %}
+            <div class="thomasmdheading">
+              {{ block.settings.heading }}
+            </div>
+          {% endif %}
+
+          {% if block.settings.button_text != blank %}
+            <a
+              href="{{ block.settings.button_link }}"
+              class="thomas-wht-btn hovertime"
+            >
+              {{ block.settings.button_text }}
+            </a>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Collection Banner Slider",
+  "tag": "section",
+  "class": "section collection-banner-slider",
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Banner Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desktop_banner",
+          "label": "Desktop Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_banner",
+          "label": "Mobile Banner"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Banner Heading"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "VIEW PRODUCT"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Banner Slider",
+      "blocks": [
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,89 @@
+ <cart-drawer-component id="shopify-section-cart-drawer"
+      class="cart-drawer{% if display_style == 'text' %} cart-drawer--text{% endif %}"
+      {{ block.shopify_attributes }}
+      {% if settings.auto_open_cart_drawer %}
+        auto-open
+      {% endif %}
+    >
+      <template id="empty-cart-template">
+        {{ empty_cart_drawer_content }}
+      </template>
+      <button
+        class="header-actions__action button-unstyled{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+        on:click="/open"
+        aria-haspopup="dialog"
+        aria-label="{{ 'accessibility.cart' | t }}"
+        aria-describedby="cart-bubble-text"
+        data-testid="cart-drawer-trigger"
+      >
+        {{ cart_icon }}
+      </button>
+
+      <dialog
+        ref="dialog"
+        class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{%endif%}"
+        data-testid="cart-drawer-dialog"
+        aria-labelledby="{% if cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
+        scroll-lock
+        cart-summary-sticky="true"
+      >
+        <div
+          class="cart-drawer__inner"
+          data-hydration-key="cart-drawer-inner"
+        >
+          <cart-items-component
+            class="cart-items-component"
+            data-drawer
+            data-section-id="{{ section.id }}"
+          >
+            {%- if cart.empty? -%}
+              {{ empty_cart_drawer_content }}
+            {%- else -%}
+              <div
+                class="cart-drawer__header"
+                id="cart-drawer-header"
+              >
+                <h2
+                  class="cart-drawer__heading h4"
+                  id="cart-drawer-heading"
+                >
+                  {{ 'content.cart_title' | t }}
+                  {% render 'cart-bubble' %}
+                </h2>
+
+                <button
+                  ref="closeButton"
+                  on:click="cart-drawer-component/close"
+                  class="button close-button cart-drawer__close-button button-unstyled"
+                  aria-label="{{ 'actions.close_dialog' | t }}"
+                >
+                  <span class="svg-wrapper">
+                    {{- 'icon-close.svg' | inline_asset_content -}}
+                  </span>
+                </button>
+              </div>
+
+              <scroll-hint
+                class="cart-drawer__content"
+                aria-label="{{ 'accessibility.cart' | t }}"
+                style="--header-height: 60px;"
+              >
+                <scroll-hint
+                  class="cart-drawer__items"
+                >
+                  {% render 'cart-products', drawer_context: 'drawer' %}
+                <div class="cart-recommendation">
+                  {% render 'cart-recommendation', section_id: section.id,  cart: cart %}
+                </div>
+                </scroll-hint>
+                <div
+                  class="cart-drawer__summary"
+                >
+                  {% render 'cart-summary', section_id: section.id %}
+                </div>
+              </scroll-hint>
+            {%- endif -%}
+          </cart-items-component>
+        </div>
+      </dialog>
+    </cart-drawer-component>

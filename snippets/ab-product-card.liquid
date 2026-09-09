@@ -1,0 +1,42 @@
+<div
+  class="ab-card"
+  data-role="{{ ab_role }}"
+  data-variant-id="{{ ab_variant.id }}"
+  data-price="{{ ab_variant.price }}"
+>
+  <label class="ab-card-checkbox-label">
+    <input
+      type="checkbox"
+      class="ab-card-checkbox"
+      data-variant-id="{{ ab_variant.id }}"
+      data-price="{{ ab_variant.price }}"
+      {% if ab_checked %}checked{% endif %}
+    >
+    <span class="ab-card-check-visual"></span>
+  </label>
+
+  <a href="{{ ab_product.url }}" class="ab-card-image-link">
+    <img
+      src="{{ ab_product.featured_image | image_url: width: 400 }}"
+      alt="{{ ab_product.title }}"
+      class="ab-card-img"
+      width="200"
+      height="200"
+      loading="lazy"
+    >
+  </a>
+
+  <div class="ab-card-body">
+    <span class="ab-card-label">{{ ab_label }}</span>
+
+    <h3 class="ab-card-title">
+      <a href="{{ ab_product.url }}">
+        {{ ab_product.title }}
+      </a>
+    </h3>
+
+    <span class="ab-card-price">
+      {{ ab_variant.price | money }}
+    </span>
+  </div>
+</div>

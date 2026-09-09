@@ -1,0 +1,451 @@
+{% comment %} Shop The Look - Hotspots with Clean Product Card Popup {% endcomment %}
+{% comment %} 
+<section class="shop-look">
+  <div class="container">
+    
+    <div class="top-heading relative">
+      <div class="thomasxlheading">{{ section.settings.heading | default: "Shop the look" }}</div>
+    </div>
+
+    <div class="shop-look-banner">
+      <picture class="picture">
+        <source media="(max-width:767px)" srcset="{{ section.settings.mobile_image | image_url: width: 800 }}">
+        <source media="(min-width:768px)" srcset="{{ section.settings.desktop_image | image_url: width: 1920 }}">
+        <img src="{{ section.settings.desktop_image | image_url: width: 1920 }}" 
+             alt="Shop the look" width="1920" height="750" class="w-full lazyload">
+      </picture>
+
+      <!-- Hotspots -->
+      <div class="shop-look-points">
+        {% for block in section.blocks %}
+          {% assign prod = block.settings.product %}
+          <div class="shop-look-point" 
+               data-product-handle="{{ prod.handle }}"
+               style="left: {{ block.settings.x_position }}%; top: {{ block.settings.y_position }}%;">
+            <svg class="look-dot" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="3" cy="3" r="3" fill="#1E1E1E"/>
+            </svg>
+            <svg class="look-close" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.55783 3.5542L10.6699 10.6662" stroke="#1E1E1E" stroke-width="1.23529" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3.55392 10.666L10.6659 3.55399" stroke="#1E1E1E" stroke-width="1.23529" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Desktop Popup -->
+      <div class="shop-look-modal" id="shop-look-modal">
+        <div class="modal-content">
+          <button class="modal-close">×</button>
+          <div class="modal-product-wrapper" id="modal-product-wrapper">
+            <!-- Clean Product Card yahan aayega -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Swiper -->
+    <div class="mobile-shop-look-swiper">
+      <div class="swiper shop-look-mobile-swiper" id="mobile-swiper">
+        <div class="swiper-wrapper" id="mobile-swiper-wrapper"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop The Look",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop the look" },
+    { "type": "image_picker", "id": "desktop_image", "label": "Desktop Banner Image" },
+    { "type": "image_picker", "id": "mobile_image", "label": "Mobile Banner Image" }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Select Product" },
+        { "type": "range", "id": "x_position", "label": "X Position (%)", "min": 0, "max": 100, "step": 1, "default": 35 },
+        { "type": "range", "id": "y_position", "label": "Y Position (%)", "min": 0, "max": 100, "step": 1, "default": 45 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Shop The Look" }]
+}
+{% endschema %}
+
+<style>
+.shop-look-banner { position: relative; }
+.shop-look-points { position: absolute; inset: 0; pointer-events: none; }
+.shop-look-point { 
+  position: absolute; 
+  width: 32px; 
+  height: 32px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  pointer-events: all;
+}
+.look-dot { transition: transform 0.3s; }
+.shop-look-point:hover .look-dot { transform: scale(1.4); }
+
+.shop-look-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  max-width: 380px;
+  width: 92%;
+  border-radius: 12px;
+  position: relative;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.mobile-shop-look-swiper { margin-top: 20px; display: none; }
+@media (max-width: 767px) {
+  .mobile-shop-look-swiper { display: block; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  const modal = document.getElementById('shop-look-modal');
+  const modalWrapper = document.getElementById('modal-product-wrapper');
+
+  // Desktop - Hotspot Click → Show only custom-product-card
+  document.querySelectorAll('.shop-look-point').forEach(point => {
+    point.addEventListener('click', function() {
+      const handle = this.dataset.productHandle;
+      if (!handle) return;
+
+      // Render only our custom clean product card
+      fetch(`/products/${handle}?view=custom-card`)
+        .then(res => res.text())
+        .then(html => {
+          modalWrapper.innerHTML = html;
+          modal.style.display = 'flex';
+        })
+        .catch(() => {
+          alert("Product card could not be loaded.");
+        });
+    });
+  });
+
+  // Close Modal
+  document.querySelector('.modal-close').addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) modal.style.display = 'none';
+  });
+
+  // Mobile Swiper - Show all hotspot products
+  if (window.innerWidth <= 767) {
+    const wrapper = document.getElementById('mobile-swiper-wrapper');
+    
+    {% for block in section.blocks %}
+      {% assign p = block.settings.product %}
+      {% if p %}
+        wrapper.innerHTML += `
+          <div class="swiper-slide">
+            {% render 'custom-product-card', product: p %}
+          </div>`;
+      {% endif %}
+    {% endfor %}
+
+    new Swiper('#mobile-swiper', {
+      slidesPerView: 1.15,
+      spaceBetween: 15,
+      loop: false
+    });
+  }
+});
+</script> {% endcomment %}
+
+<section class="shop-look">
+  <div class="container">
+
+    <!-- Heading -->
+    <h2 class="shop-look-heading">
+      {{ section.settings.heading }}
+    </h2>
+
+    <!-- Banner -->
+    <div class="shop-look-banner">
+      <picture>
+        <source media="(max-width:767px)" srcset="{{ section.settings.mobile_image | image_url: width: 800 }}">
+        <img src="{{ section.settings.desktop_image | image_url: width: 1920 }}" class="shop-look-img">
+      </picture>
+
+      <!-- Hotspots -->
+      <div class="shop-look-points">
+        {% for block in section.blocks %}
+          {% assign product = block.settings.product %}
+          {% if product != blank %}
+          <div class="shop-look-point"
+               data-handle="{{ product.handle }}"
+               style="left: {{ block.settings.x_position }}%; top: {{ block.settings.y_position }}%;">
+
+            <span class="dot"></span>
+            <span class="close-icon">×</span>
+
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Desktop Modal -->
+      <div class="shop-look-modal" id="shop-look-modal">
+        <div class="modal-inner">
+          <button class="modal-close">×</button>
+          <div id="modal-product"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Mobile Slider -->
+    <div class="shop-look-mobile">
+      <div class="mobile-products"></div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.shop-look { position: relative; }
+.shop-look-banner { position: relative; }
+.shop-look-img { width: 100%; display: block; }
+
+/* Hotspot */
+.shop-look-point {
+  position: absolute;
+  cursor: pointer;
+}
+.dot {
+  width: 14px;
+  height: 14px;
+  background: #000;
+  border-radius: 50%;
+  display: block;
+}
+.close-icon {
+  display: none;
+  font-size: 18px;
+}
+.shop-look-point.active .dot { display: none; }
+.shop-look-point.active .close-icon { display: block; }
+
+/* Modal */
+.shop-look-modal {
+  display: none;
+  position: absolute;
+  bottom: 10%;
+  right: 5%;
+  background: #000;
+  color: #fff;
+  padding: 15px;
+  width: 300px;
+}
+.shop-look-modal.active { display: block; }
+
+/* Mobile */
+@media(max-width:768px){
+  .shop-look-modal { display: none !important; }
+  .shop-look-mobile { margin-top: 15px; display:flex; overflow:auto; gap:10px;}
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const points = document.querySelectorAll(".shop-look-point");
+  const modal = document.getElementById("shop-look-modal");
+  const modalProduct = document.getElementById("modal-product");
+  const mobileContainer = document.querySelector(".mobile-products");
+
+  // Desktop Click
+  points.forEach(point => {
+    point.addEventListener("click", async function(e){
+      e.stopPropagation();
+
+      const handle = this.dataset.handle;
+
+      // toggle active
+      document.querySelectorAll(".shop-look-point").forEach(p => p.classList.remove("active"));
+      this.classList.add("active");
+
+      if(window.innerWidth > 768){
+
+        const res = await fetch(`/products/${handle}?view=card`);
+        const html = await res.text();
+
+        modalProduct.innerHTML = html;
+        modal.classList.add("active");
+
+      }
+    });
+  });
+
+  // Close modal
+  document.querySelector(".modal-close").addEventListener("click", ()=>{
+    modal.classList.remove("active");
+  });
+
+  document.addEventListener("click", ()=>{
+    modal.classList.remove("active");
+    points.forEach(p => p.classList.remove("active"));
+  });
+
+  // Mobile Products Load
+  if(window.innerWidth <= 768){
+    points.forEach(async (point)=>{
+      const handle = point.dataset.handle;
+
+      const res = await fetch(`/products/${handle}?view=card`);
+      const html = await res.text();
+
+      const div = document.createElement("div");
+      div.classList.add("mobile-card");
+      div.innerHTML = html;
+
+      mobileContainer.appendChild(div);
+    });
+  }
+
+});
+</script>
+
+{% schema %}
+{
+  "name": "Shop The Look",
+  "tag": "section",
+  "class": "shop-the-look-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop the look"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop Banner Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Banner Image"
+    },
+    {
+      "type": "select",
+      "id": "popup_position",
+      "label": "Popup Position",
+      "options": [
+        { "value": "auto", "label": "Auto (Recommended)" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mobile_slider",
+      "label": "Enable Mobile Slider",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Custom Label (Optional)",
+          "default": "View Product"
+        },
+        {
+          "type": "header",
+          "content": "Desktop Position"
+        },
+        {
+          "type": "range",
+          "id": "x_position",
+          "label": "X Position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 35
+        },
+        {
+          "type": "range",
+          "id": "y_position",
+          "label": "Y Position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 45
+        },
+        {
+          "type": "header",
+          "content": "Mobile Position"
+        },
+        {
+          "type": "range",
+          "id": "mobile_x_position",
+          "label": "Mobile X Position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "mobile_y_position",
+          "label": "Mobile Y Position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop The Look Custom"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,65 @@
+<section class="inner-banner">
+  <div class="item">
+    <picture class="picture">
+      {% if section.settings.banner_image_mobile != blank %}
+        <source
+          media="(max-width: 767px)"
+          srcset="{{ section.settings.banner_image_mobile | image_url }}"
+        >
+      {% endif %}
+
+      {% if section.settings.banner_image_desktop != blank %}
+        <source
+          media="(min-width: 768px)"
+          srcset="{{ section.settings.banner_image_desktop | image_url }}"
+        >
+      {% endif %}
+
+      {% if section.settings.banner_image_desktop != blank %}
+        <img
+          width="1920"
+          height="750"
+          class="w-full lazyload"
+          src="{{ section.settings.banner_image_desktop | image_url }}"
+          alt="Full width banner"
+        >
+      {% endif %}
+    </picture>
+{%if section.settings.heading!=blank %}
+    <div class="inner-banner-content">
+      <h1 class="thomasxlheading">
+        {{ section.settings.heading | default: 'Store locator' }}
+      </h1>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Full Width Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Mobile banner image"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_desktop",
+      "label": "Desktop banner image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Store locator"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Full width banner"
+    }
+  ]
+}
+{% endschema %}

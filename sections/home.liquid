@@ -1,0 +1,633 @@
+{{ 'thomas-homepage.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'thomas-homepage.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign hero_slides = section.blocks | where: 'type', 'hero_slide'
+  assign category_cards = section.blocks | where: 'type', 'category_card'
+  assign promo_banners = section.blocks | where: 'type', 'promo_banner'
+  assign featured_collections = section.blocks | where: 'type', 'featured_collection'
+  assign shop_look_items = section.blocks | where: 'type', 'shop_look_item'
+  assign split_promos = section.blocks | where: 'type', 'split_promo'
+  assign watch_cards = section.blocks | where: 'type', 'watch_buy_card'
+  assign testimonials = section.blocks | where: 'type', 'testimonial'
+  assign feature_cards = section.blocks | where: 'type', 'feature_card'
+-%}
+
+<section
+  id="thomas-homepage-{{ section.id }}"
+  class="thomas-homepage color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  {%- if hero_slides.size > 0 -%}
+    <div class="thomas-homepage__hero">
+      <div class="thomas-homepage__hero-track">
+        {%- for block in hero_slides -%}
+          <article class="thomas-homepage__hero-slide" {{ block.shopify_attributes }}>
+            <div class="thomas-homepage__media-wrap">
+              {%- if block.settings.desktop_image != blank or block.settings.mobile_image != blank -%}
+                <picture>
+                  {%- if block.settings.mobile_image != blank -%}
+                    <source media="(max-width: 767px)" srcset="{{ block.settings.mobile_image | image_url: width: 900 }}">
+                  {%- endif -%}
+                  {%- if block.settings.desktop_image != blank -%}
+                    {{
+                      block.settings.desktop_image
+                      | image_url: width: 2200
+                      | image_tag: loading: 'lazy', widths: '768, 1200, 1600, 2200', alt: block.settings.heading
+                    }}
+                  {%- elsif block.settings.mobile_image != blank -%}
+                    {{
+                      block.settings.mobile_image
+                      | image_url: width: 1200
+                      | image_tag: loading: 'lazy', widths: '480, 768, 900, 1200', alt: block.settings.heading
+                    }}
+                  {%- endif -%}
+                </picture>
+              {%- else -%}
+                {{ 'lifestyle-2' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+              {%- endif -%}
+            </div>
+            <div class="thomas-homepage__overlay thomas-homepage__overlay--bottom">
+              {%- if block.settings.heading != blank -%}
+                <h2 class="thomas-homepage__hero-heading">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {%- if block.settings.button_label != blank -%}
+                <a class="thomas-homepage__button thomas-homepage__button--light" href="{{ block.settings.button_link | default: '#' }}">
+                  {{ block.settings.button_label }}
+                </a>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if category_cards.size > 0 -%}
+    <div class="thomas-homepage__section thomas-homepage__section--category page-width">
+      {%- if section.settings.category_heading != blank -%}
+        <div class="thomas-homepage__heading-wrap">
+          <h2 class="thomas-homepage__heading">{{ section.settings.category_heading }}</h2>
+        </div>
+      {%- endif -%}
+      <div class="thomas-homepage__category-grid">
+        {%- for block in category_cards -%}
+          <article class="thomas-homepage__category-card" {{ block.shopify_attributes }}>
+            <a href="{{ block.settings.link | default: '#' }}">
+              <div class="thomas-homepage__category-image">
+                {%- if block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 480
+                    | image_tag: loading: 'lazy', widths: '200, 320, 480', alt: block.settings.title
+                  }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+                {%- endif -%}
+              </div>
+              {%- if block.settings.title != blank -%}
+                <h3 class="thomas-homepage__card-title">{{ block.settings.title }}</h3>
+              {%- endif -%}
+            </a>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if promo_banners.size > 0 -%}
+    {%- for block in promo_banners -%}
+      <div class="thomas-homepage__promo-banner" {{ block.shopify_attributes }}>
+        <div class="thomas-homepage__media-wrap">
+          {%- if block.settings.desktop_image != blank or block.settings.mobile_image != blank -%}
+            <picture>
+              {%- if block.settings.mobile_image != blank -%}
+                <source media="(max-width: 767px)" srcset="{{ block.settings.mobile_image | image_url: width: 900 }}">
+              {%- endif -%}
+              {%- if block.settings.desktop_image != blank -%}
+                {{
+                  block.settings.desktop_image
+                  | image_url: width: 2200
+                  | image_tag: loading: 'lazy', widths: '768, 1200, 1600, 2200', alt: block.settings.heading
+                }}
+              {%- elsif block.settings.mobile_image != blank -%}
+                {{
+                  block.settings.mobile_image
+                  | image_url: width: 1200
+                  | image_tag: loading: 'lazy', widths: '480, 768, 900, 1200', alt: block.settings.heading
+                }}
+              {%- endif -%}
+            </picture>
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+          {%- endif -%}
+        </div>
+        <div class="thomas-homepage__overlay thomas-homepage__overlay--bottom">
+          {%- if block.settings.heading != blank -%}
+            <h2 class="thomas-homepage__hero-heading">{{ block.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if block.settings.button_label != blank -%}
+            <a class="thomas-homepage__text-link" href="{{ block.settings.button_link | default: '#' }}">
+              {{ block.settings.button_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- if featured_collections.size > 0 -%}
+    {%- for block in featured_collections -%}
+      {%- assign current_collection = block.settings.collection -%}
+      {%- assign products_limit = block.settings.products_limit | default: 4 -%}
+      <div class="thomas-homepage__section thomas-homepage__section--products page-width" {{ block.shopify_attributes }}>
+        <div class="thomas-homepage__heading-row">
+          <h2 class="thomas-homepage__heading">{{ block.settings.title }}</h2>
+          {%- if block.settings.button_label != blank -%}
+            <a class="thomas-homepage__text-link thomas-homepage__text-link--dark" href="{{ block.settings.button_link | default: current_collection.url }}">
+              {{ block.settings.button_label }}
+            </a>
+          {%- endif -%}
+        </div>
+        <div class="thomas-homepage__product-grid">
+          {%- if current_collection != blank and current_collection.products_count > 0 -%}
+            {%- for product in current_collection.products limit: products_limit -%}
+              <article class="thomas-homepage__product-card">
+                <div class="thomas-homepage__product-image-wrap">
+                  <a href="{{ product.url }}">
+                    {%- if product.featured_image != blank -%}
+                      {{
+                        product.featured_image
+                        | image_url: width: 900
+                        | image_tag: loading: 'lazy', widths: '240, 360, 540, 720, 900', alt: product.title
+                      }}
+                    {%- else -%}
+                      {{ 'product-1' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+                    {%- endif -%}
+                  </a>
+                  {%- if product.selected_or_first_available_variant != blank -%}
+                    <form method="post" action="/cart/add" class="thomas-homepage__quick-cart-form">
+                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                      <button class="thomas-homepage__icon-button" type="submit" aria-label="Add {{ product.title | escape }} to cart">+</button>
+                    </form>
+                  {%- endif -%}
+                </div>
+                <div class="thomas-homepage__product-content">
+                  <h3 class="thomas-homepage__product-title">
+                    <a href="{{ product.url }}">{{ product.title }}</a>
+                  </h3>
+                  <div class="thomas-homepage__price-row">
+                    <span class="thomas-homepage__price">{{ product.price | money }}</span>
+                    {%- if product.compare_at_price > product.price -%}
+                      <span class="thomas-homepage__compare-price">{{ product.compare_at_price | money }}</span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </article>
+            {%- endfor -%}
+          {%- else -%}
+            {%- for index in (1..products_limit) -%}
+              <article class="thomas-homepage__product-card">
+                <div class="thomas-homepage__product-image-wrap">
+                  {{ 'product-1' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+                </div>
+                <div class="thomas-homepage__product-content">
+                  <h3 class="thomas-homepage__product-title">Collection product {{ index }}</h3>
+                  <div class="thomas-homepage__price-row">
+                    <span class="thomas-homepage__price">{{ 2499 | money }}</span>
+                  </div>
+                </div>
+              </article>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- if section.settings.shop_look_image_desktop != blank or section.settings.shop_look_image_mobile != blank or shop_look_items.size > 0 -%}
+    <div class="thomas-homepage__section thomas-homepage__section--dark">
+      <div class="page-width">
+        {%- if section.settings.shop_look_heading != blank -%}
+          <div class="thomas-homepage__heading-wrap">
+            <h2 class="thomas-homepage__heading thomas-homepage__heading--light">{{ section.settings.shop_look_heading }}</h2>
+          </div>
+        {%- endif -%}
+        <div class="thomas-homepage__look" data-look-root>
+          <div class="thomas-homepage__media-wrap">
+            {%- if section.settings.shop_look_image_desktop != blank or section.settings.shop_look_image_mobile != blank -%}
+              <picture>
+                {%- if section.settings.shop_look_image_mobile != blank -%}
+                  <source media="(max-width: 767px)" srcset="{{ section.settings.shop_look_image_mobile | image_url: width: 900 }}">
+                {%- endif -%}
+                {%- if section.settings.shop_look_image_desktop != blank -%}
+                  {{
+                    section.settings.shop_look_image_desktop
+                    | image_url: width: 2200
+                    | image_tag: loading: 'lazy', widths: '768, 1200, 1600, 2200', alt: section.settings.shop_look_heading
+                  }}
+                {%- elsif section.settings.shop_look_image_mobile != blank -%}
+                  {{
+                    section.settings.shop_look_image_mobile
+                    | image_url: width: 1200
+                    | image_tag: loading: 'lazy', widths: '480, 768, 900, 1200', alt: section.settings.shop_look_heading
+                  }}
+                {%- endif -%}
+              </picture>
+            {%- else -%}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+            {%- endif -%}
+          </div>
+
+          {%- for block in shop_look_items -%}
+            {%- assign product = block.settings.product -%}
+            <button
+              class="thomas-homepage__look-point{% if forloop.first %} is-active{% endif %}"
+              type="button"
+              data-look-point
+              data-look-target="look-card-{{ block.id }}"
+              style="--desktop-left: {{ block.settings.desktop_left | default: 50 }}%; --desktop-top: {{ block.settings.desktop_top | default: 50 }}%; --mobile-left: {{ block.settings.mobile_left | default: 50 }}%; --mobile-top: {{ block.settings.mobile_top | default: 50 }}%;"
+              aria-label="View look item {{ forloop.index }}"
+              {{ block.shopify_attributes }}
+            ></button>
+
+            <div id="look-card-{{ block.id }}" class="thomas-homepage__look-card{% if forloop.first %} is-active{% endif %}" data-look-card>
+              <div class="thomas-homepage__look-thumb">
+                <a href="{{ product.url | default: block.settings.link | default: '#' }}">
+                  {%- if block.settings.image != blank -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 400
+                      | image_tag: loading: 'lazy', widths: '160, 240, 320, 400', alt: product.title
+                    }}
+                  {%- elsif product != blank and product.featured_image != blank -%}
+                    {{
+                      product.featured_image
+                      | image_url: width: 400
+                      | image_tag: loading: 'lazy', widths: '160, 240, 320, 400', alt: product.title
+                    }}
+                  {%- else -%}
+                    {{ 'product-2' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+                  {%- endif -%}
+                </a>
+              </div>
+              <div class="thomas-homepage__look-content">
+                <h3 class="thomas-homepage__look-title">
+                  <a href="{{ product.url | default: block.settings.link | default: '#' }}">
+                    {{ block.settings.title | default: product.title }}
+                  </a>
+                </h3>
+                <div class="thomas-homepage__look-meta">
+                  <div class="thomas-homepage__price-row">
+                    <span class="thomas-homepage__price">
+                      {%- if product != blank -%}{{ product.price | money }}{%- else -%}{{ block.settings.price_text }}{%- endif -%}
+                    </span>
+                    {%- if product != blank and product.compare_at_price > product.price -%}
+                      <span class="thomas-homepage__compare-price">{{ product.compare_at_price | money }}</span>
+                    {%- elsif block.settings.compare_price_text != blank -%}
+                      <span class="thomas-homepage__compare-price">{{ block.settings.compare_price_text }}</span>
+                    {%- endif -%}
+                  </div>
+                  {%- if product != blank and product.selected_or_first_available_variant != blank -%}
+                    <form method="post" action="/cart/add">
+                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                      <button class="thomas-homepage__icon-button thomas-homepage__icon-button--light" type="submit" aria-label="Add {{ product.title | escape }} to cart">+</button>
+                    </form>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if split_promos.size > 0 -%}
+    <div class="thomas-homepage__section page-width">
+      <div class="thomas-homepage__split-grid">
+        {%- for block in split_promos -%}
+          <article class="thomas-homepage__split-card" {{ block.shopify_attributes }}>
+            <div class="thomas-homepage__media-wrap">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 1200
+                  | image_tag: loading: 'lazy', widths: '480, 768, 1000, 1200', alt: block.settings.title
+                }}
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+              {%- endif -%}
+            </div>
+            <div class="thomas-homepage__overlay thomas-homepage__overlay--bottom">
+              <h2 class="thomas-homepage__subheading">{{ block.settings.title }}</h2>
+              {%- if block.settings.button_label != blank -%}
+                <a class="thomas-homepage__text-link" href="{{ block.settings.button_link | default: '#' }}">
+                  {{ block.settings.button_label }}
+                </a>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if watch_cards.size > 0 -%}
+    <div class="thomas-homepage__section page-width">
+      {%- if section.settings.watch_buy_heading != blank -%}
+        <div class="thomas-homepage__heading-wrap">
+          <h2 class="thomas-homepage__heading">{{ section.settings.watch_buy_heading }}</h2>
+        </div>
+      {%- endif -%}
+      <div class="thomas-homepage__watch-grid">
+        {%- for block in watch_cards -%}
+          {%- assign product = block.settings.product -%}
+          <article class="thomas-homepage__watch-card" {{ block.shopify_attributes }}>
+            <div class="thomas-homepage__media-wrap">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 900
+                  | image_tag: loading: 'lazy', widths: '280, 480, 720, 900', alt: block.settings.title
+                }}
+              {%- elsif product != blank and product.featured_image != blank -%}
+                {{
+                  product.featured_image
+                  | image_url: width: 900
+                  | image_tag: loading: 'lazy', widths: '280, 480, 720, 900', alt: product.title
+                }}
+              {%- else -%}
+                {{ 'product-3' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+              {%- endif -%}
+            </div>
+            <div class="thomas-homepage__watch-mini">
+              <div class="thomas-homepage__watch-mini-thumb">
+                {%- if product != blank and product.featured_image != blank -%}
+                  {{
+                    product.featured_image
+                    | image_url: width: 240
+                    | image_tag: loading: 'lazy', widths: '120, 180, 240', alt: product.title
+                  }}
+                {%- elsif block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 240
+                    | image_tag: loading: 'lazy', widths: '120, 180, 240', alt: block.settings.title
+                  }}
+                {%- else -%}
+                  {{ 'product-4' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+                {%- endif -%}
+              </div>
+              <div class="thomas-homepage__watch-mini-content">
+                <h3 class="thomas-homepage__product-title">
+                  <a href="{{ product.url | default: block.settings.link | default: '#' }}">
+                    {{ block.settings.title | default: product.title }}
+                  </a>
+                </h3>
+                <div class="thomas-homepage__look-meta">
+                  <div class="thomas-homepage__price-row">
+                    <span class="thomas-homepage__price">
+                      {%- if product != blank -%}{{ product.price | money }}{%- else -%}{{ block.settings.price_text }}{%- endif -%}
+                    </span>
+                    {%- if product != blank and product.compare_at_price > product.price -%}
+                      <span class="thomas-homepage__compare-price">{{ product.compare_at_price | money }}</span>
+                    {%- elsif block.settings.compare_price_text != blank -%}
+                      <span class="thomas-homepage__compare-price">{{ block.settings.compare_price_text }}</span>
+                    {%- endif -%}
+                  </div>
+                  {%- if product != blank and product.selected_or_first_available_variant != blank -%}
+                    <form method="post" action="/cart/add">
+                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                      <button class="thomas-homepage__icon-button" type="submit" aria-label="Add {{ product.title | escape }} to cart">+</button>
+                    </form>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if testimonials.size > 0 -%}
+    <div class="thomas-homepage__section thomas-homepage__section--dark thomas-homepage__section--testimonial">
+      <div class="page-width">
+        {%- if section.settings.testimonial_heading != blank -%}
+          <div class="thomas-homepage__heading-wrap">
+            <h2 class="thomas-homepage__heading thomas-homepage__heading--light">{{ section.settings.testimonial_heading }}</h2>
+          </div>
+        {%- endif -%}
+        <div class="thomas-homepage__testimonial-grid">
+          {%- for block in testimonials -%}
+            <article class="thomas-homepage__testimonial-card" {{ block.shopify_attributes }}>
+              {%- if block.settings.quote != blank -%}
+                <p>{{ block.settings.quote }}</p>
+              {%- endif -%}
+              {%- if block.settings.name != blank -%}
+                <span>{{ block.settings.name }}</span>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.premium_story_image_desktop != blank or section.settings.premium_story_image_mobile != blank or section.settings.premium_story_text != blank -%}
+    <div class="thomas-homepage__premium">
+      {%- if section.settings.premium_marquee_text != blank -%}
+        <div class="thomas-homepage__premium-strip">
+          <div class="thomas-homepage__marquee">
+            {%- for index in (1..8) -%}
+              <span>{{ section.settings.premium_marquee_text }}</span>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="thomas-homepage__premium-story" data-reveal-root>
+        <div class="thomas-homepage__media-wrap">
+          {%- if section.settings.premium_story_image_desktop != blank or section.settings.premium_story_image_mobile != blank -%}
+            <picture>
+              {%- if section.settings.premium_story_image_mobile != blank -%}
+                <source media="(max-width: 767px)" srcset="{{ section.settings.premium_story_image_mobile | image_url: width: 900 }}">
+              {%- endif -%}
+              {%- if section.settings.premium_story_image_desktop != blank -%}
+                {{
+                  section.settings.premium_story_image_desktop
+                  | image_url: width: 2200
+                  | image_tag: loading: 'lazy', widths: '768, 1200, 1600, 2200', alt: section.settings.feature_heading
+                }}
+              {%- elsif section.settings.premium_story_image_mobile != blank -%}
+                {{
+                  section.settings.premium_story_image_mobile
+                  | image_url: width: 1200
+                  | image_tag: loading: 'lazy', widths: '480, 768, 900, 1200', alt: section.settings.feature_heading
+                }}
+              {%- endif -%}
+            </picture>
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+          {%- endif -%}
+        </div>
+        {%- if section.settings.premium_story_text != blank -%}
+          <div class="thomas-homepage__premium-copy">
+            <p class="thomas-homepage__reveal-text">{{ section.settings.premium_story_text | strip_html }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if feature_cards.size > 0 -%}
+    <div class="thomas-homepage__section page-width">
+      {%- if section.settings.feature_heading != blank -%}
+        <div class="thomas-homepage__heading-wrap">
+          <h2 class="thomas-homepage__heading">{{ section.settings.feature_heading }}</h2>
+        </div>
+      {%- endif -%}
+      <div class="thomas-homepage__feature-grid">
+        {%- for block in feature_cards -%}
+          <article class="thomas-homepage__feature-card" {{ block.shopify_attributes }}>
+            <div class="thomas-homepage__feature-image">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 300
+                  | image_tag: loading: 'lazy', widths: '120, 200, 300', alt: block.settings.title
+                }}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'thomas-homepage__placeholder' }}
+              {%- endif -%}
+            </div>
+            {%- if block.settings.title != blank -%}
+              <h3 class="thomas-homepage__card-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Thomas Homepage Builder",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "text", "id": "category_heading", "label": "Category heading", "default": "Shop By Category" },
+    { "type": "text", "id": "shop_look_heading", "label": "Shop the look heading", "default": "Shop the look" },
+    { "type": "image_picker", "id": "shop_look_image_desktop", "label": "Shop the look desktop image" },
+    { "type": "image_picker", "id": "shop_look_image_mobile", "label": "Shop the look mobile image" },
+    { "type": "text", "id": "watch_buy_heading", "label": "Watch and buy heading", "default": "Watch & Buy" },
+    { "type": "text", "id": "testimonial_heading", "label": "Testimonials heading", "default": "What Customers Say" },
+    { "type": "text", "id": "premium_marquee_text", "label": "Premium marquee text", "default": "Premium Shirts • Perfect Fit • Breathable Fabrics • Timeless Style" },
+    { "type": "image_picker", "id": "premium_story_image_desktop", "label": "Premium story desktop image" },
+    { "type": "image_picker", "id": "premium_story_image_mobile", "label": "Premium story mobile image" },
+    { "type": "richtext", "id": "premium_story_text", "label": "Premium story text", "default": "<p>Crafted for sharp workdays, long evenings, and the kind of confidence that never needs to shout.</p>" },
+    { "type": "text", "id": "feature_heading", "label": "Feature heading", "default": "Made For Modern Dressing" }
+  ],
+  "blocks": [
+    {
+      "type": "hero_slide",
+      "name": "Hero slide",
+      "settings": [
+        { "type": "image_picker", "id": "desktop_image", "label": "Desktop image" },
+        { "type": "image_picker", "id": "mobile_image", "label": "Mobile image" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Business Essentials" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "View Collection" },
+        { "type": "url", "id": "button_link", "label": "Button link" }
+      ]
+    },
+    {
+      "type": "category_card",
+      "name": "Category card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "New In" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "promo_banner",
+      "name": "Promo banner",
+      "settings": [
+        { "type": "image_picker", "id": "desktop_image", "label": "Desktop image" },
+        { "type": "image_picker", "id": "mobile_image", "label": "Mobile image" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Business Essentials" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "View All" },
+        { "type": "url", "id": "button_link", "label": "Button link" }
+      ]
+    },
+    {
+      "type": "featured_collection",
+      "name": "Featured collection",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Shop Bestsellers" },
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "range", "id": "products_limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "View All" },
+        { "type": "url", "id": "button_link", "label": "Button link" }
+      ]
+    },
+    {
+      "type": "shop_look_item",
+      "name": "Shop the look item",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "image_picker", "id": "image", "label": "Override card image" },
+        { "type": "text", "id": "title", "label": "Override title" },
+        { "type": "text", "id": "price_text", "label": "Fallback price" },
+        { "type": "text", "id": "compare_price_text", "label": "Fallback compare price" },
+        { "type": "url", "id": "link", "label": "Fallback link" },
+        { "type": "range", "id": "desktop_left", "label": "Desktop left position (%)", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "desktop_top", "label": "Desktop top position (%)", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "mobile_left", "label": "Mobile left position (%)", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "mobile_top", "label": "Mobile top position (%)", "min": 0, "max": 100, "step": 1, "default": 50 }
+      ]
+    },
+    {
+      "type": "split_promo",
+      "name": "Split promo card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Buy 1 Get 1" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "View All" },
+        { "type": "url", "id": "button_link", "label": "Button link" }
+      ]
+    },
+    {
+      "type": "watch_buy_card",
+      "name": "Watch and buy card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Main image" },
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "title", "label": "Override title" },
+        { "type": "text", "id": "price_text", "label": "Fallback price" },
+        { "type": "text", "id": "compare_price_text", "label": "Fallback compare price" },
+        { "type": "url", "id": "link", "label": "Fallback link" }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "Clean tailoring, premium feel, and the kind of fit that makes getting dressed easy." },
+        { "type": "text", "id": "name", "label": "Customer name", "default": "Aarav" }
+      ]
+    },
+    {
+      "type": "feature_card",
+      "name": "Feature card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Premium Fabric" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Thomas Homepage Builder" }
+  ]
+}
+{% endschema %}

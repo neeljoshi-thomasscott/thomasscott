@@ -1,0 +1,94 @@
+<section class="categroy-sec">
+  <div class="container">
+
+    <div class="top-heading">
+      <h1 class="thomasxlheading">{{ section.settings.heading }}</h1>
+    </div>
+
+    <div class="slider-rl">
+      <div class="categroy-list">
+
+        {% for block in section.blocks %}
+          {% assign mod = forloop.index0 | modulo: 2 %}
+
+          {% if mod == 0 %}
+            <div class="item">
+          {% endif %}
+
+          <div class="categroy-card">
+            <a href="{{ block.settings.link }}">
+              <div class="categroy-thumb">
+                <img 
+                  src="{{ block.settings.image | image_url }}" 
+                  alt="{{ block.settings.title }}" 
+                  width="134" 
+                  height="146"
+                  class="w-full"
+                >
+              </div>
+              <div class="thomassmheading">
+                {{ block.settings.title }}
+              </div>
+            </a>
+          </div>
+
+          {% if mod == 1 or forloop.last %}
+            </div>
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Shop By Category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Category Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Title",
+          "default": "New In"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Category Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Slider",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

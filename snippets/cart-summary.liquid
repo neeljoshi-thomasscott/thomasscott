@@ -1,0 +1,524 @@
+{%- doc -%}
+  Renders the cart summary totals.
+  @param {string} [accelerated_checkout_buttons_layout] - { 'vertical' } Forced layout of the additional checkout buttons.
+  @param {string} [section_id] - The section ID for cart discount component.
+{%- enddoc -%}
+
+{%- comment -%} ─── button_price always uses | money so no "INR" suffix ─── {%- endcomment -%}
+{%- assign button_price = cart.total_price | money -%}
+
+<div class="cart-summary-wrapper">
+  {% if template == 'cart' %}
+    {%- comment -%} ─── PROMO BANNER ─── {%- endcomment -%}
+    <div class="cart-promo-banner desktop-only">
+      Get ₹500 Off On Shopping Above ₹4000
+    </div>
+
+    {%- comment -%} ─── ORDER SUMMARY HEADING — hardcoded, no locale needed ─── {%- endcomment -%}
+    <h2 class="cart-order-summary-heading">ORDER SUMMARY</h2>
+  {% endif %} 
+  {%- comment -%} ─── CART LINE ITEMS ─── {%- endcomment -%}
+  {% comment %} <ul class="cart-line-items" role="list">
+    {%- for item in cart.items -%}
+      <li class="cart-line-item">
+        <span class="cart-line-item__title">{{ item.product.title }}</span>
+        <span class="cart-line-item__price">{{ item.final_line_price | money }}</span>
+      </li>
+    {%- endfor -%}
+  </ul> {% endcomment %}
+
+  {%- comment -%} ─── DIVIDER ─── {%- endcomment -%}
+  {% comment %} <div class="cart-section-divider"></div> {% endcomment %}
+  
+  {%- comment -%} ─── DIVIDER ─── {%- endcomment -%}
+  <div class="cart-section-divider"></div>
+
+  {%- comment -%} ─── COMPUTE TOTAL PRICE for Estimated Total display ─── {%- endcomment -%}
+  {%- liquid
+    if settings.currency_code_enabled_cart_total
+      assign total_price = cart.total_price | money_with_currency
+    else
+      assign total_price = cart.total_price | money
+    endif
+  -%}
+
+
+  {%- comment -%} ─── PRICE BREAKDOWN ─── {%- endcomment -%}
+{% if template == 'cart' %}
+  <div class="cart-price-breakdown">
+    {%- comment -%} 
+      AMOUNT ROW — always shows cart subtotal before discounts
+      This is cart.items_subtotal_price = sum of all items at their original line price
+    {%- endcomment -%}
+    <div class="cart-price-row">
+      <span class="cart-price-row__label">Order Total</span>
+      <span class="cart-price-row__value">{{ cart.original_total_price | money }}</span>
+    </div>
+    {% if template == 'cart' %}
+  {%- comment -%} ─── DISCOUNT CODE SECTION ─── {%- endcomment -%}
+    {%- if settings.show_add_discount_code -%}
+      {%- liquid
+        assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
+        for item in cart.items
+          for allocation in item.line_level_discount_allocations
+            if allocation.discount_application.type == 'discount_code'
+              assign discount_codes = item.line_level_discount_allocations | slice: forloop.index0 | map: 'discount_application' | map: 'title' | concat: discount_codes
+            endif
+          endfor
+        endfor
+        assign discount_codes = discount_codes | uniq
+      -%}
+
+      <cart-discount-component
+        {% if section_id != blank %}
+          data-section-id="{{ section_id }}"
+        {% endif %}
+        class="cart-inline-discount"
+      >
+        <form
+          on:submit="/applyDiscount"
+          onsubmit="return false;"
+          class="cart-inline-discount__form"
+        >
+          <label for="cart-discount-inline" class="visually-hidden">
+            {{- 'accessibility.discount' | t -}}
+          </label>
+
+          {%- comment -%}
+            FIX: was 'content.apply_coupon_code' — missing key.
+            Now using existing 'content.discount_code' = "Discount code" ✅
+          {%- endcomment -%}
+          <input
+            id="cart-discount-inline"
+            class="cart-inline-discount__input"
+            type="text"
+            name="discount"
+            placeholder="{{ 'content.discount_code' | t }}"
+            required
+          >
+
+          {%- comment -%}
+            FIX: was 'actions.apply' | t | default: 'APPLY'
+            'actions.apply' already EXISTS in locale = "Apply" ✅ — removed useless default
+          {%- endcomment -%}
+          <button type="submit" class="cart-inline-discount__button">
+            {{ 'actions.apply' | t }}
+          </button>
+        </form>
+
+        <div class="cart-discount__error hidden" role="alert" ref="cartDiscountError">
+          <span class="svg-wrapper">{{- 'icon-error.svg' | inline_asset_content -}}</span>
+          <small class="cart-discount__error-text cart-primary-typography hidden" ref="cartDiscountErrorDiscountCode">
+            {{ 'content.discount_code_error' | t: code: 'test' }}
+          </small>
+          <small class="cart-discount__error-text cart-primary-typography hidden" ref="cartDiscountErrorShipping">
+            {{ 'content.shipping_discount_error' | t }}
+          </small>
+        </div>
+
+        {%- if discount_codes.size > 0 -%}
+          <ul class="cart-discount__codes">
+            {%- for discount_code in discount_codes -%}
+              <li
+                class="cart-discount__pill"
+                data-discount-code="{{ discount_code }}"
+                aria-label="{{ 'accessibility.discount_applied' | t: code: discount_code }}"
+              >
+                <p class="cart-discount__pill-code">{{ discount_code }}</p>
+                <button
+                  type="button"
+                  on:click="/removeDiscount"
+                  class="cart-discount__pill-remove svg-wrapper svg-wrapper--smaller button-unstyled"
+                  aria-label="{{ 'actions.remove_discount' | t: code: discount_code }}"
+                >
+                  {{- 'icon-filters-close.svg' | inline_asset_content -}}
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+      </cart-discount-component>
+    {%- endif -%}
+  {% endif %}
+    {%- comment -%} 
+      DISCOUNT ROWS — only shows when cart-level discount codes are applied
+      e.g. user applied coupon "SAVE500" 
+    {%- endcomment -%}
+    {%- if cart.cart_level_discount_applications.size > 0 -%}
+      {%- for discount in cart.cart_level_discount_applications -%}
+        <div class="cart-price-row cart-price-row--discount">
+          <span class="cart-price-row__label">
+            {{- 'icon-discount.svg' | inline_asset_content -}}
+            {{ discount.title | escape }}
+          </span>
+          <span class="cart-price-row__value">-{{ discount.total_allocated_amount | money }}</span>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+    {%  if cart.total_discount > 0 %}
+      <div class="cart-price-row cart-row-discount">
+        <span class="cart-price-row__label">Discount</span>
+        <span class="cart-price-row__value">
+          {{ cart.total_discount | money }}
+        </span>
+      </div>
+    {%  endif %}
+    <div class="cart-price-row cart-row-shipping">
+      <span class="cart-price-row__label">Shipping</span>
+      <span class="cart-price-row__value">
+        Free
+      </span>
+    </div>
+    <div class="cart-price-row cart-row-tax">
+      <span class="cart-price-row__label">Tax</span>
+      <span class="cart-price-row__value">
+        {%- if cart.taxes_included -%}
+          Included
+        {%- else -%}
+          Calculated at checkout
+        {%- endif -%}
+      </span>
+    </div>
+
+    <div class="cart-price-row cart-price-row--total">
+      <span class="cart-price-row__label">Grand total</span>
+      <text-component
+        ref="cartTotal"
+        value="{{ total_price | strip_html }}"
+        class="cart-price-row__value"
+        data-testid="cart-total-value"
+        data-cart-subtotal
+      >
+        {{ total_price }}
+      </text-component>
+    </div>
+
+  </div>
+{% else %}
+   <div class="cart-price-row cart-price-row--total">
+      <span class="cart-price-row__label">Subtotal</span>
+      <text-component
+        ref="cartTotal"
+        value="{{ total_price | strip_html }}"
+        class="cart-price-row__value"
+        data-testid="cart-total-value"
+        data-cart-subtotal
+      >
+        {{ total_price }}
+      </text-component>
+    </div>
+{% endif %}
+
+  {%- comment -%} ─── TAX NOTE (snippet handles all tax/shipping text) ─── {%- endcomment -%}
+  {% comment %} <div class="cart-tax-note cart-primary-typography">
+    {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
+  </div> {% endcomment %}
+
+  {%- comment -%} ─── INSTALLMENTS ─── {%- endcomment -%}
+  {%- if settings.show_installments -%}
+    <div class="cart-installments">
+      {% form 'cart', cart %}
+        {{ form | payment_terms }}
+      {% endform %}
+    </div>
+  {%- endif -%}
+
+</div>
+
+{%- comment -%} ─── PAY / CHECKOUT BUTTONS ─── {%- endcomment -%}
+<div class="cart-sticky-wrapper">
+  <div class="cart__ctas">
+  <button
+    type="submit"
+    id="checkout"
+    class="cart__checkout-button button cart__checkout-button--with-total"
+    name="checkout"
+    {% if cart == empty %}
+      disabled
+    {% endif %}
+    form="cart-form"
+  >
+    {%- comment -%}
+      FIX 1: 'content.pay' was a missing key — hardcoded "PAY" instead.
+      FIX 2: button_price uses | money (not money_with_currency) so no "INR" suffix.
+              total_price may have "INR" if currency_code_enabled_cart_total is on.
+              button_price is ALWAYS clean e.g. ₹2,926.00
+    {%- endcomment -%}
+    <span class="button-text">
+       Checkout
+    </span>
+  </button>
+  {% unless template == 'cart' %}
+    <a class="button cart-button" href="/cart">Go To Cart</a>
+  {% endunless %}
+  {%- if additional_checkout_buttons and settings.show_accelerated_checkout_buttons -%}
+    <div class="additional-checkout-buttons {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}">
+      {{ content_for_additional_checkout_buttons }}
+    </div>
+  {%- endif -%}
+</div>
+</div>
+
+<script>
+  function handleStickySpacing() {
+  const sticky = document.querySelector(".cart-sticky-wrapper");
+
+  if (!sticky) return;
+
+  if (window.innerWidth <= 768) {
+    document.body.style.paddingBottom = sticky.offsetHeight + "px";
+  } else {
+    document.body.style.paddingBottom = "0px";
+  }
+}
+
+window.addEventListener("load", handleStickySpacing);
+window.addEventListener("resize", handleStickySpacing);
+</script>
+
+{% stylesheet %}
+  /* ─── WRAPPER ─── */
+  .cart-summary-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md, 1rem);
+    width: 100%;
+  }
+
+  /* ─── PROMO BANNER ─── */
+  .cart-promo-banner {
+    text-align: center;
+    font-size: var(--font-size--xs, 0.75rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-foreground);
+    background-color: var(--color-background-secondary, #f0f8f0);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs, 4px);
+    padding: var(--padding-sm, 0.5rem) var(--padding-md, 1rem);
+  }
+
+  /* ─── HEADING ─── */
+  .cart-order-summary-heading {
+    font-size: var(--font-size--lg, 1.25rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--color-foreground);
+  }
+
+  /* ─── LINE ITEMS ─── */
+  .cart-line-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 0.5rem);
+  }
+
+  .cart-line-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size--sm, 0.875rem);
+    color: var(--color-foreground);
+  }
+
+  .cart-line-item__title {
+    flex: 1;
+    padding-inline-end: var(--padding-md, 1rem);
+  }
+
+  .cart-line-item__price {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ─── DIVIDER ─── */
+  .cart-section-divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-border);
+  }
+
+  /* ─── INLINE DISCOUNT ─── */
+  .cart-inline-discount {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 0.5rem);
+  }
+
+  .cart-inline-discount__form {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs, 4px);
+    overflow: hidden;
+    height: 3rem;
+  }
+
+  .cart-inline-discount__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: var(--padding-sm) var(--padding-md);
+    font-size: var(--font-size--sm);
+    color: var(--color-foreground);
+    height: 100%;
+  }
+
+  .cart-inline-discount__input::placeholder {
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.5));
+  }
+
+  .cart-inline-discount__button {
+    background: transparent;
+    border: none;
+    border-inline-start: 1.5px solid var(--color-border);
+    padding: var(--padding-sm) var(--padding-lg, 1.25rem);
+    font-size: var(--font-size--xs, 0.75rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    cursor: pointer;
+    height: 100%;
+    white-space: nowrap;
+  }
+
+  .cart-inline-discount__button:hover {
+    background-color: rgb(var(--color-foreground-rgb) / 0.05);
+  }
+
+  /* ─── PRICE BREAKDOWN ─── */
+  .cart-price-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 0.5rem);
+  }
+
+  .cart-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size--sm, 0.875rem);
+    color: var(--color-foreground);
+  }
+
+  .cart-price-row--discount .cart-price-row__value {
+    color: var(--color-success, green);
+  }
+
+  .cart-price-row--total {
+    font-weight: 700;
+    font-size: var(--font-size--md, 1rem);
+    margin-block-start: var(--margin-xs, 0.25rem);
+  }
+
+  .cart-price-row--total .cart-price-row__label {
+    font-size: var(--font-size--sm);
+  }
+
+  .cart-price-row--total .cart-price-row__value {
+    font-size: var(--font-size--lg, 1.25rem);
+  }
+
+  /* ─── TAX NOTE ─── */
+  .cart-tax-note {
+    font-size: var(--font-size--2xs, 0.7rem);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.5));
+  }
+
+  /* ─── INSTALLMENTS ─── */
+  .cart-installments {
+    font-size: var(--font-size--2xs);
+    color: var(--color-foreground);
+  }
+
+  /* ─── CTA BUTTONS ─── */
+  .cart__ctas {
+    width: 100%;
+    display: grid;
+    gap: var(--checkout-button-gap, 0.75rem);
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+  }
+
+  .cart__checkout-button {
+    width: 100%;
+    height: clamp(25px, var(--height-buy-buttons, 3rem), 55px);
+    padding-inline: var(--padding-4xl);
+  }
+
+  .cart__checkout-button--with-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-xs);
+  }
+
+  /* ─── DISCOUNT PILLS ─── */
+  .cart-discount__codes {
+    display: none;
+    gap: var(--padding-xs);
+    flex-wrap: wrap;
+    list-style: none;
+    padding-inline: 0;
+    margin: 0;
+  }
+
+  .cart-discount__codes:has(.cart-discount__pill) {
+    display: flex;
+  }
+
+  .cart-discount__pill {
+    display: flex;
+    color: var(--color-foreground);
+    gap: var(--padding-xs);
+    align-items: center;
+    padding: var(--padding-xs) var(--padding-sm);
+    border-radius: var(--style-border-radius-pills);
+    background-color: var(--color-input-background);
+    text-transform: uppercase;
+  }
+
+  .cart-discount__pill-code {
+    overflow: hidden;
+    max-width: 100px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  :is(.cart-discount__pill-remove, .cart-discount__pill-remove:hover) {
+    --close-icon-opacity: 0.4;
+    color: var(--color-foreground);
+    background-color: transparent;
+    pointer-events: all;
+    cursor: pointer;
+    height: 100%;
+  }
+
+  .cart-discount__error {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-block: var(--padding-2xs) var(--padding-sm);
+  }
+
+  .cart-discount__error .svg-wrapper {
+    flex-shrink: 0;
+    width: var(--icon-size-xs);
+    height: var(--icon-size-xs);
+    margin-inline: var(--margin-3xs) var(--margin-xs);
+  }
+
+  .cart-discount__error-text {
+    margin-block-start: var(--margin-3xs);
+  }
+{% endstylesheet %}

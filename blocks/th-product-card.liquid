@@ -1,0 +1,16 @@
+
+{% liquid
+  assign product = closest.product
+-%}
+
+{% render 'th-product-card', product: product, section: section, section_id: section.id , enable_swatches: enable_swatches %}
+
+{% schema %}
+{
+  "name": "t:names.product_card",
+  "blocks": [
+  ],
+  "tag": null,
+  "settings": []
+}
+{% endschema %}

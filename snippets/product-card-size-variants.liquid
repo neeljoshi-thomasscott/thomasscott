@@ -1,0 +1,141 @@
+<div
+          class="variant-size-selector inline-variant-selector"
+          data-inline-selector
+          hidden
+        >
+           <button 
+            class="product-cart-btn" 
+            {{  card_attr }}
+            onclick="toggleAddToCart(this,true)"
+        >&times;</button> 
+          <div class="select-size">
+            Select Size
+          </div>
+
+          <div class="size-buttons">
+            {%- for variant in product.variants -%}
+              {%- assign option_label = variant.option1 | default: variant.title -%}
+              <button
+                class="size-btn btn-loader"
+                type="button"
+                {{ card_attr }}
+                data-variant-id="{{ variant.id }}"
+                data-available="{{ variant.available }}"
+                onclick="triggerAddToCartDesktop(this)"
+                {% unless variant.available %}
+                  disabled
+                  aria-disabled="true"
+                {% endunless %}
+              >
+                <span class="loader">
+                  <svg class="spinner" viewBox="0 0 50 50">
+                    <circle
+                      class="path"
+                      cx="25"
+                      cy="25"
+                      r="20"
+                      fill="none"
+                      stroke-width="4"
+                    />
+                  </svg>
+                </span>
+
+                <span class="loaded">
+                  {{ option_label }}
+                </span>
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+
+        {% comment %} <div
+  class="variant-size-selector inline-variant-selector"
+  data-inline-selector
+  hidden
+>
+
+  <!-- Close Button -->
+  <button
+    type="button"
+    class="variant-close-btn"
+    onclick="closeVariantSelector(this)"
+  >
+    &times;
+  </button>
+
+  <div class="select-size">
+    Select Size
+  </div>
+
+  <div class="size-buttons">
+    {%- for variant in product.variants -%}
+      {%- assign option_label = variant.option1 | default: variant.title -%}
+
+      <button
+        class="size-btn btn-loader"
+        type="button"
+        {{ card_attr }}
+        data-variant-id="{{ variant.id }}"
+        data-available="{{ variant.available }}"
+        onclick="triggerAddToCartDesktop(this)"
+        {% unless variant.available %}
+          disabled
+          aria-disabled="true"
+        {% endunless %}
+      >
+        <span class="loader">
+          <svg class="spinner" viewBox="0 0 50 50">
+            <circle
+              class="path"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke-width="4"
+            />
+          </svg>
+        </span>
+
+        <span class="loaded">
+          {{ option_label }}
+        </span>
+      </button>
+
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+.variant-size-selector {
+  position: relative;
+}
+
+.variant-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  z-index: 9;
+}
+</style>
+
+<script>
+function closeVariantSelector(button) {
+
+  const selector = button.closest(
+    ".variant-size-selector"
+  );
+
+  if (selector) {
+    selector.setAttribute("hidden", true);
+  }
+}
+</script> {% endcomment %}

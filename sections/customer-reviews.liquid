@@ -1,0 +1,114 @@
+{% comment %} Customer Reviews - Fixed Slider {% endcomment %}
+
+<section class="customer-sec">
+  <div class="container">
+
+    <div class="top-heading top-btn-heading relative">
+      <h2 class="thomasxlheading">
+        {{ section.settings.heading | default: 'CUSTOMER REVIEWS' | escape }}
+      </h2>
+    </div>
+
+    <!-- Slider Wrapper -->
+    <div class="slider-rl">
+      <div class="customer-slider slider-radius-dot" id="">
+        {% for block in section.blocks %}
+          <div class="item">
+            <div class="customer-card">
+              <!-- Stars -->
+              <div class="stars">
+                {% assign rating = block.settings.rating | plus: 0 %}
+                {% for i in (1..5) %}
+                  {% if i <= rating %}
+                    <span class="star filled">★</span>
+                  {% else %}
+                    <span class="star">★</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+              <p>
+                "{{ block.settings.review_text | escape }}"
+              </p>
+
+              <div class="customer-name">
+                ~ {{ block.settings.customer_name | escape }}
+              </div>
+
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    <!-- Dots -->
+    <div class="slider-dots text-center mt-10"></div>
+
+  </div>
+</section>
+<style>
+    .star {
+  color: transparent;          /* 👈 empty star invisible */
+  -webkit-text-stroke: 1px #fff; /* 👈 white outline */
+}
+
+.star.filled {
+  color: #fff;                 /* 👈 filled = solid white */
+  -webkit-text-stroke: 0;      /* 👈 remove outline */
+}
+</style>
+
+{% schema %}
+{
+  "name": "Customer Reviews",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "CUSTOMER REVIEWS"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review Text",
+          "default": "Finally found a brand that understands proper fits for men. The shirt looks sharp and feels comfortable all day."
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer Name",
+          "default": "Vikram Sharma"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Reviews",
+      "blocks": [
+        { "type": "review" },
+        { "type": "review" },
+        { "type": "review" }
+      ]
+    }
+  ]
+}
+{% endschema %}

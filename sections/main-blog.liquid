@@ -1,0 +1,1374 @@
+<script src="{{ 'blog-posts-list.js' | asset_url }}" type="module" fetchpriority="low"></script>
+<div class="section-breadcrumb">
+  {% render 'breadcrumb' %}
+</div>
+<style>
+html,body{
+  letter-spacing:2%
+}
+.editorial-carousel {
+  --side-visible: 16%;
+  --slide-gap: 10px;
+  --slide-scale-side: 1;
+  --transition: 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  --nav-size: 52px;
+
+  position: relative;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.editorial-carousel__viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.editorial-carousel__track {
+  position: relative;
+  min-height: 1px;
+  cursor: grab;
+  user-select: none;
+}
+.editorial-slide {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: calc(100% - (var(--side-visible) * 2) - (var(--slide-gap) * 2));
+  height: auto;
+  overflow: hidden;
+  background: transparent;
+  transform-origin: center center;
+  transition:
+    transform var(--transition),
+    opacity var(--transition),
+    filter var(--transition);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity, filter;
+}
+
+.editorial-slide__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.editorial-slide__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.34) 0%,
+    rgba(0, 0, 0, 0.12) 28%,
+    rgba(0, 0, 0, 0.04) 48%,
+    rgba(0, 0, 0, 0) 68%
+  );
+  pointer-events: none;
+}
+
+.editorial-slide__content {
+  position: absolute;
+  left: 50%;
+  bottom: 84px;
+  transform: translateX(-50%);
+  width: min(90%, 760px);
+  text-align: center;
+  z-index: 2;
+  color: #fff;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.editorial-slide__title {
+  margin: 0 0 28px;
+  font-size: 24px;
+  font-weight: 500;
+  Line height: 32px;
+}
+
+.editorial-slide__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9.5px 28.4px;
+  background: #f2efef;
+  color: #2e2a2a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 8%;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.editorial-slide__button:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+.editorial-slide.is-active {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  z-index: 3;
+  filter: blur(0);
+  pointer-events: auto;
+  
+}
+
+.editorial-slide.is-prev {
+  transform: translateX(calc(-100% - var(--slide-gap))) scale(var(--slide-scale-side));
+  opacity: 0.7;
+  z-index: 2;
+  filter: grayscale(8%) brightness(0.72);
+}
+
+.editorial-slide.is-next {
+  transform: translateX(var(--slide-gap)) scale(var(--slide-scale-side));
+  opacity: 0.7;
+  z-index: 2;
+  filter: grayscale(8%) brightness(0.72);
+}
+
+.editorial-slide.is-hidden-left {
+  transform: translateX(calc(-50% - 140%)) scale(0.9);
+  opacity: 0;
+  z-index: 1;
+}
+
+.editorial-slide.is-hidden-right {
+  transform: translateX(calc(-50% + 140%)) scale(0.9);
+  opacity: 0;
+  z-index: 1;
+}
+
+.editorial-slide:not(.is-active) .editorial-slide__content {
+  opacity: 0;
+  transform: translateX(-50%) translateY(18px);
+  pointer-events: none;
+}
+
+.editorial-carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--nav-size);
+  height: var(--nav-size);
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #111;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.editorial-carousel__nav:hover {
+  background: #fff;
+}
+
+.editorial-carousel__nav--prev {
+  left: 18px;
+}
+
+.editorial-carousel__nav--next {
+  right: 18px;
+}
+
+@media (max-width: 991px) {
+  .editorial-carousel {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .editorial-carousel {
+    --side-visible: 5%;
+    --mobile-slide-height: 413px;
+    --mobile-side-scale: 1;
+    --mobile-content-width: 86%;
+  }
+
+  .editorial-carousel {
+    display: block;
+  }
+
+  .editorial-carousel__viewport {
+    height: var(--mobile-slide-height) !important;
+    overflow: hidden;
+  }
+
+  .editorial-carousel__track {
+    height: var(--mobile-slide-height) !important;
+    cursor: grab;
+  }
+
+  .editorial-slide {
+    width: calc(100% - (var(--side-visible) * 2));
+    height: var(--mobile-slide-height) !important;
+    overflow: hidden;
+    border-radius: 0;
+  }
+  
+  .editorial-slide__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: none;
+    display: block;
+    pointer-events: none;
+  }
+
+  .editorial-slide__overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.42) 0%,
+      rgba(0, 0, 0, 0.18) 35%,
+      rgba(0, 0, 0, 0.04) 58%,
+      rgba(0, 0, 0, 0) 76%
+    );
+  }
+
+  .editorial-slide__content {
+    left: 50%;
+    bottom: 44px;
+    transform: translateX(-50%);
+    width: var(--mobile-content-width);
+    max-width: 320px;
+  }
+
+  .editorial-slide__title {
+    margin: 0 0 18px;
+    font-size:18px;
+    line-height:24px;
+  }
+
+  .editorial-slide__button {
+    min-width: 185px;
+    height: 52px;
+    padding: 0 24px;
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  .editorial-slide.is-active {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+    z-index: 3;
+    filter: none;
+    pointer-events: auto;
+  }
+
+  .editorial-slide.is-prev {
+    transform: translateX(-103%) scale(var(--mobile-side-scale));
+    opacity: 0.9;
+    z-index: 2;
+    filter: brightness(0.82);
+  }
+
+  .editorial-slide.is-next {
+    transform: translateX(3%) scale(var(--mobile-side-scale));
+    opacity: 0.9;
+    z-index: 2;
+    filter: brightness(0.82);
+  }
+
+  .editorial-slide.is-hidden-left {
+    transform: translateX(-160%) scale(1);
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .editorial-slide.is-hidden-right {
+    transform: translateX(60%) scale(1);
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .editorial-slide:not(.is-active) .editorial-slide__content {
+    opacity: 0;
+    transform: translateX(-50%) translateY(14px);
+    pointer-events: none;
+  }
+
+  .editorial-carousel__nav {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.88);
+  }
+
+  .editorial-carousel__nav--prev {
+    left: 8px;
+  }
+
+  .editorial-carousel__nav--next {
+    right: 8px;
+  }
+}
+</style>
+{% comment %} <div class="editorial-carousel" data-carousel>
+  <button class="editorial-carousel__nav editorial-carousel__nav--prev" type="button" aria-label="Previous slide">
+    &#10094;
+  </button>
+
+  <div class="editorial-carousel__viewport">
+    <div class="editorial-carousel__track">
+      <article class="editorial-slide">
+        <img
+          src="{{ 'blog-dummy.png' | asset_url }}"
+          alt="Men's fashion banner"
+          class="editorial-slide__image"
+        />
+        <div class="editorial-slide__overlay"></div>
+        <div class="editorial-slide__content">
+          <h2 class="editorial-slide__title">
+            Master the Men’s Sweatshirt T-Shirt:
+            Casual to Smart
+          </h2>
+          <a href="#" class="editorial-slide__button">VIEW BLOG</a>
+        </div>
+      </article>
+
+      <article class="editorial-slide">
+        <img
+          src="{{ 'blog-dummy.png' | asset_url }}"
+          alt="Minimal style fashion banner"
+          class="editorial-slide__image"
+        />
+        <div class="editorial-slide__overlay"></div>
+        <div class="editorial-slide__content">
+          <h2 class="editorial-slide__title">
+            Build a Minimal Wardrobe 
+            for Everyday Luxury
+          </h2>
+          <a href="#" class="editorial-slide__button">VIEW BLOG</a>
+        </div>
+      </article>
+
+      <article class="editorial-slide">
+        <img
+          src="{{ 'blog-dummy.png' | asset_url }}"
+          alt="Smart casual fashion banner"
+          class="editorial-slide__image"
+        />
+        <div class="editorial-slide__overlay"></div>
+        <div class="editorial-slide__content">
+          <h2 class="editorial-slide__title">
+            Smart Casual Styling 
+            for Modern Men
+          </h2>
+          <a href="#" class="editorial-slide__button">VIEW BLOG</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <button class="editorial-carousel__nav editorial-carousel__nav--next" type="button" aria-label="Next slide">
+    &#10095;
+  </button>
+</div> {% endcomment %}
+{% comment %} <div class="blog-slider">
+  <div class="item">
+    <div class="blog-banner-item relative">
+      <picture class="picture">
+          <source media="(max-width:767px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-mobile-banner.jpg?v=1775710594">
+          <source media="(min-width:768px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567">
+          <img src="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567" alt="Business Essentials" width="1920" height="750" class="w-full">
+      </picture>
+      <div class="blog-banner-content">
+        <div class="thomasmdheading">Master the Men's Sweatshirt T-Shirt: Casual to Smart</div>
+        <a href="/collections" class="thomas-wht-btn hovertime" tabindex="0">VIEW BLOG</a>
+      </div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="blog-banner-item relative">
+      <picture class="picture">
+          <source media="(max-width:767px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-mobile-banner.jpg?v=1775710594">
+          <source media="(min-width:768px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567">
+          <img src="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567" alt="Business Essentials" width="1920" height="750" class="w-full">
+      </picture>
+      <div class="blog-banner-content">
+        <div class="thomasmdheading">Master the Men's Sweatshirt T-Shirt: Casual to Smart</div>
+        <a href="/collections" class="thomas-wht-btn hovertime" tabindex="0">VIEW BLOG</a>
+      </div>
+    </div>
+  </div>
+  <div class="item">
+    <div class="blog-banner-item relative">
+      <picture class="picture">
+          <source media="(max-width:767px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-mobile-banner.jpg?v=1775710594">
+          <source media="(min-width:768px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567">
+          <img src="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567" alt="Business Essentials" width="1920" height="750" class="w-full">
+      </picture>
+      <div class="blog-banner-content">
+        <div class="thomasmdheading">Master the Men's Sweatshirt T-Shirt: Casual to Smart</div>
+        <a href="/collections" class="thomas-wht-btn hovertime" tabindex="0">VIEW Blog</a>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+{% comment %} <div class="blog-slider">
+  {% for article in blog.articles limit: 5 %}
+  <div class="item">
+    <div class="blog-banner-item relative">
+      <picture class="picture">
+        {% if article.image %}
+          <source media="(max-width:767px)" srcset="{{ article.image | image_url: width: 767 }}">
+          <source media="(min-width:768px)" srcset="{{ article.image | image_url: width: 1920 }}">
+          <img
+            src="{{ article.image | image_url: width: 1920 }}"
+            alt="{{ article.title | escape }}"
+            width="1920"
+            height="750"
+            class="w-full"
+          >
+        {% else %}
+          <source media="(max-width:767px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-mobile-banner.jpg?v=1775710594">
+          <source media="(min-width:768px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567">
+          <img
+            src="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567"
+            alt="{{ article.title | escape }}"
+            width="1920"
+            height="750"
+            class="w-full"
+          >
+        {% endif %}
+      </picture>
+      <div class="blog-banner-content">
+        <div class="thomasmdheading">{{ article.title }}</div>
+        <a href="{{ article.url }}" class="thomas-wht-btn hovertime" tabindex="0">VIEW BLOG</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div> {% endcomment %}
+<div class="blog-slider">
+  {% for article in blog.articles %}
+    {% if article.metafields.custom.is_featured == true %}
+    <div class="item">
+      <div class="blog-banner-item relative">
+        <picture class="picture">
+          {% if article.image %}
+            <source media="(max-width:767px)" srcset="{{ article.image | image_url: width: 767 }}">
+            <source media="(min-width:768px)" srcset="{{ article.image | image_url: width: 1920 }}">
+            <img
+              src="{{ article.image | image_url: width: 1920 }}"
+              alt="{{ article.title | escape }}"
+              width="1920"
+              height="750"
+              class="w-full"
+            >
+          {% else %}
+            <source media="(max-width:767px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-mobile-banner.jpg?v=1775710594">
+            <source media="(min-width:768px)" srcset="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567">
+            <img
+              src="//thomasscott-store.myshopify.com/cdn/shop/files/thomas-desktop-banner.jpg?v=1775710567"
+              alt="{{ article.title | escape }}"
+              width="1920"
+              height="750"
+              class="w-full"
+            >
+          {% endif %}
+        </picture>
+        <div class="blog-banner-content">
+          <div class="thomasmdheading">{{ article.title }}</div>
+          <a href="{{ article.url }}" class="thomas-wht-btn hovertime" tabindex="0">VIEW BLOG</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+<blog-posts-list section-id="{{ section.id }}" class="blog-main">
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+  <section
+    class="th-blog-listing color-{{ section.settings.color_scheme }}"
+    style="{% render 'spacing-style', settings: section.settings %}"
+    data-testid="blog-posts"
+  >
+    <div class="th-blog-listing__content container">
+      <div class="th-blog-listing__toolbar">
+        <h1 class="th-blog-listing__heading">{{ blog.title | default: 'Blogs' }}</h1>
+
+        <div class="th-blog-listing__filters" role="tablist" aria-label="Blog filters">
+          {% assign all_blogs_path = routes.root_url | append: 'blogs' %}
+          
+
+          {% assign has_blog_items = false %}
+          {% for blog_item in blogs %}
+            {% assign has_blog_items = true %}
+            <a
+              class="th-blog-listing__filter{% if blog_item.handle == blog.handle %} is-active{% endif %}"
+              href="{{ blog_item.url }}"
+              role="tab"
+              aria-selected="{% if blog_item.handle == blog.handle %}true{% else %}false{% endif %}"
+            >
+              {% comment %} {{ blog_item.title }} {% endcomment %} All Blogs
+            </a>
+          {% endfor %}
+
+          {% unless has_blog_items %}
+            <a class="th-blog-listing__filter is-active" href="{{ blog.url }}" role="tab" aria-selected="true">
+              {% comment %} {{ blog.title }}{% endcomment %} All Blogs 
+            </a>
+          {% endunless %}
+        </div>
+
+        <form class="th-blog-listing__search" data-blog-search role="search" action="{{ blog.url }}">
+          <span class="th-blog-listing__search-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8.78685 16.7887C13.2255 16.7887 16.8237 13.1983 16.8237 8.76935C16.8237 4.34039 13.2255 0.75 8.78685 0.75C4.34822 0.75 0.75 4.34039 0.75 8.76935C0.75 13.1983 4.34822 16.7887 8.78685 16.7887Z" stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18.8332 18.9272L14.5469 14.6502" stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <input
+            type="search"
+            name="q"
+            value="{{ request.params.q | escape }}"
+            placeholder="search blogs"
+            aria-label="Search blogs"
+            class="th-blog-listing__search-input"
+            data-blog-search-input
+          >
+          <button type="submit" class="th-blog-listing__search-btn">Search</button>
+        </form>
+      </div>
+
+      {% paginate blog.articles by 12 %}
+        <div class="th-blog-listing__grid" data-blog-grid>
+          {% for article in blog.articles %}
+            <article class="th-blog-card" data-blog-card data-title="{{ article.title | downcase | escape }}">
+              <a href="{{ article.url }}" class="th-blog-card__media" aria-label="{{ article.title | escape }}">
+                {% if article.image %}
+                  {{
+                    article.image
+                    | image_url: width: 900
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '280, 360, 540, 720, 900',
+                      class: 'th-blog-card__image',
+                      alt: article.title
+                  }}
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: 'th-blog-card__placeholder' }}
+                {% endif %}
+              </a>
+
+              <div class="th-blog-card__content">
+                <p class="th-blog-card__date">{{ article.published_at | date: '%B %d, %Y' }}</p>
+                <h3 class="th-blog-card__title">
+                  <a href="{{ article.url }}">{{ article.title }}</a>
+                </h3>
+                <a href="{{ article.url }}" class="th-blog-card__read-more">Continue Reading</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% comment %} {% if paginate.pages > 1 and paginate.next %}
+          <div class="th-blog-listing__pagination-dot-wrap">
+            <a href="{{ paginate.next.url }}" class="th-blog-listing__pagination-dot" aria-label="Load more blog posts"></a>
+          </div>
+        {% endif %}{% endcomment %}
+{% if paginate.pages > 1 and paginate.next %}
+  <div
+    class="th-blog-listing__pagination-dot-wrap"
+    data-load-more
+    data-next-url="{{ paginate.next.url }}"
+  >
+    <div class="blog-loader"></div>
+  </div>
+{% endif %}
+
+      {% endpaginate %} 
+
+
+    </div>
+  </section>
+</blog-posts-list>
+
+
+
+
+
+{% stylesheet %}
+/* Your existing CSS remains unchanged */
+.blog-loader { width: 42px; height: 42px; border: 3px solid #d9d9d9; border-top-color: #000; border-radius: 50%; animation: blogSpin 0.8s linear infinite; margin: 20px auto; }
+@keyframes blogSpin { to { transform: rotate(360deg); } }
+
+.th-blog-listing { --th-blog-border: #e7e7e7; padding-top: 12px; padding-bottom: 52px; }
+.th-blog-listing__content { padding-inline: 0; }
+.th-blog-listing__toolbar { border-top: 1px solid var(--th-blog-border); padding-top: 16px; margin-bottom: 18px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: end; }
+/* ... rest of your CSS (I kept it short here, but keep all your original CSS) ... */
+
+
+.blog-loader {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #d9d9d9;
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: blogSpin 0.8s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes blogSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+  .th-blog-listing {
+    --th-blog-border: #e7e7e7;
+    padding-top: 12px;
+    padding-bottom: 52px;
+  }
+
+  .th-blog-listing__content {
+    padding-inline: 0;
+  }
+
+  .th-blog-listing__toolbar {
+    border-top: 1px solid var(--th-blog-border);
+    padding-top: 16px;
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: end;
+  }
+
+  .th-blog-listing__heading {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .th-blog-listing__filters {
+    display: inline-flex;
+    gap: 14px;
+    align-self: stretch;
+    align-items: center;
+    justify-self: center;
+  }
+
+  .th-blog-listing__filter {
+    color: rgb(var(--color-foreground-rgb) / 0.44);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 2%;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0 10px;
+    border-bottom: 1px solid transparent;
+  }
+
+  .th-blog-listing__filter.is-active {
+    color: rgb(var(--color-foreground-rgb));
+    border-bottom-color: rgb(var(--color-foreground-rgb));
+  }
+
+  .th-blog-listing__search {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--th-blog-border);
+    min-width: 286px;
+    padding: 10px 15px;
+    justify-self: end;
+  }
+
+  .th-blog-listing__search-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+    color: #767676;
+  }
+
+  .th-blog-listing__search-input {
+    border: 0;
+    flex: 1;
+    padding: 0;
+    font-size: 14px;
+    background: transparent;
+  }
+
+  .th-blog-listing__search-input:focus {
+    outline: none;
+  }
+
+  .th-blog-listing__search-btn {
+    border: 0;
+    border-left: 1px solid var(--th-blog-border);
+    background: transparent;
+    margin-left: 12px;
+    padding-left: 12px;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 8%;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0;
+    cursor: pointer;
+  }
+
+  .th-blog-listing__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 26px 18px;
+  }
+
+  .th-blog-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-bottom:30px;
+  }
+
+  .th-blog-card__media,
+  .th-blog-card__image,
+  .th-blog-card__placeholder {
+    display: block;
+    width: 100%;
+  }
+
+  .th-blog-card__image,
+  .th-blog-card__placeholder {
+    object-fit: cover;
+  }
+
+  .th-blog-card__content {
+    padding-top: 10px;
+  }
+
+  .th-blog-card__date {
+    margin: 0 0 6px;
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 100%;
+    color: var(--gray-color);
+    letter-spacing: 2%;
+  }
+
+  .th-blog-card__title {
+    margin: 0 0 14px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.35;
+    font-family: inherit;
+    min-height: 42px;
+    letter-spacing:2%;
+  }
+
+  .th-blog-card__title a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  .th-blog-card__read-more {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 100%;
+    letter-spacing: 8%;
+    color: var(--primary-color);
+    text-decoration: none;
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 10px;
+  }
+
+  .th-blog-listing__pagination-dot-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 26px;
+  }
+
+  .th-blog-listing__pagination-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.45);
+    display: inline-block;
+  }
+
+  @media screen and (max-width: 989px) {
+    .th-blog-listing__toolbar {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .th-blog-listing__filters {
+      border-bottom: 0;
+    }
+
+    .th-blog-listing__search {
+      min-width: 0;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .th-blog-listing__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .th-blog-listing {
+      padding-top: 10px;
+      padding-bottom: 32px;
+    }
+
+    .th-blog-listing__heading {
+      font-size: 22px;
+    }
+
+    .th-blog-listing__filters {
+      gap: 12px;
+    }
+
+    .th-blog-listing__search {
+      max-width: none;
+    }
+
+    .th-blog-listing__grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .th-blog-card__title {
+      min-height: 0;
+    }
+  }
+{% endstylesheet %}
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const slider = document.getElementById('blog-slider');
+  if (!slider) return;
+
+  let scrollAmount = 0;
+  const slideWidth = 100; // percentage
+  const intervalTime = 4000; // 4 seconds
+
+  function autoScroll() {
+    scrollAmount += slideWidth;
+    slider.style.transition = 'transform 0.8s ease';
+    slider.style.transform = `translateX(-${scrollAmount}%)`;
+
+    // Reset when end reached
+    if (scrollAmount >= (slider.children.length * 100) - 100) {
+      setTimeout(() => {
+        slider.style.transition = 'none';
+        slider.style.transform = 'translateX(0)';
+        scrollAmount = 0;
+      }, 800);
+    }
+  }
+
+  // Start auto scroll
+  let autoInterval = setInterval(autoScroll, intervalTime);
+
+  // Pause on hover
+  slider.addEventListener('mouseenter', () => clearInterval(autoInterval));
+  slider.addEventListener('mouseleave', () => {
+    autoInterval = setInterval(autoScroll, intervalTime);
+  });
+});
+</script>
+
+<script>
+  (() => {
+    const init = () => {
+      const input = document.querySelector('[data-blog-search-input]');
+      const cards = document.querySelectorAll('[data-blog-card]');
+
+      if (!input || !cards.length) return;
+
+      const filterCards = (term) => {
+        term = term.toLowerCase().trim();
+        cards.forEach(card => {
+          const title = (card.dataset.title || '').toLowerCase();
+          card.style.display = (term === '' || title.includes(term)) ? '' : 'none';
+        });
+      };
+
+      // Real-time search on typing
+      input.addEventListener('input', (e) => {
+        filterCards(e.target.value);
+      });
+
+      // After clicking Search button (page reload)
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchTerm = urlParams.get('q') || '';
+      if (searchTerm) {
+        input.value = searchTerm;
+        filterCards(searchTerm);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+{% comment %} <script>
+  (() => {
+    const init = () => {
+      const section = document.getElementById('shopify-section-{{ section.id }}');
+      if (!section) return;
+
+      const searchInput = section.querySelector('[data-blog-search-input]');
+      const cards = section.querySelectorAll('[data-blog-card]');
+
+      if (searchInput && cards.length) {
+        searchInput.addEventListener('input', (event) => {
+          const term = event.target.value.trim().toLowerCase();
+          cards.forEach((card) => {
+            const title = card.dataset.title || '';
+            card.style.display = title.includes(term) ? '' : 'none';
+          });
+        });
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script> {% endcomment %}
+<script>
+document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+  const viewport = carousel.querySelector('.editorial-carousel__viewport');
+  const track = carousel.querySelector('.editorial-carousel__track');
+  const slides = Array.from(track.querySelectorAll('.editorial-slide'));
+  const prevBtn = carousel.querySelector('.editorial-carousel__nav--prev');
+  const nextBtn = carousel.querySelector('.editorial-carousel__nav--next');
+
+  if (!slides.length) return;
+
+  let currentIndex = slides.findIndex(s => s.classList.contains('is-active'));
+  if (currentIndex < 0) currentIndex = 0;
+
+  let autoplay = null;
+  const autoplayDelay = 3000;
+
+  let isDragging = false;
+  let startX = 0;
+  let diffX = 0;
+  let hasMoved = false;
+
+  const DRAG_THRESHOLD = 50;
+
+  /* ---------------- CORE ---------------- */
+
+  function getPrev(i) {
+    return (i - 1 + slides.length) % slides.length;
+  }
+
+  function getNext(i) {
+    return (i + 1) % slides.length;
+  }
+
+  function clearState(slide) {
+    slide.classList.remove(
+      'is-active',
+      'is-prev',
+      'is-next',
+      'is-hidden-left',
+      'is-hidden-right'
+    );
+  }
+
+  function setHeight() {
+  const isMobile = window.innerWidth <= 767;
+
+  if (isMobile) {
+    const mobileHeight = 413;
+    viewport.style.height = `${mobileHeight}px`;
+    track.style.height = `${mobileHeight}px`;
+
+    slides.forEach((slide) => {
+      slide.style.height = `${mobileHeight}px`;
+    });
+
+    return;
+  }
+
+  const active = slides[currentIndex];
+  if (!active) return;
+
+  const img = active.querySelector('.editorial-slide__image');
+
+  const apply = () => {
+    const h = active.offsetHeight;
+    if (!h) return;
+
+    viewport.style.height = `${h}px`;
+    track.style.height = `${h}px`;
+
+    slides.forEach((slide) => {
+      slide.style.height = `${h}px`;
+    });
+  };
+
+  if (img && !img.complete) {
+    img.onload = apply;
+  } else {
+    requestAnimationFrame(apply);
+  }
+}
+
+  function update() {
+    const prev = getPrev(currentIndex);
+    const next = getNext(currentIndex);
+
+    slides.forEach((slide, i) => {
+      clearState(slide);
+
+      if (i === currentIndex) {
+        slide.classList.add('is-active');
+      } else if (i === prev) {
+        slide.classList.add('is-prev');
+      } else if (i === next) {
+        slide.classList.add('is-next');
+      } else {
+        const diff = (i - currentIndex + slides.length) % slides.length;
+        slide.classList.add(diff < slides.length / 2 ? 'is-hidden-right' : 'is-hidden-left');
+      }
+    });
+
+    setHeight();
+  }
+
+  function goTo(i) {
+    currentIndex = (i + slides.length) % slides.length;
+    update();
+  }
+
+  function next() {
+    goTo(currentIndex + 1);
+  }
+
+  function prev() {
+    goTo(currentIndex - 1);
+  }
+
+  /* ---------------- AUTOPLAY ---------------- */
+/* ---------------- AUTOPLAY ---------------- */
+
+function startAuto() {
+  stopAuto();
+
+  autoplay = setInterval(() => {
+    next();
+  }, 3000);
+}
+
+function stopAuto() {
+  if (autoplay) {
+    clearInterval(autoplay);
+    autoplay = null;
+  }
+}
+
+/* ---------------- HOVER ---------------- */
+
+// REMOVE OLD hover events completely
+
+// carousel.addEventListener('mouseenter', stopAuto);
+// carousel.addEventListener('mouseleave', () => {
+//   if (!isDragging) startAuto();
+// });
+
+  /* ---------------- BUTTONS ---------------- */
+
+  prevBtn?.addEventListener('click', () => {
+    prev();
+    startAuto();
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    next();
+    startAuto();
+  });
+
+  /* ---------------- DRAG ---------------- */
+
+  function onDown(e) {
+    if (e.button !== 0) return;
+
+    isDragging = true;
+    hasMoved = false;
+    startX = e.clientX;
+    diffX = 0;
+
+    track.style.cursor = 'grabbing';
+    stopAuto();
+  }
+
+  function onMove(e) {
+    if (!isDragging) return;
+
+    diffX = e.clientX - startX;
+
+    if (Math.abs(diffX) > 5) {
+      hasMoved = true;
+    }
+  }
+
+  function onUp() {
+    if (!isDragging) return;
+
+    isDragging = false;
+    track.style.cursor = '';
+
+    if (Math.abs(diffX) > DRAG_THRESHOLD) {
+      diffX < 0 ? next() : prev();
+    }
+
+    setTimeout(() => {
+      hasMoved = false;
+    }, 0);
+
+    startAuto();
+  }
+
+  track.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('mouseleave', onUp);
+
+  /* ---------------- CLICK SLIDES ---------------- */
+
+  slides.forEach((slide, i) => {
+    slide.addEventListener('click', (e) => {
+      if (hasMoved) {
+        e.preventDefault();
+        return;
+      }
+
+      if (i !== currentIndex) {
+        goTo(i);
+        startAuto();
+      }
+    });
+  });
+
+  /* ---------------- HOVER ---------------- */
+
+  carousel.addEventListener('mouseenter', stopAuto);
+  carousel.addEventListener('mouseleave', () => {
+    if (!isDragging) startAuto();
+  });
+
+  /* ---------------- RESIZE ---------------- */
+
+  window.addEventListener('resize', setHeight);
+
+  /* ---------------- INIT ---------------- */
+carousel.setAttribute('data-autoplay', 'true');
+  update();
+  function startAuto() {
+  stopAuto();
+
+  autoplay = setInterval(() => {
+    next();
+
+    // smooth continuous feeling
+    track.style.transition = 'transform 0.6s ease';
+  }, autoplayDelay);
+}
+});
+</script>
+
+<!-- FIXED SEARCH SCRIPT (Real-time + Submit Support) -->
+<script>
+  (() => {
+    const init = () => {
+      const input = document.querySelector('[data-blog-search-input]');
+      const cards = document.querySelectorAll('[data-blog-card]');
+
+      if (!input || !cards.length) return;
+
+      const filterCards = (term) => {
+        term = term.toLowerCase().trim();
+        cards.forEach(card => {
+          const title = (card.dataset.title || '').toLowerCase();
+          card.style.display = (term === '' || title.includes(term)) ? '' : 'none';
+        });
+      };
+
+      // Real-time typing
+      input.addEventListener('input', (e) => {
+        filterCards(e.target.value);
+      });
+
+      // Support for submit (in case page reloads with ?q=)
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchTerm = urlParams.get('q') || '';
+      if (searchTerm) {
+        input.value = searchTerm;
+        filterCards(searchTerm);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+<script>
+(() => {
+  const initInfiniteScroll = () => {
+    const container = document.querySelector('[data-blog-grid]');
+    const loadMore = document.querySelector('[data-load-more]');
+
+    if (!container || !loadMore) return;
+
+    let loading = false;
+    let nextUrl = loadMore.dataset.nextUrl;
+
+    const observer = new IntersectionObserver(async (entries) => {
+      const entry = entries[0];
+
+      if (!entry.isIntersecting || loading || !nextUrl) return;
+
+      loading = true;
+
+      try {
+        const response = await fetch(nextUrl);
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const newItems = doc.querySelectorAll('[data-blog-card]');
+        const newLoadMore = doc.querySelector('[data-load-more]');
+
+        newItems.forEach((item) => {
+          container.appendChild(item);
+        });
+
+       if (newLoadMore && newLoadMore.dataset.nextUrl) {
+  nextUrl = newLoadMore.dataset.nextUrl;
+} else {
+  nextUrl = null;
+
+  observer.unobserve(loadMore);
+
+  loadMore.style.display = 'none';
+
+  observer.disconnect();
+}
+      } catch (error) {
+        console.error('Load more failed:', error);
+      }
+
+      loading = false;
+    }, {
+      rootMargin: '300px'
+    });
+
+    observer.observe(loadMore);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initInfiniteScroll);
+  } else {
+    initInfiniteScroll();
+  }
+})();
+</script>
+{% schema %}
+{
+  "name": "t:names.blog_posts",
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "video"
+    },
+    {
+      "type": "group"
+    },
+    {
+      "type": "spacer"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,104 @@
+<div class="size-chart-btn">
+    <button class="size-guide" type="button" data-open-size  data-product-id="{{ product.id }}">
+    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_272_3632)">
+        <path d="M17.0396 5.37563H20V13.9954L7.57154 13.999C6.14874 13.8554 4.71966 13.7512 3.33004 13.3956C2.40782 13.1595 0.280793 12.4304 0.0331928 11.3978L0 2.64243C0.0906073 2.07227 1.16264 1.39705 1.66771 1.16898C5.03633 -0.35744 11.5592 -0.370909 14.9753 1.02263C15.6787 1.30906 17.0405 2.02378 17.0405 2.90641V5.37563H17.0396ZM7.78147 0.464135C6.38647 0.511723 4.91881 0.665264 3.56508 1.00287C2.21136 1.34048 -1.10254 2.52391 1.52956 3.97491C4.55907 5.6441 11.761 5.60459 14.9332 4.30085C16.7372 3.55918 17.2369 2.54546 15.2158 1.5901C13.1946 0.634735 9.99462 0.388712 7.78147 0.464135ZM19.5514 5.82458C14.0486 5.601 8.34126 6.39205 2.95505 5.15115C2.45537 4.9626 1.91262 4.84407 1.43088 4.61152C1.08729 4.44541 0.792141 4.16437 0.443169 4.02878V11.4364C0.443169 11.9428 2.30824 12.7958 2.77563 12.918V11.212H3.22419V13.0077C4.00108 13.1182 4.7663 13.3777 5.55665 13.3669V9.41616H6.09491V13.4567L8.42738 13.5465V11.1222H8.87593V13.5465H11.2084V9.41616H11.6569V13.5465H13.9894V11.1222H14.5277V13.5465H16.8601V9.41616H17.3087V13.5465H19.5514V5.82458Z" fill="black"/>
+        <path d="M7.78123 1.54215C8.67474 1.46583 11.8801 1.59512 12.0918 2.74892C12.2928 3.84346 9.81586 4.17298 9.10356 4.21249C8.26567 4.25918 5.59948 4.11283 5.11773 3.34602C4.33367 2.09705 7.03753 1.605 7.78123 1.54125V1.54215Z" fill="black"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_272_3632">
+            <rect width="20" height="14" fill="white"/>
+        </clipPath>
+        </defs>
+    </svg>
+    Size Guide
+    </button>
+</div>
+<script>
+document.getElementById('sizeChartModal-{{ product.id }}').showModal()
+</script> 
+{% comment %} {% assign size_chart = product.metafields.custom.size_chart.value %}
+
+{% if size_chart != blank %}
+  <div class="size-chart-btn">
+    <button
+      class="size-guide"
+      type="button"
+      data-open-size="sizeChartModal-{{ product.id }}"
+      data-product-id="{{ product.id }}"
+      aria-controls="sizeChartModal-{{ product.id }}"
+      aria-haspopup="dialog"
+    >
+      <svg
+        width="20"
+        height="14"
+        viewBox="0 0 20 14"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <g clip-path="url(#size-guide-clip-{{ product.id }}">
+          <path
+            d="M17.0396 5.37563H20V13.9954L7.57154 13.999C6.14874 13.8554 4.71966 13.7512 3.33004 13.3956C2.40782 13.1595 0.280793 12.4304 0.0331928 11.3978L0 2.64243C0.0906073 2.07227 1.16264 1.39705 1.66771 1.16898C5.03633 -0.35744 11.5592 -0.370909 14.9753 1.02263C15.6787 1.30906 17.0405 2.02378 17.0405 2.90641V5.37563H17.0396ZM7.78147 0.464135C6.38647 0.511723 4.91881 0.665264 3.56508 1.00287C2.21136 1.34048 -1.10254 2.52391 1.52956 3.97491C4.55907 5.6441 11.761 5.60459 14.9332 4.30085C16.7372 3.55918 17.2369 2.54546 15.2158 1.5901C13.1946 0.634735 9.99462 0.388712 7.78147 0.464135ZM19.5514 5.82458C14.0486 5.601 8.34126 6.39205 2.95505 5.15115C2.45537 4.9626 1.91262 4.84407 1.43088 4.61152C1.08729 4.44541 0.792141 4.16437 0.443169 4.02878V11.4364C0.443169 11.9428 2.30824 12.7958 2.77563 12.918V11.212H3.22419V13.0077C4.00108 13.1182 4.7663 13.3777 5.55665 13.3669V9.41616H6.09491V13.4567L8.42738 13.5465V11.1222H8.87593V13.5465H11.2084V9.41616H11.6569V13.5465H13.9894V11.1222H14.5277V13.5465H16.8601V9.41616H17.3087V13.5465H19.5514V5.82458Z"
+            fill="black"
+          />
+          <path
+            d="M7.78123 1.54215C8.67474 1.46583 11.8801 1.59512 12.0918 2.74892C12.2928 3.84346 9.81586 4.17298 9.10356 4.21249C8.26567 4.25918 5.59948 4.11283 5.11773 3.34602C4.33367 2.09705 7.03753 1.605 7.78123 1.54125V1.54215Z"
+            fill="black"
+          />
+        </g>
+
+        <defs>
+          <clipPath id="size-guide-clip-{{ product.id }}">
+            <rect width="20" height="14" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+
+      Size Guide
+    </button>
+  </div>
+{% endif %} {% endcomment %}
+<style>
+.size-modal {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  overflow:hidden;
+}
+
+.size-modal-content {
+  background: #fff;
+  max-width: 600px;
+  margin: 5% auto;
+  padding: 20px;
+  position: relative;
+}
+
+.close-size {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.size-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.size-table th,
+.size-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+</style>

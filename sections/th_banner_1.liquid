@@ -1,0 +1,84 @@
+
+<section class="season-banner test {% if section.settings.heading!=blank  %} best-season-banner {% endif %} relative {{ section.settings.custom_class }}">
+   <a href="{{ section.settings.button_link }}" class="">
+  <picture class="picture">
+    
+    {% if section.settings.mobile_image != blank %}
+      <source media="(max-width:767px)" srcset="{{ section.settings.mobile_image  | image_url: width: '400' }}" fetchpriority="auto">
+    {% endif %}
+
+    {% if section.settings.desktop_image != blank %}
+      {% comment %} <source media="(min-width:768px)" srcset="{{ section.settings.desktop_image | image_url: width: '1440' }}" fetchpriority="auto"> {% endcomment %}
+      <img 
+        width="1920" 
+        height="750" 
+        fetchpriority="auto"
+        class="w-full lazyload"
+        data-src="{{ section.settings.desktop_image  | image_url: width: '1440' }}"
+        alt="{% if section.settings.desktop_image.alt %}{{ section.settings.desktop_image.alt }}{% else %}{{ section.settings.heading }}{% endif %}"
+        loading="lazy"
+      >
+    {% endif %}
+
+  </picture>
+
+
+  <div class="banner-content">
+    <div class="thomasxlheading">
+      {{ section.settings.heading }}
+    </div>
+
+    {% if section.settings.button_text != blank %}
+      <div class="thomas-btn hovertime">
+        {{ section.settings.button_text }}
+      </div>
+    {% endif %}
+  </div>
+</a>
+</section>
+
+{% schema %}
+{
+  "name": "Season Banner1 ",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop Image"
+    },
+    {
+  "type": "text",
+  "id": "custom_class",
+  "label": "Custom CSS Class",
+  "info": "Add custom class for this banner (optional)"
+},
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Business Essentials"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Season Banner"
+    }
+  ]
+}
+{% endschema %}

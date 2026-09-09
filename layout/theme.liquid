@@ -1,0 +1,987 @@
+<!doctype html>
+<html
+  {% if request.design_mode %}
+    class="shopify-design-mode"
+  {% endif %}
+  lang="{{ request.locale.iso_code }}"
+>
+  <head>
+
+
+    <!-- Gokwik theme code start -->
+    <link rel="dns-prefetch" href="https://pdp.gokwik.co/">
+    <link rel="dns-prefetch" href="https://api.gokwik.co">
+    {% render 'gokwik' %}
+<!-- Gokwik theme code End -->
+
+
+ 
+    {%- if settings.favicon != blank -%}
+    <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+    >
+    {%- endif -%}
+
+    {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
+    {% if settings.transition_to_main_product or settings.page_transition_enabled %}
+    <link
+        rel="expect"
+        href="#MainContent"
+        blocking="render"
+        id="view-transition-render-blocker"
+    >
+    {% endif %}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'stylesheets' -%}
+    {% comment %} {%- render 'fonts' -%} {% endcomment %}
+    {%- render 'scripts' -%}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-schemes' -%}
+
+    {% if request.design_mode %}
+      {%- render 'theme-editor' -%}
+    {% endif %}
+
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-ML4RJ2Z4');
+    </script>
+    <!-- End Google Tag Manager -->
+    <!-- Hotjar Tracking Code for https://thomasscott.in/ -->
+    <script>
+        (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:6385357,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+    <!-- End Hotjar Tracking Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+    {{ content_for_header }}
+
+    {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> {% endcomment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+
+    {{ 'style.css' | asset_url | stylesheet_tag }}
+    {{ 'custom.css' | asset_url | stylesheet_tag }}
+    {% if template == 'product' %}
+      {{ 'pdp.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    {% if template == 'collection' %}
+      {{ 'plp.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    {{ 'th-product-card.css' | asset_url | stylesheet_tag }}
+
+    {% comment %} === Conditional Page CSS === {% endcomment %}
+    {% if template contains 'page' %}
+      {% if page.template_suffix == 'contact' %}
+        {{ 'contact-us.css' | asset_url | stylesheet_tag }}
+      {% endif %}
+      {% case page.handle %}
+        {% when 'about-us' %}
+          {{ 'about-us.css' | asset_url | stylesheet_tag }}
+        {% when 'store-locator' %}
+          {{ 'store-locator.css' | asset_url | stylesheet_tag }}
+      {% endcase %}
+    {% endif %}
+
+    <style>
+      img { max-width: 100%; }
+
+      /* ---- Btn Loader ---- */
+      .btn-loader { position: relative; }
+      .btn-loader .loader {
+        position: absolute; inset: 0;
+        display: none; align-items: center; justify-content: center;
+        width: 100%; padding: 6px; opacity: 0; z-index: -1; height: 100%;
+        border:0;
+      }
+      .btn-loader .loaded { display: block; }
+      .btn-loader.loading .loader { display: flex; opacity: 1; z-index: 9; }
+      .btn-loader.loading .loaded { visibility: hidden; }
+      .btn-loader .spinner { width: 100%; height: 100%; animation: rotate 1s linear infinite; }
+      .btn-loader .path { stroke: currentColor; stroke-linecap: round; animation: dash 1.2s ease-in-out infinite; }
+      .color-swatch.btn-loader .loader { padding: 3px; background-color: rgba(255,255,255,0.6); }
+      @keyframes rotate { 100% { transform: rotate(360deg); } }
+      @keyframes dash {
+        0%   { stroke-dasharray: 1, 120;  stroke-dashoffset: 0; }
+        50%  { stroke-dasharray: 60, 120; stroke-dashoffset: -20; }
+        100% { stroke-dasharray: 60, 120; stroke-dashoffset: -90; }
+      }
+
+      /* ---- Layout ---- */
+      product-card-link { display: none; z-index: -1; position: absolute; }
+      .quick-add-btn svg path { stroke: var(--black-color); }
+      .shop-look .shop-look-card-inner { position: relative; align-items: flex-start; }
+      .shop-look-card .shop-look-content .shop-look-quick-add,
+      .shop-look-mobile-card .shop-look-content .shop-look-quick-add {
+        position: absolute; right: 0; bottom: 0; margin-top: 0; height: 3px;
+      }
+      .shop-look-content .inclusive { display: none; }
+      .shop-look-content .price-mrp { order: 2; }
+      .shop-look-content .price-discount,
+      .product-card .price-discount { display: none; }
+
+      .collection-flat-70-80-off  .product-card .price-discount{
+        display: inline-block ;
+        color: #e45c5c !important;
+       }
+      .collection-liberty-sale-shirts  .product-card .price-discount{
+        display: inline-block ;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-trousers  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-jeans  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-shorts  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-tshirts  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-track-pants  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-sweaters  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-bags  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-co-ords  .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-sweatshirts .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-70-80-off-sale-jackets .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+      .collection-flat-price-sale-joggers .product-card .price-discount{
+        display: inline-block;
+        color: #e45c5c !important;
+       }
+       {% comment %} .collection-flat-prices  .product-card .price-discount{
+        display: inline-block ;
+        color: #e45c5c !important;
+       } {% endcomment %}
+       .collection-flat-prices  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flatprice-sale-shorts  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-jeans  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-tshirts  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-trousers  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-shirts  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-track-pants  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-co-ords  .product-card .compare-at-price{
+        display:none;
+       }
+       .collection-flat-price-sale-joggers-1  .product-card .compare-at-price{
+        display:none;
+       }
+       
+      .custom-product-card .quick-add-btn { right: 10px; bottom: 10px; }
+      .auto-bundle-section .custom-product-card [data-wlh-id],
+      .auto-bundle-section .custom-product-card .quick-add-btn {
+        display: none !important; opacity: 0 !important; z-index: -1;
+      }
+
+      /* ---- Image Slider ---- */
+      .product-image-slider { position: relative; overflow: hidden; width: 100%; }
+       .product-image-track {
+        display: flex;
+        will-change: transform;
+        visibility: hidden;
+      }
+      [data-card-slider][data-slider-ready="1"] .product-image-track {
+        visibility: visible;
+      }
+      .product-image-slide { min-width: 100%; flex: 0 0 100%; }
+      .product-image-slide a,
+      .product-image-slide img { display: block; width: 100%; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+      .product-image-slide a { pointer-events: auto; }
+
+      .card-slider-btn {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        width: 20px; height: 20px; border: 0; border-radius: 50%;
+        background: rgba(0,0,0,0.45); color: #fff; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: .3s; z-index: -1;
+      }
+      .card-slider-btn.prev { left: 8px; }
+      .card-slider-btn.next { right: 8px; }
+      button.card-slider-btn.prev svg { transform: rotate(180deg); }
+
+      .card-slider-dots {
+        position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%);
+        display: flex; gap: 6px; z-index: 2;
+      }
+      .card-slider-dots button {
+        width: 7px; height: 7px; border: 0; border-radius: 50%;
+        background: rgba(255,255,255,.5); padding: 0; cursor: pointer;
+      }
+      .card-slider-dots button.is-active { background: #fff; }
+
+      @media screen and (min-width: 768px) {
+        .product-image-slider:hover .card-slider-btn { opacity: 1; z-index: 2; }
+      }
+      @media screen and (max-width: 767px) {
+        .product-image-slider:hover .card-slider-btn { opacity: 1; z-index: 2; }
+        .swiper .card-slider-btn { width: 16px; height: 16px; }
+        .card-slider-btn.prev { left: 4px; }
+        .card-slider-btn.next { right: 4px; }
+        .watch-buy-card .product-mini-card { opacity: 1; visibility: visible; }
+      }
+
+      .text-left { text-align: left !important; }
+      .slider-counter__link, .slider-buttons button { filter: none !important; mix-blend-mode: normal !important; }
+
+      /* ---- OOS variant CSS override ---- */
+      variant-picker input[type="radio"][data-option-available="false"]:checked,
+      variant-picker input[type="radio"][data-option-available="false"][checked] {
+        appearance: none; -webkit-appearance: none; outline: none; pointer-events: none;
+      }
+      variant-picker .variant-option__button-label:has(input[data-option-available="false"]:checked) {
+        background: transparent !important; color: inherit !important;
+        border-color: #ddd !important; font-weight: normal !important;
+      }
+      /* Dots — mobile only */
+      .card-slider-dots {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      display: none;          /* hidden by default (desktop) */
+      gap: 6px;
+      z-index: 2;
+      }
+      @media screen and (max-width: 767px) {
+        .card-slider-dots { display: flex; } /* show on mobile */
+      }
+      .card-slider-dots button {
+        width: 7px; height: 7px;
+        border: 0; border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        padding: 0; cursor: pointer;
+        transition: background 0.2s;
+      }
+      .card-slider-dots button.is-active { background: #fff; }
+
+      /* Arrows — desktop only */
+      @media screen and (max-width: 767px) {
+        .card-slider-btn { display: none !important; }
+      }
+      [data-card-track] {
+        visibility: hidden;
+      }
+      [data-card-slider][data-slider-ready="1"] [data-card-track] {
+        visibility: visible;
+      }
+      .product-information__grid .sku-metafield,
+      .product-information__grid .sku{
+        padding-top:5px;
+        font-size:12px;
+      }
+    </style>
+
+  </head>
+
+  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }} page_{{ template.name }} page_{{ template.suffix }}{% if collection %} collection-{{ collection.handle }}{% endif %}">
+
+        {% comment %} <script>
+        {% if customer %}
+          console.log(
+            '✅ Shopify customer detected:',
+            {{ customer.email | json }}
+          );
+        {% else %}
+          console.log('❌ Shopify customer not detected');
+        {% endif %}
+      </script> {% endcomment %}
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-ML4RJ2Z4"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+
+    {% if template == 'product' or template == 'collection' %}
+      {% comment %} <div class="header-top">
+        <div class="item"><p>{{ settings.announcement_text }}</p></div>
+      </div> {% endcomment %}
+      <header id="header-group" class="header global-header">
+        {% sections 'header-group' %}
+      </header>
+    {% else %}
+      <header id="header-group" class="header {% if template == 'index' %}home-header{% else %}global-header{% endif %}">
+        {% sections 'header-group' %}
+      </header>
+    {% endif %}
+
+    <script>
+      (function setHeaderHeighCustomProperties() {
+        const header = document.querySelector('header-component');
+        const headerGroup = document.querySelector('#header-group');
+        const hasHeaderSection = headerGroup?.querySelector('.header-section');
+        if (!header || !headerGroup) return;
+        const headerTopRow = header.querySelector('.header__row--top');
+        const headerHeight = header.offsetHeight;
+        let headerGroupHeight = 0;
+        const children = headerGroup.children;
+        for (let i = 0; i < children.length; i++) {
+          const element = children[i];
+          if (element === header || !(element instanceof HTMLElement)) continue;
+          headerGroupHeight += element.offsetHeight;
+        }
+        if (header.hasAttribute('transparent') && header.parentElement?.nextElementSibling) {
+          headerGroupHeight += headerHeight;
+        }
+        document.body.style.setProperty('--header-height', `${headerHeight}px`);
+        document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
+        if (headerTopRow) {
+          window.requestAnimationFrame(function () {
+            document.body.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
+          });
+        }
+        if (!hasHeaderSection || !header?.hasAttribute('transparent')) {
+          document.body.style.setProperty('--transparent-header-offset-boolean', '0');
+          return;
+        }
+        const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
+        document.body.style.setProperty('--transparent-header-offset-boolean', !hasImmediateSection ? '1' : '0');
+      })();
+
+      (function setHeaderMenuStyle() {
+        const headerComponent = document.querySelector('#header-component');
+        if (headerComponent) {
+          const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
+          const overflowList = headerComponent?.querySelector('overflow-list');
+          const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
+          headerComponent.dataset.menuStyle = isTouchDevice || hasReachedMinimum ? 'drawer' : 'menu';
+        }
+      })();
+    </script>
+
+    <main
+      id="MainContent"
+      class="content-for-layout custom__height"
+      role="main"
+      data-page-transition-enabled="{{ settings.page_transition_enabled }}"
+      data-product-transition="{{ settings.transition_to_main_product }}"
+      data-template="{{ template }}"
+      style="max-height: none !important;"
+    >
+      {{ content_for_layout }}
+    </main>
+
+    {% if template contains 'collection' %}
+      {% for product in collection.products %}
+        {% render 'size-chart-popup', product: product %}
+      {% endfor %}
+    {% else %}
+      {% render 'size-chart-popup', product: product, collection: collection %}
+    {% endif %}
+
+    <footer>
+      {% sections 'footer-group' %}
+    </footer>
+
+    {% render 'search-modal' %}
+
+    {% if settings.quick_add or settings.mobile_quick_add %}
+      {% render 'quick-add-modal' %}
+    {% endif %}
+
+    {%- comment -%} ===== THIRD-PARTY SCRIPTS ===== {%- endcomment -%}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes-umd.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
+    <script src="{{ 'custom.js' | asset_url }}" defer></script>
+
+    {% if cart.item_count > 0 %}
+      <script>
+        window.addEventListener('load', function () { initMiniCartProductRecommendations(); });
+      </script>
+    {% endif %}
+
+
+    <script>
+    // ================================================================
+    // 1. GLOBAL UTILITY FUNCTIONS
+    // ================================================================
+
+    function plpAtc(btn) {
+      var variantId = btn.dataset.variantId;
+      if (!variantId) return;
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function () {
+        document.dispatchEvent(new CustomEvent('cart:update', {
+          bubbles: true,
+          detail: { data: { itemCount: 1, source: 'th-product-card' } }
+        }));
+      })
+      .catch(console.error);
+    }
+
+    function toggleAddToCart(btn, hide) {
+      var card = document.querySelector(btn.getAttribute('data-card'));
+      if (!card) return;
+
+      var isMobile = window.innerWidth <= 768;
+      var sizeSelectorDiv = card.querySelector(btn.getAttribute('data-size-variant-selector'));
+      var quickAddBtnId = btn.getAttribute('data-quick-add-btn');
+      var globalSelector = btn.getAttribute('data-global-card');
+      var sizeSelector = btn.getAttribute('data-size-variant-selector');
+
+      // Close all other open selectors
+      if (globalSelector && sizeSelector) {
+        document.querySelectorAll(globalSelector).forEach(function (el) {
+          var other = el.querySelector(sizeSelector);
+          if (other) { other.classList.remove('active'); other.setAttribute('hidden', true); }
+        });
+      }
+
+      if (!isMobile) {
+        // ---- DESKTOP: show/hide size selector ----
+        if (!sizeSelectorDiv) return;
+        if (hide === true) {
+          sizeSelectorDiv.classList.remove('active');
+          sizeSelectorDiv.setAttribute('hidden', true);
+        } else {
+          sizeSelectorDiv.classList.add('active');
+          sizeSelectorDiv.removeAttribute('hidden');
+        }
+      } else {
+        // ---- MOBILE: open quick-add modal ----
+        // Try 1: find the mobile quick-add button by ID and call its
+        //        parent quick-add-component's handleClick directly
+        var mobileBtn = quickAddBtnId
+          ? (document.getElementById(quickAddBtnId) || card.querySelector('[id="' + quickAddBtnId + '"]'))
+          : null;
+
+        // Fallback: any .quick-add-btn-mobile inside this card
+        if (!mobileBtn) mobileBtn = card.querySelector('.quick-add-btn-mobile');
+
+        if (mobileBtn) {
+          var qaComponent = mobileBtn.closest('quick-add-component');
+
+          if (qaComponent && typeof qaComponent.handleClick === 'function') {
+            // Shopify custom element method — most reliable
+            qaComponent.handleClick(new MouseEvent('click', { bubbles: true, cancelable: true }));
+          } else {
+            // Fallback: native click on the button itself
+            mobileBtn.click();
+          }
+        }
+      }
+    }
+
+    async function triggerAddToCartDesktop(btn) {
+      var variantId = btn.getAttribute('data-variant-id');
+      if (!variantId) { alert('Variant ID is missing'); return; }
+      var card = document.querySelector(btn.getAttribute('data-card'));
+      var sizeVariants = card && card.querySelector(btn.getAttribute('data-size-variant-selector'));
+
+      function setLoading(state) {
+        btn.classList.toggle('loading', state);
+        btn.toggleAttribute('disabled', state);
+      }
+
+      try {
+        setLoading(true);
+        var res = await fetch(window.Shopify.routes.root + 'cart/add.js?sections=cart-count', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ items: [{ id: Number(variantId), quantity: 1 }] })
+        });
+        if (!res.ok) {
+          var err = await res.json().catch(function () { return {}; });
+          throw new Error(err.description || 'Unable to add item to cart.');
+        }
+        var data = await res.json();
+        var html = data && data.sections && data.sections['cart-count'];
+        if (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var count = parseInt(doc.body.textContent && doc.body.textContent.trim(), 10) || 0;
+          if (sizeVariants) sizeVariants.setAttribute('hidden', true);
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: { data: { itemCount: count, source: 'th-product-card' } }
+          }));
+          initMiniCartProductRecommendations();
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function loadSwatchCard(btn) {
+      var url = btn.getAttribute('data-variant-url').split('?')[0];
+      var card = document.querySelector(btn.getAttribute('data-card'));
+      btn.classList.add('loading');
+      try {
+        var res = await fetch(url + '?section_id=th-product-card');
+        var html = await res.text();
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('script').forEach(function (s) { s.remove(); });
+        var newCard = doc.querySelector('.custom-product-card');
+        if (newCard && card) {
+          var uid = 'uid_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+          card.id = (newCard.id || '') + '_' + uid;
+          card.className = Array.from(newCard.classList).map(function (c) { return c + ' _' + uid; }).join(' ');
+          card.innerHTML = newCard.innerHTML;
+        }
+      } catch (e) { console.error(e); }
+      btn.classList.remove('loading');
+    }
+
+    function initMiniCartProductRecommendations() {
+      document.querySelectorAll('cart-drawer-component product-recommendations').forEach(function (el) {
+        el.dataset.recommendationsPerformed = 'false';
+        el.classList.remove('hidden');
+      });
+    }
+
+    function clearUnavailableVariants(root) {
+      (root || document).querySelectorAll('variant-picker').forEach(function (picker) {
+        var radios = Array.from(picker.querySelectorAll('input[type="radio"][data-option-available]'));
+        if (!radios.length) return;
+        var allUnavailable = radios.every(function (r) { return r.dataset.optionAvailable === 'false'; });
+        if (!allUnavailable) return;
+        radios.forEach(function (radio) {
+          radio.checked = false;
+          radio.removeAttribute('checked');
+          radio.dataset.currentChecked = 'false';
+          radio.dataset.previousChecked = 'false';
+        });
+        var label = picker.querySelector('.size-variant-label');
+        if (label) label.textContent = '';
+      });
+    }
+
+   
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // Footer accordion
+      document.querySelectorAll('.footer-col').forEach(function (tab) {
+        var btn = tab.querySelector('.footer-toggle');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.footer-col').forEach(function (el) {
+            if (el !== tab) el.classList.remove('active');
+          });
+          tab.classList.toggle('active');
+        });
+      });
+
+      // Quick-add dialog close button → remove overlay
+      var qaClose = document.querySelector('#quick-add-dialog .close-button');
+      if (qaClose) {
+        qaClose.addEventListener('click', function () {
+          document.body.classList.remove('popup-overlay');
+        });
+      }
+
+      // Nav menu open overlay
+      var menuBtn = document.querySelector('.nav-icon');
+      if (menuBtn) {
+        menuBtn.addEventListener('click', function () {
+          document.body.classList.add('popup-overlay');
+        });
+      }
+
+      // Buy Now text normalise
+      function updateBuyNowText() {
+        var btn = document.querySelector('.shopify-payment-button__button');
+        if (btn && btn.textContent.trim() !== 'Buy now') btn.textContent = 'Buy now';
+      }
+      updateBuyNowText();
+      new MutationObserver(updateBuyNowText).observe(
+        document.querySelector('.shopify-payment-button') || document.body,
+        { childList: true, subtree: true }
+      );
+
+      // OOS variants — PDP
+      clearUnavailableVariants(document);
+
+    });
+
+    // ================================================================
+    // 3. DELEGATED CLICK HANDLER — popup overlay management
+    // ================================================================
+    document.body.addEventListener('click', function (e) {
+
+      // Open mini cart overlay
+      if (e.target.closest('[data-testid="cart-drawer-trigger"]')) {
+        setTimeout(function () { document.body.classList.add('popup-overlay'); }, 100);
+        return;
+      }
+
+      // Close mini cart / header drawer
+      if (e.target.closest('.cart-drawer__close-button') || e.target.closest('.header-close-btn')) {
+        document.body.classList.remove('popup-overlay');
+        return;
+      }
+
+      // Close quick-add modal via X button
+      var qaClose = e.target.closest('.quick-add-modal__close');
+      if (qaClose) {
+        var dlg = qaClose.closest('dialog');
+        if (dlg) dlg.close();
+        document.body.classList.remove('popup-overlay');
+        return;
+      }
+
+      // Close on dialog backdrop
+      if (e.target.matches('.dialog-modal') || e.target.matches('dialog[open]')) {
+        document.body.classList.remove('popup-overlay');
+        return;
+      }
+
+      // Close after add-to-cart
+      if (e.target.closest('.add-to-cart-button')) {
+        document.body.classList.remove('popup-overlay');
+        return;
+      }
+
+      // Mobile product card bag icon → add overlay (modal about to open)
+      if (e.target.closest('.quick-add-btn') && window.innerWidth < 768) {
+        setTimeout(function () { document.body.classList.add('popup-overlay'); }, 100);
+        return;
+      }
+
+    });
+
+ 
+  
+// ================================================================
+// 4. IMAGE SLIDER — fixed: no double init, locked guard, dots on mobile
+// ================================================================
+(function () {
+  'use strict';
+
+  function initSlider(slider) {
+    if (slider.dataset.sliderReady === '1') return;
+    slider.dataset.sliderReady = '1';
+
+    var track = slider.querySelector('[data-card-track]');
+    if (!track) return;
+
+    var origSlides = Array.from(track.querySelectorAll('.product-image-slide'));
+    if (origSlides.length <= 1) return;
+
+    var total = origSlides.length;
+    var prevBtn = slider.querySelector('[data-card-prev]');
+    var nextBtn = slider.querySelector('[data-card-next]');
+    var dotsContainer = slider.querySelector('[data-card-dots]');
+
+    // Build dots
+    var dots = [];
+    if (dotsContainer) {
+      origSlides.forEach(function (_, i) {
+        var d = document.createElement('button');
+        d.setAttribute('aria-label', 'Go to image ' + (i + 1));
+        d.addEventListener('click', function () { goToReal(i); });
+        dotsContainer.appendChild(d);
+        dots.push(d);
+      });
+    }
+
+    function updateDots(realIndex) {
+      dots.forEach(function (d, i) {
+        d.classList.toggle('is-active', i === realIndex);
+      });
+    }
+
+    // Clones for infinite loop
+    var firstClone = origSlides[0].cloneNode(true);
+    var lastClone  = origSlides[total - 1].cloneNode(true);
+    firstClone.dataset.clone = 'true';
+    lastClone.dataset.clone  = 'true';
+    track.appendChild(firstClone);
+    track.insertBefore(lastClone, origSlides[0]);
+    track.style.transition = 'none';
+    track.style.transform = 'translateX(-100%)';
+
+    var allSlides = track.querySelectorAll('.product-image-slide');
+    var cur = 1;
+    var locked = false;
+    var lockTimer = null;
+
+    function realIndex(i) {
+      // clamp to 0-based real index (cur 1 = real 0)
+      return ((i - 1) % total + total) % total;
+    }
+
+    function go(index, animate) {
+      track.style.transition = animate
+        ? 'transform 0.38s cubic-bezier(.25,.46,.45,.94)'
+        : 'none';
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      cur = index;
+      updateDots(realIndex(cur));
+    }
+
+    // Safety unlock — if transitionend misfires, release after 450ms
+    function safeLock() {
+      locked = true;
+      clearTimeout(lockTimer);
+      lockTimer = setTimeout(function () {
+        locked = false;
+        // also fix position if we're on a clone
+        if (cur >= allSlides.length - 1) go(1, false);
+        else if (cur <= 0) go(allSlides.length - 2, false);
+      }, 450);
+    }
+
+    function next() { if (!locked) { safeLock(); go(cur + 1, true); } }
+    function prev() { if (!locked) { safeLock(); go(cur - 1, true); } }
+
+    track.addEventListener('transitionend', function () {
+      clearTimeout(lockTimer);
+      locked = false;
+      if (cur >= allSlides.length - 1) go(1, false);
+      else if (cur <= 0) go(allSlides.length - 2, false);
+    });
+
+    if (nextBtn) nextBtn.addEventListener('click', function (e) { e.preventDefault(); next(); });
+    if (prevBtn) prevBtn.addEventListener('click', function (e) { e.preventDefault(); prev(); });
+
+    function goToReal(i) {
+      if (!locked) { safeLock(); go(i + 1, true); }
+    }
+
+    // ---- Touch: follow finger live ----
+    var startX = 0, startY = 0, dragging = false, axisLocked = false, isVertical = false;
+
+    track.addEventListener('touchstart', function (e) {
+      if (locked) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      dragging = true;
+      axisLocked = false;
+      isVertical = false;
+      track.style.transition = 'none';
+    }, { passive: true });
+
+    track.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      var dx = startX - e.touches[0].clientX;
+      var dy = startY - e.touches[0].clientY;
+
+      // Determine axis on first significant move
+      if (!axisLocked && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+        isVertical = Math.abs(dy) > Math.abs(dx);
+        axisLocked = true;
+      }
+
+      if (isVertical) {
+        // Abort horizontal drag, restore position
+        dragging = false;
+        go(cur, false);
+        return;
+      }
+
+      track.style.transform = 'translateX(calc(-' + (cur * 100) + '% - ' + dx + 'px))';
+    }, { passive: true }); 
+  
+
+
+    track.addEventListener('touchend', function (e) {
+      if (!dragging) return;
+      dragging = false;
+      var diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        diff > 0 ? next() : prev();
+      } else {
+        go(cur, true);
+      }
+    });
+
+    track.addEventListener('touchcancel', function () {
+      if (dragging) { dragging = false; go(cur, true); }
+    });
+
+  track.style.transition = 'none';
+    track.style.transform = 'translateX(-100%)';
+    cur = 1;
+    updateDots(0);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        track.style.transition = '';
+      });
+    });
+  }
+
+  function initAll(root) {
+    (root || document).querySelectorAll('[data-card-slider]').forEach(initSlider);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { initAll(); });
+  } else {
+    initAll();
+  }
+
+  document.addEventListener('shopify:section:load', function (e) { initAll(e.target); });
+
+  new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      m.addedNodes.forEach(function (node) {
+        if (node.nodeType !== 1) return;
+        if (node.matches && node.matches('[data-card-slider]')) initSlider(node);
+        else if (node.querySelectorAll) initAll(node);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+
+})();
+
+
+    // ================================================================
+    // 5. OOS VARIANT OBSERVER — quick-add modal
+    // ================================================================
+    new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        mutation.addedNodes.forEach(function (node) {
+          if (node.nodeType !== 1) return;
+          var modal = node.id === 'quick-add-modal-content'
+            ? node : (node.querySelector && node.querySelector('#quick-add-modal-content'));
+          if (modal) {
+            setTimeout(function () { clearUnavailableVariants(modal); }, 0);
+            setTimeout(function () { clearUnavailableVariants(modal); }, 250);
+          }
+        });
+        if (mutation.type === 'childList') {
+          var t = mutation.target;
+          var modal = (t.id === 'quick-add-modal-content')
+            ? t : (t.closest && t.closest('#quick-add-modal-content'));
+          if (modal) setTimeout(function () { clearUnavailableVariants(modal); }, 0);
+        }
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+
+    // ================================================================
+    // 6. RECOMMENDATION SLICK — mobile only
+    // ================================================================
+    window.addEventListener('load', function () {
+      if (window.innerWidth >= 768) return;
+      var tries = 0;
+      var interval = setInterval(function () {
+        tries++;
+        if (tries > 50) { clearInterval(interval); return; } // 5s timeout
+        if (typeof jQuery === 'undefined' || typeof jQuery.fn.slick === 'undefined') return;
+        clearInterval(interval);
+        if (!jQuery('.recommendation-grid').hasClass('slick-initialized')) {
+          jQuery('.recommendation-grid').slick({
+            slidesToShow: 2.2, slidesToScroll: 1,
+            arrows: false, dots: false, infinite: false, speed: 500
+          });
+        }
+      }, 100);
+    });
+
+    
+    // ================================================================
+// FIX: Clear popup-overlay state on back navigation
+// ================================================================
+window.addEventListener('pageshow', function (e) {
+  var scrollY = parseInt(document.body.style.top || '0') * -1;
+  document.body.classList.remove('popup-overlay');
+  document.body.style.top = '';
+  document.body.style.position = '';
+  document.body.style.width = '';
+  if (scrollY) {
+    window.scrollTo({ top: scrollY, behavior: 'instant' });
+  }
+});
+
+    </script>
+    <script>
+  document.addEventListener('click', function (event) {
+    const link = event.target.closest('a[href="#"]');
+
+    if (link) {
+      event.preventDefault();
+    }
+  });
+</script>
+<style>
+  #kwikpass-drawer-desktop{
+     width:12rem;
+     top:150%;
+  }
+  #loggedin-icons{
+    color:#fff !important;
+  }
+  header.scrolled #loggedin-icons{
+    color:#000 !important;
+  }
+  .header-bottom #svgkp,.header-bottom #loggedin-icons{
+     color:#000 !important;
+  }
+ 
+}
+</style>
+{% if request.path == '/collections' or request.path == '/collections/' %}
+  <script>
+    window.location.replace('/');
+  </script>
+{% endif %}
+
+  </body>
+</html>

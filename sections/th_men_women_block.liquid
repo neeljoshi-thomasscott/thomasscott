@@ -1,0 +1,85 @@
+<section class="buy-get-sec">
+  <div class="container">
+    <div class="buy-get-list">
+
+      {% for block in section.blocks %}
+        <div class="buy-get-card {% if block.settings.heading!=blank  %} buy-get-overlay {% endif %} relative" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link }}">
+          <div class="buy-get-thumb">
+            {% if block.settings.image != blank %}
+              <img 
+                class="w-full lazyload"
+                data-src="{{ block.settings.image | image_url: width: 800 }}"
+                alt="{% if block.settings.image.alt %}{{ block.settings.image.alt }}{% else %}{{ block.settings.title }}{% endif %}"
+                width="356" height="407" loading="lazy">
+            {% endif %}
+          </div>
+
+          <div class="buy-get-content">
+            <div class="thomaslgheading">
+              {{ block.settings.title }}
+            </div>
+
+            {% if block.settings.link != blank %}
+              <div class="thomas-btn hovertime">
+                {{ block.settings.button_label }}
+              </div>
+            {% endif %}
+          </div>
+        </a>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Buy Get Section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Buy Get Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Buy 1 Get 1"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button Link"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label",
+          "default": "View All"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Buy Get Section",
+      "blocks": [
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

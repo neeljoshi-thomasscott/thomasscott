@@ -1,0 +1,1400 @@
+{% comment %} 
+{% liquid
+  assign size_chart_metafield = product.metafields.custom.size_chart
+  assign has_size_chart = false
+
+  if size_chart_metafield != blank and size_chart_metafield.value != blank
+    assign has_size_chart = true
+  endif
+%}
+
+{% if has_size_chart %}
+  <style>
+    body.size-chart-open {
+      overflow: hidden;
+    }
+
+    .size-modal {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      max-height: 100%;
+      position: fixed;
+      z-index: 99999;
+      inset: 0;
+      margin: 0;
+      padding: 20px;
+      border: 0;
+      background: rgba(0, 0, 0, 0.5);
+      overflow-y: auto;
+    }
+
+    .size-modal::backdrop {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .size-modal:not([open]) {
+      display: none;
+    }
+
+    .size-modal[open] {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .size-modal-content {
+      width: 100%;
+      max-width: 680px;
+      margin: 4vh auto;
+      padding: 32px 24px 24px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+    }
+
+    .close-size {
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 0;
+      background: #f4f4f4;
+      cursor: pointer;
+    }
+
+    .close-size svg {
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+    }
+
+    .size-guide-title {
+      padding-right: 48px;
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .size-guide-wrapper {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .size-guide-wrapper table {
+      width: 100%;
+      min-width: 520px;
+      margin-bottom: 20px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .size-guide-wrapper th,
+    .size-guide-wrapper td {
+      padding: 9px 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .size-guide-wrapper thead th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+
+    .size-guide-wrapper img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 16px;
+    }
+
+    .size-guide-data {
+      overflow-x: auto;
+    }
+
+    .size-guide-note {
+      margin: 12px 0 0;
+      font-size: 12px;
+      color: #888;
+    }
+
+    @media screen and (max-width: 749px) {
+      .size-modal {
+        padding: 12px;
+      }
+
+      .size-modal-content {
+        margin: 2vh auto;
+        padding: 28px 16px 20px;
+        max-height: 94vh;
+      }
+    }
+  </style>
+{% liquid
+  assign size_chart_metafield = product.metafields.custom.size_chart
+  assign size_chart = size_chart_metafield.value
+%}
+
+{% if size_chart != blank %}
+  <dialog id="sizeChartModal-{{ product.id }}" class="size-modal">
+    <div class="size-modal-content">
+
+      <button
+        type="button"
+        class="close-size"
+        aria-label="Close size guide"
+      >
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect width="48" height="48" fill="#F4F4F4"/>
+          <path
+            d="M19.6797 29.6574L30.9944 18.3428M30.9944 29.6574L19.6797 18.3428"
+            stroke="black"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      {% comment %} {% if size_chart.title.value != blank %}
+        <h2 class="size-guide-title">
+          {{ size_chart.title.value }}
+        </h2>
+      {% endif %} {% endcomment %}
+
+      {% if size_chart.chart_html.value != blank %}
+        <div class="size-chart-html table-responsive">
+          {{ size_chart.chart_html.value }}
+        </div>
+      {% endif %}
+
+      {% if size_chart.image.value != blank %}
+        <div class="size-chart-image">
+          {{
+            size_chart.image.value
+            | image_url: width: 1200
+            | image_tag:
+              loading: 'lazy',
+              widths: '400, 600, 800, 1000, 1200',
+              sizes: '(max-width: 749px) 100vw, 680px',
+              alt: size_chart.title.value
+          }}
+        </div>
+      {% endif %}
+
+      {% if size_chart.note.value != blank %}
+        <p class="size-guide-note">
+          {{ size_chart.note.value }}
+        </p>
+      {% endif %}
+
+    </div>
+  </dialog>
+{% endif %}
+
+  <script>
+    (() => {
+      const modalId = 'sizeChartModal-{{ product.id }}';
+      const modal = document.getElementById(modalId);
+
+      if (!modal || modal.dataset.initialized === 'true') return;
+      modal.dataset.initialized = 'true';
+
+      if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+      }
+
+      const openModal = () => {
+        if (typeof modal.showModal === 'function') {
+          if (!modal.open) modal.showModal();
+        } else {
+          modal.setAttribute('open', '');
+        }
+
+        document.body.classList.add('size-chart-open');
+      };
+
+      const closeModal = () => {
+        if (typeof modal.close === 'function' && modal.open) {
+          modal.close();
+        } else {
+          modal.removeAttribute('open');
+        }
+
+        document.body.classList.remove('size-chart-open');
+      };
+
+      document.addEventListener('click', (event) => {
+        const openButton = event.target.closest(
+          '[data-open-size][data-product-id="{{ product.id }}"]'
+        );
+
+        if (!openButton) return;
+
+        event.preventDefault();
+        openModal();
+      });
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal || event.target.closest('[data-close-size]')) {
+          closeModal();
+        }
+      });
+
+      modal.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closeModal();
+      });
+
+      modal.addEventListener('close', () => {
+        document.body.classList.remove('size-chart-open');
+      });
+    })();
+  </script>
+{% endif %} {% endcomment %}
+
+
+
+<style>
+.size-modal {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  position: fixed;
+  z-index: 99999;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  overflow: hidden;
+  border: none;
+  padding: 0;
+}
+
+.size-modal:not([open]) {
+  display: none;
+}
+
+.size-modal[open] {
+  display: block !important;
+}
+
+.size-modal-content {
+  background: #fff;
+  max-width: 680px;
+  margin: 5% auto;
+  padding: 28px 24px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.close-size {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.size-guide-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.size-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.size-table th,
+.size-table td {
+  border: 1px solid #ddd;
+  padding: 9px 12px;
+  text-align: center;
+}
+
+.size-table thead th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.size-guide-note {
+  font-size: 12px;
+  color: #888;
+  margin-top: 12px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-responsive br,
+.size-guide-wrapper br {
+  display: none;
+}
+@media (max-width:767px){
+.size-modal{
+transform:translateY(25%);
+}
+
+</style>
+
+{% comment %}
+  ============================================================
+  METAFIELDS USED:
+    custom.parent_category  → Parent category (e.g. Shirts, Tshirts, Shorts, Trousers, Jeans, Track Pants, Winterwear)
+    specs.fit               → Fit type (e.g. Slim Fit, Regular Fit, Oversized, etc.)
+
+  HOW IT WORKS:
+    1. parent_category se category detect hoti hai
+    2. specs.fit se exact fit type milti hai
+    3. Dono ke combination se correct size chart show hota hai
+  ============================================================
+{% endcomment %}
+
+{% assign parent_cat = product.metafields.custom.parent_category | downcase | strip %}
+{% assign fit_value  = product.metafields.specs.fit | downcase | strip %}
+
+<dialog id="sizeChartModal-{{ product.id }}" class="size-modal">
+  <div class="size-modal-content">
+
+    <span class="close-size">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <rect width="48" height="48" fill="#F4F4F4"/>
+        <path d="M19.6797 29.6574L30.9944 18.3428M30.9944 29.6574L19.6797 18.3428"
+          stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </span>
+
+
+{% assign product_title = product.title | downcase %}
+    
+    {% if product_title contains 'blazer' or product_title contains 'blazers' %}
+
+       <h2 class="size-guide-title">Blazers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>17.1</td><td>37.8</td><td>27.6</td></tr>
+              <tr><td>M</td><td>17.5</td><td>39.4</td><td>27.9</td></tr>
+              <tr><td>L</td><td>17.9</td><td>40.9</td><td>28.1</td></tr>
+              <tr><td>XL</td><td>18.3</td><td>42.5</td><td>28.4</td></tr>
+              <tr><td>2XL</td><td>18.9</td><td>44.9</td><td>28.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+    {%endif %}
+    {% if product_title contains 'co-ords' or product_title contains 'co-ords' %}
+          <h2 class="size-guide-title">Co-Ords — Size Guide</h2>
+                  <div class="table-responsive">
+                    <table class="size-table">
+                      <thead>
+                        <tr>
+                          <th>Size</th>
+                          <th>Across Shoulder (IN)</th>
+                          <th>Chest (IN)</th>
+                          <th>Front Length (IN)</th>
+                          <th>Garment Waist (IN)</th>
+                          <th>Rise (IN)</th>
+                          <th>Waist (IN)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>S</td><td>19</td><td>45</td><td>27.5</td><td>28</td><td>7</td><td>28</td></tr>
+                        <tr><td>M</td><td>19.5</td><td>47</td><td>28</td><td>30</td><td>7.25</td><td>30</td></tr>
+                        <tr><td>L</td><td>20</td><td>49</td><td>29</td><td>32</td><td>7.5</td><td>32</td></tr>
+                        <tr><td>XL</td><td>21</td><td>51</td><td>30</td><td>34</td><td>7.75</td><td>34</td></tr>
+                        <tr><td>2XL</td><td>22</td><td>53</td><td>31</td><td>36</td><td>8</td><td>36</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+    {%endif %}
+
+      {% if product_title contains 'trousers' or product_title contains 'trouser' %}
+        <h2 class="size-guide-title">Regular Fit Trousers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>30</td><td>30</td><td>28</td></tr>
+              <tr><td>M</td><td>30</td><td>32</td><td>30</td><td>30</td></tr>
+              <tr><td>L</td><td>32</td><td>34</td><td>30</td><td>32</td></tr>
+              <tr><td>XL</td><td>34</td><td>36</td><td>30</td><td>34</td></tr>
+              <tr><td>2XL</td><td>36</td><td>38</td><td>30</td><td>36</td></tr>
+              <tr><td>3XL</td><td>38</td><td>40</td><td>30</td><td>38</td></tr>
+              <tr><td>4XL</td><td>40</td><td>42</td><td>30</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      
+        <h2 class="size-guide-title">Relaxed Fit Trousers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>XS</td><td>28</td><td>30</td><td>29</td><td>28</td></tr>
+              <tr><td>S</td><td>30</td><td>32</td><td>29</td><td>30</td></tr>
+              <tr><td>M</td><td>32</td><td>34</td><td>29</td><td>32</td></tr>
+              <tr><td>L</td><td>34</td><td>36</td><td>29</td><td>34</td></tr>
+              <tr><td>XL</td><td>36</td><td>38</td><td>29</td><td>36</td></tr>
+              <tr><td>2XL</td><td>38</td><td>40</td><td>29</td><td>38</td></tr>
+              <tr><td>3XL</td><td>40</td><td>42</td><td>29</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      
+        <h2 class="size-guide-title">Slim Fit Trousers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>30</td><td>29</td><td>30</td></tr>
+              <tr><td>M</td><td>32</td><td>32</td><td>29</td><td>32</td></tr>
+              <tr><td>L</td><td>34</td><td>34</td><td>29</td><td>34</td></tr>
+              <tr><td>XL</td><td>36</td><td>36</td><td>29</td><td>36</td></tr>
+              <tr><td>2XL</td><td>38</td><td>38</td><td>29</td><td>38</td></tr>
+              <tr><td>3XL</td><td>40</td><td>40</td><td>29</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+    
+        <h2 class="size-guide-title">Plus Size Trousers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3XL</td><td>40</td><td>43.25</td><td>30</td><td>40</td></tr>
+              <tr><td>4XL</td><td>42</td><td>45.25</td><td>30</td><td>42</td></tr>
+              <tr><td>5XL</td><td>44</td><td>47.25</td><td>30</td><td>44</td></tr>
+              <tr><td>6XL</td><td>46</td><td>49.25</td><td>30</td><td>46</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      
+        <h2 class="size-guide-title">Cargo Joggers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>39</td><td>29</td><td>30</td></tr>
+              <tr><td>M</td><td>32</td><td>41</td><td>29</td><td>32</td></tr>
+              <tr><td>L</td><td>34</td><td>43</td><td>29</td><td>34</td></tr>
+              <tr><td>XL</td><td>36</td><td>45.5</td><td>29</td><td>36</td></tr>
+              <tr><td>2XL</td><td>38</td><td>47</td><td>29</td><td>38</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+     
+        <h2 class="size-guide-title">Straight Fit Trousers — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>31</td><td>32</td><td>30</td></tr>
+              <tr><td>M</td><td>32</td><td>33</td><td>32</td><td>32</td></tr>
+              <tr><td>L</td><td>34</td><td>35</td><td>32</td><td>34</td></tr>
+              <tr><td>XL</td><td>36</td><td>37</td><td>32</td><td>36</td></tr>
+              <tr><td>2XL</td><td>38</td><td>39.5</td><td>32</td><td>38</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Trouser Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+     
+      {% endif %}
+    {% comment %} ============================================================
+      PARENT CATEGORY: SHIRTS
+      specs.fit values: slim fit | regular fit | oversized | plus size
+    ============================================================ {% endcomment %}
+
+    {% if parent_cat == 'shirts' or  parent_cat == 'view all'%}
+
+      {% if fit_value == 'slim fit' %}
+        <h2 class="size-guide-title">Slim Fit Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>38</td><td>16</td><td>38.3</td><td>28.3</td></tr>
+              <tr><td>M</td><td>40</td><td>17</td><td>40.5</td><td>29</td></tr>
+              <tr><td>L</td><td>42</td><td>18</td><td>43.8</td><td>29.8</td></tr>
+              <tr><td>XL</td><td>44</td><td>19</td><td>46</td><td>30.5</td></tr>
+              <tr><td>2XL</td><td>46</td><td>20</td><td>49.3</td><td>31.3</td></tr>
+              <tr><td>3XL</td><td>48</td><td>21</td><td>51.5</td><td>31.8</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202115216.webp?v=1777016886" alt="Shirt Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'regular fit' or fit_value == 'relaxed fit' %}
+        <h2 class="size-guide-title">{% if fit_value=='regular fit'%} Regular Fit Shirts — Size Guide{%else% %}Relaxed Fit Shirts — Size Guide{%endif %}</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>38</td><td>16.5</td><td>41.5</td><td>29.3</td></tr>
+              <tr><td>M</td><td>40</td><td>17.3</td><td>43.5</td><td>29.8</td></tr>
+              <tr><td>L</td><td>42</td><td>18</td><td>46</td><td>30.3</td></tr>
+              <tr><td>XL</td><td>44</td><td>18.8</td><td>48</td><td>30.8</td></tr>
+              <tr><td>2XL</td><td>46</td><td>19.5</td><td>50</td><td>31.3</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202115216.webp?v=1777016886" alt="Shirt Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'oversized' %}
+        <h2 class="size-guide-title">Oversized Fit Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>38</td><td>21.3</td><td>45</td><td>28.5</td></tr>
+              <tr><td>M</td><td>40</td><td>22</td><td>47</td><td>29</td></tr>
+              <tr><td>L</td><td>42</td><td>22.8</td><td>49</td><td>29.5</td></tr>
+              <tr><td>XL</td><td>44</td><td>23.5</td><td>51</td><td>30</td></tr>
+              <tr><td>2XL</td><td>46</td><td>24.2</td><td>53</td><td>30.5</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202115216.webp?v=1777016886" alt="Shirt Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'plus size' %}
+        <h2 class="size-guide-title">Plus Size Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3XL</td><td>40</td><td>20.5</td><td>52</td><td>32.5</td></tr>
+              <tr><td>4XL</td><td>42</td><td>21.3</td><td>54</td><td>33.5</td></tr>
+              <tr><td>5XL</td><td>44</td><td>22</td><td>56</td><td>33.5</td></tr>
+              <tr><td>6XL</td><td>46</td><td>22.8</td><td>58</td><td>34.5</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202115216.webp?v=1777016886" alt="Shirt Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% else %}
+        <p>No size guide available for this shirt type.</p>
+    {% endif %}
+
+
+    {% assign product_title = product.title | downcase %}
+    {% elsif parent_cat == 'winter' or  parent_cat == 'view all' or parent_cat == 'winter/sweaters' or parent_cat == 'winter/sweatshirts' or parent_cat == 'winter/jackets' %}
+    {% if product_title contains 'sweatshirts' or product_title contains 'sweatshirt' %}
+      <h2 class="size-guide-title">Sweatshirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>17.57</td><td>20.5</td><td>26.75</td></tr>
+              <tr><td>M</td><td>30</td><td>17.75</td><td>21.5</td><td>27.5</td></tr>
+              <tr><td>L</td><td>32</td><td>18.75</td><td>22.5</td><td>28.25</td></tr>
+              <tr><td>XL</td><td>34</td><td>19</td><td>23.5</td><td>29</td></tr>
+              <tr><td>2XL</td><td>36</td><td>19.75</td><td>24.75</td><td>29.75</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% elsif product_title contains 'jacket' or product_title contains 'jackets' %}
+        <h2 class="size-guide-title">Jackets — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>17.57</td><td>41</td><td>26.75</td></tr>
+              <tr><td>M</td><td>30</td><td>17.75</td><td>43</td><td>27.5</td></tr>
+              <tr><td>L</td><td>32</td><td>18.75</td><td>45</td><td>28.25</td></tr>
+              <tr><td>XL</td><td>34</td><td>19</td><td>47</td><td>29</td></tr>
+              <tr><td>2XL</td><td>36</td><td>19.75</td><td>49.5</td><td>29.75</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% assign product_title = product.title | downcase %}
+      
+          {% elsif product_title contains 'sweater' or product_title contains 'sweaters' %}
+            <h2 class="size-guide-title">Sweaters — Size Guide</h2>
+            <div class="table-responsive">
+              <table class="size-table">
+                <thead>
+                  <tr>
+                    <th>Standard</th>
+                    <th>Size</th>
+                    <th>Across Shoulder (IN)</th>
+                    <th>Chest (IN)</th>
+                    <th>Front Length (IN)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>S</td><td>28</td><td>16.88</td><td>38</td><td>27</td></tr>
+                  <tr><td>M</td><td>30</td><td>17.5</td><td>40</td><td>27.75</td></tr>
+                  <tr><td>L</td><td>32</td><td>18.13</td><td>42</td><td>28.5</td></tr>
+                  <tr><td>XL</td><td>34</td><td>18.88</td><td>44.5</td><td>29.25</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+      {% else %}
+        <p>No size guide available for this winterwear type.</p>
+      {% endif %}
+
+  
+
+{% comment %} 
+    {% elsif parent_cat == 'plus size' %}
+
+      {% if fit_value == 'regular fit' or fit_value == 'slim fit'  %} {% endcomment %}
+    {% elsif parent_cat == 'plus size' or  parent_cat == 'view all' %}
+
+     {% assign product_title = product.title | downcase %}
+
+      {% if product_title contains 'shirt' or product_title contains 'shirts' %}
+       <h2 class="size-guide-title">Plus Size Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3XL</td><td>40</td><td>20.5</td><td>52</td><td>32.5</td></tr>
+              <tr><td>4XL</td><td>42</td><td>21.3</td><td>54</td><td>33.5</td></tr>
+              <tr><td>5XL</td><td>44</td><td>22</td><td>56</td><td>33.5</td></tr>
+              <tr><td>6XL</td><td>46</td><td>22.8</td><td>58</td><td>34.5</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202115216.webp?v=1777016886" alt="Shirt Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+    
+      {% elsif product_title contains 'Trousers' or product_title contains 'Trouser' %}
+       <h2 class="size-guide-title">Plus Size Trousers — Size Guide</h2>
+       <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>Hip (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3XL</td><td>40</td><td>43.25</td><td>9.8</td><td>50</td></tr>
+              <tr><td>4XL</td><td>42</td><td>45.25</td><td>9.8</td><td>52</td></tr>
+              <tr><td>5XL</td><td>44</td><td>47.25</td><td>9.8</td><td>54</td></tr>
+              <tr><td>6XL</td><td>46</td><td>49.25</td><td>9.8</td><td>56</td></tr>
+            </tbody>
+          </table>
+        </div>
+      {%else %}
+
+        <p>No size guide available for this type.</p>
+      {% endif %}
+
+
+
+
+    {% comment %} ============================================================
+      PARENT CATEGORY: TSHIRTS
+      specs.fit values: regular fit | oversized | polo collar
+    ============================================================ {% endcomment %}
+ 
+    {% elsif parent_cat == 'tshirts' or  parent_cat == 'view all' %}
+
+
+      {% if product_title contains 'tshirt' or product_title contains 'tshirts' or product_title contains 'T-Shirt'%}
+        {% assign product_title = product.title | downcase %}
+      {% comment %} {% if fit_value == 'regular fit' %} {% endcomment %}
+        <h2 class="size-guide-title">Regular Fit T-Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>16.9</td><td>38</td><td>27</td></tr>
+              <tr><td>M</td><td>32</td><td>17.5</td><td>40</td><td>27.8</td></tr>
+              <tr><td>L</td><td>34</td><td>18.1</td><td>42</td><td>28.5</td></tr>
+              <tr><td>XL</td><td>36</td><td>18.9</td><td>44.5</td><td>29.3</td></tr>
+              <tr><td>2XL</td><td>38</td><td>19.6</td><td>47</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      
+        <h2 class="size-guide-title">Oversized T-Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>21.3</td><td>44</td><td>29.5</td></tr>
+              <tr><td>M</td><td>32</td><td>22</td><td>46</td><td>30</td></tr>
+              <tr><td>L</td><td>34</td><td>22.8</td><td>48</td><td>30.5</td></tr>
+              <tr><td>XL</td><td>36</td><td>23.6</td><td>50.5</td><td>31</td></tr>
+              <tr><td>2XL</td><td>38</td><td>24.5</td><td>53.5</td><td>31.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      
+        <h2 class="size-guide-title">Polo Collar T-Shirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>16.9</td><td>38</td><td>27</td></tr>
+              <tr><td>M</td><td>32</td><td>17.5</td><td>40</td><td>27.8</td></tr>
+              <tr><td>L</td><td>34</td><td>18.1</td><td>42</td><td>28.5</td></tr>
+              <tr><td>XL</td><td>36</td><td>18.9</td><td>44.5</td><td>29.3</td></tr>
+              <tr><td>2XL</td><td>38</td><td>19.6</td><td>47</td><td>30</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/tshirts.webp?v=1780912483" alt="T-Shirt Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% else %}
+        <p>No size guide available for this T-shirt type.</p>
+      {% endif %}
+
+    {% comment %} ============================================================
+      PARENT CATEGORY: SHORTS
+      specs.fit values: regular fit | relaxed fit | slim fit | plus size
+    ============================================================ {% endcomment %}
+
+    {% elsif parent_cat == 'bottoms' or  parent_cat == 'view all'%}
+
+      {% if fit_value == 'regular fit' %}
+        <h2 class="size-guide-title">Regular Fit Shorts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>Hip (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>30</td><td>8.5</td><td>42.5</td></tr>
+              <tr><td>M</td><td>32</td><td>32</td><td>8.5</td><td>45</td></tr>
+              <tr><td>L</td><td>34</td><td>34</td><td>8.5</td><td>48</td></tr>
+              <tr><td>XL</td><td>36</td><td>36</td><td>8.5</td><td>51</td></tr>
+              <tr><td>2XL</td><td>38</td><td>38</td><td>8.5</td><td>55</td></tr>
+              <tr><td>3XL</td><td>40</td><td>40</td><td>8.5</td><td>57.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% elsif fit_value == 'relaxed fit' %}
+        <h2 class="size-guide-title">Relaxed Fit Shorts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>Hip (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>31</td><td>9</td><td>42</td></tr>
+              <tr><td>M</td><td>32</td><td>33</td><td>9</td><td>44</td></tr>
+              <tr><td>L</td><td>34</td><td>35</td><td>9</td><td>46</td></tr>
+              <tr><td>XL</td><td>36</td><td>37</td><td>9</td><td>48</td></tr>
+              <tr><td>2XL</td><td>38</td><td>39</td><td>9</td><td>50</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% elsif fit_value == 'slim fit' %}
+        <h2 class="size-guide-title">Slim Fit Shorts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>Hip (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>31</td><td>9</td><td>40</td></tr>
+              <tr><td>M</td><td>32</td><td>33</td><td>9</td><td>42</td></tr>
+              <tr><td>L</td><td>34</td><td>35</td><td>9</td><td>44</td></tr>
+              <tr><td>XL</td><td>36</td><td>37</td><td>9</td><td>46</td></tr>
+              <tr><td>2XL</td><td>38</td><td>39.5</td><td>9</td><td>48.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% elsif fit_value == 'plus size' %}
+        <h2 class="size-guide-title">Plus Size Shorts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>Hip (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3XL</td><td>40</td><td>43.25</td><td>9.8</td><td>50</td></tr>
+              <tr><td>4XL</td><td>42</td><td>45.25</td><td>9.8</td><td>52</td></tr>
+              <tr><td>5XL</td><td>44</td><td>47.25</td><td>9.8</td><td>54</td></tr>
+              <tr><td>6XL</td><td>46</td><td>49.25</td><td>9.8</td><td>56</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+    
+      {% elsif fit_value == 'straight fit' %}
+        <h2 class="size-guide-title">Shorts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>Hip (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>30</td><td>31</td><td>9</td><td>40</td></tr>
+              <tr><td>M</td><td>32</td><td>33</td><td>9</td><td>42</td></tr>
+              <tr><td>L</td><td>34</td><td>35</td><td>9</td><td>44</td></tr>
+              <tr><td>XL</td><td>36</td><td>37</td><td>9</td><td>46</td></tr>
+              <tr><td>2XL</td><td>38</td><td>39.5</td><td>9</td><td>48.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% else %}
+        <p>No size guide available for this shorts type.</p>
+      {% endif %}
+
+    {% comment %} ============================================================
+      PARENT CATEGORY: TROUSERS
+      specs.fit values: regular fit | relaxed fit | slim fit | plus size | cargo joggers | straight fit
+    ============================================================ {% endcomment %}
+
+   
+
+
+    {% comment %} ============================================================
+      PARENT CATEGORY: JEANS
+      specs.fit values: slim fit | baggy fit | loose fit | cargo | plus size
+    ============================================================ {% endcomment %}
+
+    {% elsif parent_cat == 'jeans' or  parent_cat == 'view all' %}
+
+      {% if fit_value == 'slim fit' %}
+        <h2 class="size-guide-title">Slim Fit Jeans — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>30</td><td>31</td><td>28</td></tr>
+              <tr><td>M</td><td>30</td><td>32</td><td>31</td><td>30</td></tr>
+              <tr><td>L</td><td>32</td><td>34</td><td>31</td><td>32</td></tr>
+              <tr><td>XL</td><td>34</td><td>36</td><td>31</td><td>34</td></tr>
+              <tr><td>2XL</td><td>36</td><td>38</td><td>31</td><td>36</td></tr>
+              <tr><td>3XL</td><td>38</td><td>40</td><td>31</td><td>38</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Jeans Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'baggy fit' or fit_value == 'relaxed fit'%}
+        <h2 class="size-guide-title">{%if fit_value == 'baggy fit' %}  Baggy Fit Jeans — Size Guide{%else %} Relaxed Fit Jeans — Size Guide{%endif %}</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>30</td><td>30</td><td>28</td></tr>
+              <tr><td>M</td><td>30</td><td>32</td><td>30</td><td>30</td></tr>
+              <tr><td>L</td><td>32</td><td>34</td><td>30</td><td>32</td></tr>
+              <tr><td>XL</td><td>34</td><td>36</td><td>30</td><td>34</td></tr>
+              <tr><td>2XL</td><td>36</td><td>38</td><td>30</td><td>36</td></tr>
+              <tr><td>3XL</td><td>38</td><td>40</td><td>30</td><td>38</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Jeans Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'loose fit' %}
+        <h2 class="size-guide-title">Loose Fit Jeans — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>30</td><td>31</td><td>28</td></tr>
+              <tr><td>M</td><td>30</td><td>32</td><td>31</td><td>30</td></tr>
+              <tr><td>L</td><td>32</td><td>34</td><td>31</td><td>32</td></tr>
+              <tr><td>XL</td><td>34</td><td>36</td><td>31</td><td>34</td></tr>
+              <tr><td>2XL</td><td>36</td><td>38</td><td>31</td><td>36</td></tr>
+              <tr><td>3XL</td><td>38</td><td>40</td><td>31</td><td>38</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Jeans Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'cargo' %}
+        <h2 class="size-guide-title">Cargo Jeans — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>30</td><td>31</td><td>28</td></tr>
+              <tr><td>M</td><td>30</td><td>32</td><td>31</td><td>30</td></tr>
+              <tr><td>L</td><td>32</td><td>34</td><td>31</td><td>32</td></tr>
+              <tr><td>XL</td><td>34</td><td>36</td><td>31</td><td>34</td></tr>
+              <tr><td>2XL</td><td>36</td><td>38</td><td>31</td><td>36</td></tr>
+              <tr><td>3XL</td><td>38</td><td>40</td><td>31</td><td>38</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Jeans Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'plus size' %}
+        <h2 class="size-guide-title">Plus Size Jeans — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>3XL</td><td>40</td><td>42</td><td>29.5</td><td>40</td></tr>
+              <tr><td>4XL</td><td>42</td><td>44</td><td>29.5</td><td>42</td></tr>
+              <tr><td>5XL</td><td>44</td><td>46</td><td>29.5</td><td>44</td></tr>
+              <tr><td>6XL</td><td>46</td><td>48</td><td>29.5</td><td>46</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Jeans Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+     
+      {% endif %}
+
+    {% comment %} ============================================================
+      PARENT CATEGORY: TRACK PANTS
+      specs.fit values: relaxed fit | straight fit | regular fit
+    ============================================================ {% endcomment %}
+
+    {% elsif parent_cat == 'track pants' or  parent_cat == 'view all' %}
+
+      {% if fit_value == 'relaxed fit' %}
+        <h2 class="size-guide-title">Relaxed Fit Track Pants — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>28</td><td>29.3</td><td>28</td></tr>
+              <tr><td>M</td><td>30</td><td>30</td><td>29.3</td><td>30</td></tr>
+              <tr><td>L</td><td>32</td><td>32</td><td>29.3</td><td>32</td></tr>
+              <tr><td>XL</td><td>34</td><td>34</td><td>29.3</td><td>34</td></tr>
+              <tr><td>XXL</td><td>36</td><td>36</td><td>29.3</td><td>36</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Track Pant Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'straight fit' %}
+        <h2 class="size-guide-title">Straight Fit Track Pants — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>30</td><td>29</td><td>30</td></tr>
+              <tr><td>M</td><td>30</td><td>32</td><td>29</td><td>32</td></tr>
+              <tr><td>L</td><td>32</td><td>34</td><td>29</td><td>34</td></tr>
+              <tr><td>XL</td><td>34</td><td>36</td><td>29</td><td>36</td></tr>
+              <tr><td>2XL</td><td>36</td><td>38.5</td><td>29</td><td>38</td></tr>
+              <tr><td>3XL</td><td>38</td><td>41</td><td>29</td><td>40</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Track Pant Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% elsif fit_value == 'regular fit' %}
+        <h2 class="size-guide-title">Regular Fit Track Pants — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Garment Waist (IN)</th>
+                <th>Inseam Length (IN)</th>
+                <th>To Fit Waist (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>42</td><td>29.25</td><td>30</td></tr>
+              <tr><td>M</td><td>30</td><td>44</td><td>29.25</td><td>32</td></tr>
+              <tr><td>L</td><td>32</td><td>46</td><td>29.25</td><td>34</td></tr>
+              <tr><td>XL</td><td>34</td><td>48</td><td>29.25</td><td>36</td></tr>
+              <tr><td>2XL</td><td>36</td><td>50.5</td><td>29.25</td><td>38</td></tr>
+            </tbody>
+          </table>
+          <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202121452.webp?v=1778846263" alt="Track Pant Size Guide" loading="lazy" width="auto" height="auto">
+        </div>
+
+      {% else %}
+        <p>No size guide available for this track pant type.</p>
+      {% endif %}
+
+    {% comment %} ============================================================
+      PARENT CATEGORY: WINTERWEAR
+      specs.fit values: sweatshirts | regular fit jackets | sweater
+    ============================================================ {% endcomment %}
+    {% assign product_title = product.title | downcase %}
+    {% elsif parent_cat == 'winter' or  parent_cat == 'view all' or parent_cat == 'Winter/Sweaters'%}
+    {% if product_title contains 'sweatshirts' or product_title contains 'sweatshirt' %}
+      <h2 class="size-guide-title">Sweatshirts — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>17.57</td><td>20.5</td><td>26.75</td></tr>
+              <tr><td>M</td><td>30</td><td>17.75</td><td>21.5</td><td>27.5</td></tr>
+              <tr><td>L</td><td>32</td><td>18.75</td><td>22.5</td><td>28.25</td></tr>
+              <tr><td>XL</td><td>34</td><td>19</td><td>23.5</td><td>29</td></tr>
+              <tr><td>2XL</td><td>36</td><td>19.75</td><td>24.75</td><td>29.75</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% elsif product_title contains 'jacket' or product_title contains 'jackets' %}
+        <h2 class="size-guide-title">Jackets — Size Guide</h2>
+        <div class="table-responsive">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Size</th>
+                <th>Across Shoulder (IN)</th>
+                <th>Chest (IN)</th>
+                <th>Front Length (IN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>28</td><td>17.57</td><td>41</td><td>26.75</td></tr>
+              <tr><td>M</td><td>30</td><td>17.75</td><td>43</td><td>27.5</td></tr>
+              <tr><td>L</td><td>32</td><td>18.75</td><td>45</td><td>28.25</td></tr>
+              <tr><td>XL</td><td>34</td><td>19</td><td>47</td><td>29</td></tr>
+              <tr><td>2XL</td><td>36</td><td>19.75</td><td>49.5</td><td>29.75</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      {% assign product_title = product.title | downcase %}
+        {% elsif parent_cat == 'winter' or  parent_cat == 'view all' or parent_cat == 'Winter/Sweaters'%}
+          {% elsif product_title contains 'sweater' or product_title contains 'sweaters' %}
+            <h2 class="size-guide-title">Sweaters — Size Guide</h2>
+            <div class="table-responsive">
+              <table class="size-table">
+                <thead>
+                  <tr>
+                    <th>Standard</th>
+                    <th>Size</th>
+                    <th>Across Shoulder (IN)</th>
+                    <th>Chest (IN)</th>
+                    <th>Front Length (IN)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>S</td><td>28</td><td>16.88</td><td>38</td><td>27</td></tr>
+                  <tr><td>M</td><td>30</td><td>17.5</td><td>40</td><td>27.75</td></tr>
+                  <tr><td>L</td><td>32</td><td>18.13</td><td>42</td><td>28.5</td></tr>
+                  <tr><td>XL</td><td>34</td><td>18.88</td><td>44.5</td><td>29.25</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+      {% else %}
+        <p>No size guide available for this winterwear type.</p>
+      {% endif %}
+
+    {% else %}
+      <p>No size guide available for this product.</p>
+    {% endif %}
+
+    <p class="size-guide-note">All measurements are of the garment. For best fit, compare with your body measurements.</p>
+
+  </div>
+</dialog>
+
+<script>
+(function() {
+  var modal = document.getElementById('sizeChartModal-{{ product.id }}');
+  if (modal && modal.parentElement !== document.body) {
+    document.body.appendChild(modal);
+  }
+
+  var BODY_CLASS = 'size-chart-open';
+
+  document.addEventListener('click', function(e) {
+    var openBtn = e.target.closest('[data-open-size][data-product-id="{{ product.id }}"]');
+    if (!openBtn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (!modal) return;
+    if (typeof modal.showModal === 'function') {
+      if (!modal.open) modal.showModal();
+    } else {
+      modal.setAttribute('open', '');
+    }
+    document.body.classList.add(BODY_CLASS);
+  });
+
+  document.addEventListener('click', function(e) {
+    var closeBtn = e.target.closest('.close-size');
+    if (!closeBtn) return;
+    var m = closeBtn.closest('.size-modal');
+    if (!m) return;
+    if (typeof m.close === 'function' && m.open) m.close();
+    m.removeAttribute('open');
+    document.body.classList.remove(BODY_CLASS);
+  });
+
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      var rect = modal.getBoundingClientRect();
+      var outside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
+      if (!outside) return;
+      if (typeof modal.close === 'function' && modal.open) modal.close();
+      modal.removeAttribute('open');
+      document.body.classList.remove(BODY_CLASS);
+    });
+
+    modal.addEventListener('close', function() {
+      document.body.classList.remove(BODY_CLASS);
+      modal.removeAttribute('open');
+    });
+  }
+})();
+</script> 

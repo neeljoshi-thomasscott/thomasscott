@@ -1,0 +1,99 @@
+<section class="customers-bought">
+  <div class="container">
+    <header class="customers-bought__header">
+      <h2 class="customers-bought__title">Customers also bought</h2>
+      <p class="customers-bought__subtitle">Complete the look with these hand-picked combinations.</p>
+    </header>
+
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      {%- assign max_items = 3 -%}
+      {%- assign rec_products = recommendations.products | slice: 0, max_items -%}
+
+      {%- if rec_products.size > 0 -%}
+        <div class="customers-main">
+          <div class="customers-list">
+            {%- assign bundle_variant_ids = '' -%}
+            {%- assign bundle_count = 0 -%}
+
+            {%- for recommended_product in rec_products -%}
+              {%- if forloop.index0 > 0 -%}
+                <div class="plus-mid" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.5986 0.75V26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M0.75 13.5999H26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+
+              <div class="customers-card">
+                {%- render 'th-product-card', product: recommended_product -%}
+              </div>
+
+              {%- assign first_variant = recommended_product.variants.first -%}
+              {%- if first_variant and first_variant.available -%}
+                {%- assign bundle_count = bundle_count | plus: 1 -%}
+                {%- assign pair = first_variant.id | append: ':1' -%}
+                {%- if bundle_variant_ids == '' -%}
+                  {%- assign bundle_variant_ids = pair -%}
+                {%- else -%}
+                  {%- assign bundle_variant_ids = bundle_variant_ids | append: ',' | append: pair -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if bundle_count > 0 -%}
+            {%- assign total_price_cents = 0 -%}
+            {%- for recommended_product in rec_products -%}
+              {%- assign first_variant = recommended_product.variants.first -%}
+              {%- if first_variant and first_variant.available -%}
+                {%- assign total_price_cents = total_price_cents | plus: first_variant.price -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- assign total_price_money = total_price_cents | money -%}
+
+            <a
+              href="/cart/{{ bundle_variant_ids }}"
+              class="thomas-wht-btn hovertime customers-bought__buy-all"
+            >
+              Buy all {{ bundle_count }} for {{ total_price_money }}
+            </a>
+          {%- else -%}
+            <p class="customers-bought__note">These recommendations aren’t available right now.</p>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <p class="customers-bought__note">No recommendations found.</p>
+      {%- endif -%}
+    {%- else -%}
+      <p class="customers-bought__note">No recommendations available right now.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customers also bought ",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_items",
+      "label": "Maximum products",
+      "min": 3,
+      "max": 3,
+      "step": 1,
+      "default": 3
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customers also bought "
+    }
+  ]
+}
+{% endschema %}

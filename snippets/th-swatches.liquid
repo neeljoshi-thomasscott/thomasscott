@@ -1,0 +1,136 @@
+{% comment %} {% assign variants = product.metafields.variants.list.value %}
+
+{% if variants and variants.colour_variant.value.size > 0 %}
+<div class="colour-swatches-wrapper">
+    <div class="color-swatches">
+        {% for variant in variants.colour_variant.value %}
+            {% if variant.handle == product.handle %}
+                
+            {% endif %}
+            {% assign colors = variant.metafields.shopify.color-pattern %}
+            {% assign current = product.metafields.shopify.color-pattern %}
+            {% assign activeColor = '' %}
+            
+            {% for color in current.value %}
+                {% assign activeColor = color.color %}
+                {% break %}
+
+            {% endfor %}
+                
+            {% assign code = '' %}
+            {% capture colorname %}
+                {% for color in colors.value %}
+                    {{ color.label }}
+                    {% assign code = color.color %}
+                    {% break %}
+                {% endfor %}
+            {% endcapture %}
+
+        {% assign colorname = colorname | strip | strip_newlines %}
+
+            <div 
+                class="color-swatch btn-loader {%  if activeColor == code %}active{% endif %}" 
+                style="cursor:pointer;width:20px;height:20px;display:inline-block;background-color:{{ code }}"
+                data-variant-url="{{ variant.url }}"
+                data-variant-img="{{ variant.featured_image | image_url }}"
+                {{ card_attr }}
+                onclick="loadSwatchCard(this)"
+            >
+                <span class="loader">
+                  <svg class="spinner" viewBox="0 0 50 50">
+                    <circle
+                      class="path"
+                      cx="25"
+                      cy="25"
+                      r="20"
+                      fill="none"
+                      stroke-width="4"
+                    />
+                  </svg>
+                </span>
+
+                <span class="loaded">
+                  {{ option_label }}
+                </span>
+            </div>
+            
+        {% endfor %}
+    </div>
+</div>
+{% endif %} {% endcomment %}
+
+{% assign variants = product.metafields.variants.list.value %}
+
+{% if variants and variants.colour_variant.value.size > 0 %}
+
+  {% assign swatch_limit = 4 %}
+  {% assign total_swatches = variants.colour_variant.value.size %}
+  {% assign remaining = total_swatches | minus: swatch_limit %}
+
+  <div class="colour-swatches-wrapper">
+    <div class="color-swatches">
+
+      {% for variant in variants.colour_variant.value limit: swatch_limit %}
+
+        {% assign colors = variant.metafields.shopify.color-pattern %}
+        {% assign current = product.metafields.shopify.color-pattern %}
+        {% assign active_color = '' %}
+
+        {% for color in current.value %}
+          {% assign active_color = color.color %}
+          {% break %}
+        {% endfor %}
+
+        {% assign code = '' %}
+
+        {% capture colorname %}
+          {% for color in colors.value %}
+            {{ color.label }}
+            {% assign code = color.color %}
+            {% break %}
+          {% endfor %}
+        {% endcapture %}
+
+        {% assign colorname = colorname | strip | strip_newlines %}
+
+        <div
+          class="color-swatch btn-loader {% if active_color == code %}active{% endif %}"
+          style="cursor:pointer;width:16px;height:16px;display:inline-block;background-color:{{ code }}"
+          data-variant-url="{{ variant.url }}"
+          data-variant-img="{{ variant.featured_image | image_url }}"
+          {{ card_attr }}
+          onclick="loadSwatchCard(this)"
+        >
+          <span class="loader">
+            <svg class="spinner" viewBox="0 0 50 50">
+              <circle
+                class="path"
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke-width="4"
+              />
+            </svg>
+          </span>
+
+          <span class="loaded">
+            {{ option_label }}
+          </span>
+        </div>
+
+      {% endfor %}
+
+      {% if total_swatches > swatch_limit %}
+        <a 
+          href="{{ product.url }}"
+          class="more-swatches"
+        >
+          +{{ remaining }}
+        </a>
+      {% endif %}
+
+    </div>
+  </div>
+
+{% endif %}

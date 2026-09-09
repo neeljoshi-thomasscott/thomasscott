@@ -1,0 +1,83 @@
+
+<div class="container">
+  <nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
+    
+    <a href="{{ routes.root_url }}">Home</a>
+    {% capture separator %}
+      <span class="breadcrumb-separator">
+        <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
+          <circle cx="3" cy="3" r="3" fill="#CDCDCF"/>
+        </svg>
+      </span>
+    {% endcapture %}
+
+    {% if template contains 'product' %}
+
+      {% assign first_collection = product.collections.first %}
+
+      {% if collection %}
+        {{ separator }}
+        <a href="{{ collection.url }}">{{ collection.title }}</a>
+
+      {% elsif first_collection %}
+        {{ separator }}
+        <a href="{{ first_collection.url }}">{{ first_collection.title }}</a>
+      {% endif %}
+
+      {{ separator }}
+      <span class="breadcrumb-current">{{ product.title }}</span>
+
+    {% elsif template contains 'collection' %}
+
+      {{ separator }}
+      {% if template.name == 'list-collections' %}
+        <span class="breadcrumb-current">Collections</span>
+      {% else %}
+        <span class="breadcrumb-current">{{ collection.title }}</span>
+      {% endif %}
+    
+    {% elsif template contains 'page' %}
+
+      {{ separator }}
+      <span class="breadcrumb-current">{{ page.title }}</span>
+
+    {% elsif template contains 'cart' %}
+
+      {{ separator }}
+      <span class="breadcrumb-current">Cart</span>
+
+
+    {% elsif template contains 'blog' and template != 'article' %}
+
+      {{ separator }}
+      <span class="breadcrumb-current">Blogs</span>
+
+    {% elsif template contains 'article' %}
+
+      {{ separator }}
+      <a href="{{ blog.url }}">Blogs</a>
+
+      {{ separator }}
+      <span class="breadcrumb-current">{{ article.title }}</span>
+
+    {% endif %}
+
+  </nav>
+</div>
+
+<style>
+.breadcrumb {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+.breadcrumb a {
+  text-decoration: none;
+  color: inherit;
+}
+.breadcrumb-separator {
+  margin: 0 5px;
+}
+.breadcrumb-current {
+  font-weight: 500;
+}
+</style>

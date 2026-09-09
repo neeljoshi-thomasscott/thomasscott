@@ -1,0 +1,63 @@
+{% comment %} Custom 404 Page - Fixed Layout {% endcomment %}
+
+<div class="page-404">
+
+  <div class="page-404-main relative">
+    <picture class="picture">
+      <source media="(max-width:767px)" srcset="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/404-mobile-banner.jpg?v=1778224116"> 
+      <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/404-desktop-banner.jpg?v=1778224117">
+      <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/404-desktop-banner.jpg?v=1778224117" alt="page 404 banner" width="1440" height="800" class="w-full">
+    </picture>
+    <div class="not-found-right">
+      <h1 class="not-foundh1">404</h1>
+      
+      <h2 class="not-foundh2">PAGE NOT FOUND</h2>
+      
+      <p class="">We're Sorry. The Page You Requested<br> Could Not Be Found<br> Please Go Back To The Home Page</p>
+
+      <a href="/" class="thomas-btn thomas-black-bg">
+        GO TO HOME
+      </a>
+    </div>
+    <div class="not-found-thumb">
+      <picture class="picture">
+        <source media="(max-width:767px)" srcset="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/404-mobile-thumb.png?v=1778224453"> 
+        <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/404-desktop-thumb.png?v=1778224453">
+        <img src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/404-desktop-thumb.png?v=1778224453" alt="page 404 banner" width="1440" height="800" class="w-full">
+      </picture>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom 404",
+  "settings": [
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Line Color",
+      "default": "#00B0FF"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "PAGE NOT FOUND"
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "We're Sorry. The Page You Requested Could Not Be Found Please Go Back To The Home Page"
+    }
+  ],
+  "presets": [
+    { "name": "Custom 404" }
+  ]
+}
+{% endschema %}

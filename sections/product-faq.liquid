@@ -1,0 +1,118 @@
+{% assign faqs = product.metafields.custom.faqs.value %}
+{% assign faq_items = faqs.faq_items %}
+
+
+{% stylesheet %}
+  .faq-sec{background: var(--bg-color); padding: 60px 0;}
+  .faq-sec .top-heading{margin-bottom: 30px;}
+  .faq-main{padding: 0;}
+  .faq-card{display: flex; justify-content: space-between; border-top: 1px solid #E6E6E6; padding: 26px max(60px,calc((100vw - 1920px)/2)); cursor: pointer;}
+  .faq-card .faq-left{display: flex;}
+  .faq-card .faq-left .faq-count{font-size: 15px; color: #999; font-weight: 400; line-height: 20px; margin-right: 34px;}
+  .faq-card .faq-left .thomassmheading{color: #1D1D1F; font-weight: 400; line-height: 20px; text-transform: capitalize;}
+  .faq-card .faq-left p{width: 610px; font-size: 14px; color: #6E6E73; font-weight: 500; line-height: 25px; text-transform: capitalize; display: none;}
+  .faq-card .faq-arrow{width: 12px; height: 12px; display: flex; align-items: center;}
+  .faq-card.active{background: var(--white-color);}
+  .faq-card.active .faq-left .thomassmheading{width: 274px; font-size: 20px; font-weight: 500; line-height: 28px; margin-right: 109px;}
+  .faq-card.active .faq-left .faq-count{line-height: 28px;}
+  .faq-card.active .faq-left p{display: block;}
+  .faq-card.active .faq-arrow{transform: rotate(-180deg);}
+  .faq-card:last-child{border-bottom: 1px solid #E6E6E6;}
+{% endstylesheet %}
+{% if faq_items and faq_items.value.size > 0 %}
+  <section class="faq-sec section-faq-{{ section.id }}">
+    {% content_for 'blocks' %}
+    <div class="faq-main">
+      {% for faq in faq_items.value %}
+        <div class="faq-card {% if forloop.first %}active{% endif %}">
+          <div class="faq-left">
+            <div class="faq-count">
+              {% if forloop.index < 10 %}
+                0{{ forloop.index }}
+              {% else %}
+                {{ forloop.index }}
+              {% endif %}
+            </div>
+
+            <div class="thomassmheading">
+              {{ faq.heading.value }}
+            </div>
+
+            <p>
+              {{ faq.description.value | newline_to_br }}
+            </p>
+          </div>
+
+          <span class="faq-arrow">
+            <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.75 0.75L6.75 6.75L12.75 0.75" stroke="#292929" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+<script type="text/javascript">
+  const faqCards = document.querySelectorAll('.section-faq-{{ section.id }} .faq-card');
+
+	faqCards.forEach(card => {
+	  card.addEventListener('click', (e) => {
+      faqCards.forEach(item => {
+        if (item !== card) {
+          item.classList.remove('active');
+        }
+        });
+      e.classList.add('active');
+    });
+
+	});
+</script>
+
+{% schema %}
+{
+  "name": "FAQs",
+  "tag": "section",
+  "class": "faq-section-wrapper",
+  "settings": [
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "video"
+    },
+    {
+      "type": "group"
+    },
+    {
+      "type": "spacer"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product FAQs",
+    }
+  ]
+}
+{% endschema %}

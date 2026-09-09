@@ -1,0 +1,118 @@
+<div class="item custom-product-card">
+  <div class="card-image-wrapper">
+    
+    <!-- Product Image Slider -->
+    <div class="product-card product-image-slider swiper" id="img-slider-{{ product.id }}">
+      <div class="swiper-wrapper">
+        {% for image in product.images limit: 8 %}
+          <div class=" swiper-slide">
+            <a href="{{ product.url }}">
+              <img 
+                src="{{ image | image_url: width: 800 }}" 
+                srcset="{{ image | image_url: width: 400 }} 400w, {{ image | image_url: width: 800 }} 800w"
+                alt="{{ image.alt | escape }}"
+                class="product-image"
+                loading="lazy"
+                width="800"
+                height="1000">
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+
+     
+    </div>
+
+    {% comment %} <!-- Sale Badge --> {% endcomment %}
+    {% comment %} {% if product.compare_at_price > product.price %}
+      <div class="sale-badge">Sale</div>
+    {% endif %} {% endcomment %}
+
+    
+
+    <!-- Add Button (with your SVG) -->
+    <button class="quick-add-btn" data-product-id="{{ product.id }}">
+     
+      <!-- Tumhara SVG -->
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.4375 9.625V5.5C14.4375 4.58832 14.0754 3.71398 13.4307 3.06932C12.7861 2.42466 11.9117 2.0625 11 2.0625C10.0884 2.0625 9.21402 2.42466 8.56937 3.06932C7.92471 3.71398 7.56255 4.58832 7.56255 5.5V9.625M17.9722 7.79808L19.13 18.7981C19.1941 19.4077 18.7175 19.9375 18.1042 19.9375H3.89588C3.75124 19.9377 3.60818 19.9074 3.476 19.8486C3.34382 19.7899 3.22548 19.704 3.12865 19.5966C3.03183 19.4891 2.95869 19.3625 2.914 19.2249C2.8693 19.0874 2.85404 18.9419 2.86921 18.7981L4.02788 7.79808C4.05461 7.54468 4.1742 7.31014 4.36361 7.13969C4.55302 6.96924 4.79882 6.87495 5.05363 6.875H16.9465C17.4745 6.875 17.9172 7.27375 17.9722 7.79808ZM7.9063 9.625C7.9063 9.71617 7.87008 9.8036 7.80562 9.86807C7.74115 9.93253 7.65372 9.96875 7.56255 9.96875C7.47138 9.96875 7.38395 9.93253 7.31948 9.86807C7.25501 9.8036 7.2188 9.71617 7.2188 9.625C7.2188 9.53383 7.25501 9.4464 7.31948 9.38193C7.38395 9.31747 7.47138 9.28125 7.56255 9.28125C7.65372 9.28125 7.74115 9.31747 7.80562 9.38193C7.87008 9.4464 7.9063 9.53383 7.9063 9.625ZM14.7813 9.625C14.7813 9.71617 14.7451 9.8036 14.6806 9.86807C14.6161 9.93253 14.5287 9.96875 14.4375 9.96875C14.3464 9.96875 14.2589 9.93253 14.1945 9.86807C14.13 9.8036 14.0938 9.71617 14.0938 9.625C14.0938 9.53383 14.13 9.4464 14.1945 9.38193C14.2589 9.31747 14.3464 9.28125 14.4375 9.28125C14.5287 9.28125 14.6161 9.31747 14.6806 9.38193C14.7451 9.4464 14.7813 9.53383 14.7813 9.625Z" stroke="#1E1E1E" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+     <div class="inline-variant-selector" id="size-selector-{{ product.id }}" style="display: none;">
+    <div class="size-buttons">
+      {% for variant in product.variants %}
+        {% if variant.available %}
+          <button 
+            class="size-btn" 
+            data-variant-id="{{ variant.id }}"
+            onclick="plpAtc(this)">
+            {{ variant.title }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  </div>
+       {% comment %} <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div> {% endcomment %}
+      <!-- Image Slider Arrows -->
+  <!-- Sizes -->
+ 
+  <div class="card-info">
+    <h3 class="product-title">
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    </h3>
+    
+    <div class="product-price">
+      {% if product.compare_at_price > product.price %}
+        <span class="regular-price">{{ product.price | money }}</span>
+        <span class="discount">{{ product.compare_at_price | money }}</span>
+        <span class="price-discount">(75% Off)</span>
+      {% else %}
+        <span class="regular-price">{{ product.price | money }}</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+/* ====================== MOBILE + DESKTOP RESPONSIVE ====================== */
+
+
+
+
+
+
+/* ====================== MOBILE OPTIMIZATION ====================== */
+@media (max-width: 767px) {
+  .card-image-wrapper {
+    aspect-ratio: 4 / 5;
+  }
+
+  .quick-add-btn {
+    padding: 7px 18px;
+    font-size: 13px;
+    bottom: 12px;
+  }
+
+  .product-title {
+    font-size: 14px;
+  }
+
+  .product-price {
+    font-size: 14.5px;
+  }
+
+  .sale-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .bag-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+}
+</style>

@@ -1,0 +1,139 @@
+
+<style>
+    .premium-top {
+  background: #f5f5f5;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content; /* 🔥 important */
+  gap: 20px;
+  animation: scrollText var(--speed) linear infinite;
+}
+
+.marquee-item {
+  white-space: nowrap;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 9%;
+  line-height:43px;
+}
+.marquee-item .marquee-star{display:inline-block; margin-left:20px;}
+
+/* animation */
+@keyframes scrollText {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+</style>
+<section class="premium-sec" style="--speed: {{ section.settings.speed }}s;">
+
+
+  <div class="premium-top">
+    <div class="marquee-wrapper">
+      <div class="marquee-track">
+        
+        {% for i in (1..2) %}
+          {% for block in section.blocks %}
+            <span class="marquee-item">
+              {{ block.settings.text }}
+            </span>
+          {% endfor %}
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="premium-bottom">
+
+    <picture class="picture">
+      {% if section.settings.image_mobile != blank %}
+        <source media="(max-width:767px)" srcset="{{ section.settings.image_mobile | image_url }}" alt="{{ section.settings.image_mobile.alt | default: section.settings.heading | escape }}">
+      {% endif %}
+
+      {% if section.settings.image_desktop != blank %}
+        <source media="(min-width:768px)" srcset="{{ section.settings.image_desktop | image_url }}" alt="{{ section.settings.image_desktop.alt | default: section.settings.heading | escape }}">
+      {% endif %}
+
+      <img 
+        class="w-full lazyload"
+        src="{{ section.settings.image_desktop | image_url }}" width="auto" height="auto" loading="lazy"
+      alt="{{ section.settings.image_desktop.alt | default: section.settings.heading | escape }}">
+    </picture>
+
+    <p class="reveal-text">
+      {{ section.settings.description }}
+    </p>
+
+  </div>
+
+</section>
+{% schema %}
+{
+  "name": "Premium Section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile Image"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Your first choice for sustainability sourced & ethically produced high-quality apparel."
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 20,
+      "label": "Scroll Speed (seconds)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Marquee Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Premium Shirts ✺"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium Section",
+      "blocks": [
+        { "type": "text" },
+        { "type": "text" },
+        { "type": "text" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+{% assign products = collection.products | slice: 0, 10 %}
+
+<div class="customers-list" data-bundle>
+  {% for product in products limit: 3 %}
+    <div class="customers-card"
+         data-product-id="{{ product.id }}"
+         data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+         data-price="{{ product.price }}">
+         
+      {% render 'th-product-card', product: product %}
+    </div>
+
+    {% unless forloop.last %}
+      <div class="plus-mid">+</div>
+    {% endunless %}
+  {% endfor %}
+</div>

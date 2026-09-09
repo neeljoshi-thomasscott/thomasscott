@@ -1,0 +1,86 @@
+{%- doc -%}
+  Renders the search action button.
+
+  @param {string} [style] - The style of the search action.
+  @param {string} [class] - Additional classes for the search action.
+  @param {string} [display_style] - The display style ('icon' or 'text').
+
+  @example
+  {% render 'search', style: 'default', class: 'custom-class', display_style: 'icon' %}
+{%- enddoc -%}
+
+{% unless style == 'none' %}
+  <search-button
+    class="search-action{% if display_style == 'text' %} search-action--text{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}"
+  >
+    <button
+      on:click="#search-modal/showDialog"
+      class="button-unstyled header-actions__action{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+      aria-label="{{ 'content.search_input_label' | t }}"
+      aria-haspopup="dialog"
+    >
+      <span class="{% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}">
+        {% comment %} {{ 'content.search' | t }} {% endcomment %}
+         <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M9.03685 17.0387C13.4755 17.0387 17.0737 13.4483 17.0737 9.01935C17.0737 4.59039 13.4755 1 9.03685 1C4.59822 1 1 4.59039 1 9.01935C1 13.4483 4.59822 17.0387 9.03685 17.0387Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M19.0829 19.1772L14.7966 14.9002" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+      </span>
+
+      <span class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}">
+        {% comment %} {{ 'icon-search.svg' | inline_asset_content }} {% endcomment %}
+         <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
+<path d="M9.03685 17.0387C13.4755 17.0387 17.0737 13.4483 17.0737 9.01935C17.0737 4.59039 13.4755 1 9.03685 1C4.59822 1 1 4.59039 1 9.01935C1 13.4483 4.59822 17.0387 9.03685 17.0387Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19.0829 19.1772L14.7966 14.9002" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+      </span>
+    </button>
+  </search-button>
+{% endunless %}
+
+{% stylesheet %}
+  .search-action {
+    --search-border-radius: var(--style-border-radius-inputs);
+    --search-border-width: var(--style-border-width-inputs);
+
+    display: flex;
+  }
+
+  @media screen and (max-width: 749px) {
+    .search-action--hidden-on-drawer {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    [data-menu-style='drawer'] .search-action--hidden-on-drawer {
+      display: none;
+    }
+
+    [data-menu-style='menu'] .search-action--hidden-on-menu {
+      display: none;
+    }
+  }
+
+  [data-menu-style='menu'] .header__column--left .search-action {
+    @media screen and (min-width: 750px) {
+      margin-inline: calc(var(--padding-lg) * -1);
+    }
+  }
+
+  .header__column--right .search-action {
+    @media screen and (min-width: 750px) {
+      margin-inline: calc(var(--gap-md) * -1) calc(var(--gap-xs) * -1);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .header__column--right .search-action--text {
+      margin-inline: 0;
+    }
+
+    [data-menu-style='menu'] .header__column--left .search-action--text {
+      margin-inline: 0;
+    }
+  }
+{% endstylesheet %}

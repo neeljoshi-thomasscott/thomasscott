@@ -1,0 +1,130 @@
+ <facets-form-component
+        class="facets__form-wrapper"
+        section-id="{{ section.id }}"
+        form-style="{{ block_settings.filter_style }}"
+      >
+        <form
+          action="{{ results_url }}"
+          id="FacetFiltersForm--{{ section.id }}-desktop"
+          class="facets__form"
+          ref="facetsForm"
+        >
+          {% if should_show_pane %}
+            {% render 'filter-remove-buttons',
+              filters: filters,
+              results_url: results_url,
+              show_filter_label: block_settings.show_filter_label,
+              should_show_clear_all: true
+            %}
+
+            {% if block_settings.enable_filtering %}
+              {% assign total_active_values = 0 %}
+
+              {% capture rendered_filters %}
+                {%- for filter in filters -%}
+                  {% case filter.type %}
+                    {% when 'price_range' %}
+                      {%- liquid
+                        if filter.min_value.value != null or filter.max_value.value != null
+                          assign total_active_values = total_active_values | plus: 1
+                          assign is_active = true
+                        endif
+
+                        if block_settings.filter_style != 'vertical'
+                          assign should_render_clear = true
+                        else
+                          assign should_render_clear = false
+                        endif
+
+                        render 'price-filter', filter: filter, filter_style: block_settings.filter_style, should_render_clear: should_render_clear
+                      -%}
+                    {% else %}
+                      {% liquid
+                        if filter.active_values.size > 0
+                          assign is_active = true
+                        endif
+
+                        assign active_value_count = filter.active_values | size
+                        assign total_active_values = total_active_values | plus: active_value_count
+                        if block_settings.filter_style != 'vertical'
+                          assign should_render_clear = true
+                        else
+                          assign should_render_clear = false
+                        endif
+                        render 'list-filter', filter: filter, filter_style: block_settings.filter_style, active_value_count: active_value_count, should_render_clear: should_render_clear, show_swatch_label: block_settings.show_swatch_label, sectionId: section.id
+                      %}
+                  {% endcase %}
+                {%- endfor -%}
+              {% endcapture %}
+
+              <div class="facets__filters-wrapper">
+                {% if block_settings.filter_style == 'horizontal' %}
+                  {% liquid
+                    assign more_attributes = 'on:click="#filters-drawer/showDialog"'
+                    if block_settings.text_label_case == 'uppercase'
+                      assign more_attributes = more_attributes | append: ' style="--text-transform: uppercase;"'
+                    endif
+                  %}
+                  {% render 'overflow-list',
+                    class: 'facets__overflow-list',
+                    children: rendered_filters,
+                    more-attributes: more_attributes,
+                    minimum-items: 2,
+                    data-testid: 'horizontal-filters-overflow-list'
+                  %}
+                {% else %}
+                  {{ rendered_filters }}
+                {% endif %}
+              </div>
+
+              {% if block_settings.filter_style == 'horizontal' %}
+                <facet-remove-component
+                  class="facets-horizontal-remove {% if is_active %}facets-horizontal-remove--active{% endif %}"
+                  active-class="facets__clear-all-link--active"
+                  data-url="{{ results_url }}"
+                >
+                  <button
+                    type="button"
+                    class="button-unstyled facets__clear-all-link facets__clear-all-link--horizontal {% if is_active %}facets__clear-all-link--active{% endif %}"
+                    ref="clearButton"
+                    on:click="/removeFilter?form="
+                    on:keydown="/removeFilter?form="
+                  >
+                    {{- 'actions.clear_all' | t -}}
+                  </button>
+                </facet-remove-component>
+              {% endif %}
+            {% endif %}
+            {% if block_settings.filter_style == 'horizontal' %}
+              <div
+                class="products-count-wrapper"
+                data-testid="products-count"
+              >
+                <span title="{{ 'content.product_count' | t }}">
+                  {% if products_count > 25000 %}
+                    {{- 'content.item_count_cutoff' | t: count: 25000 -}}
+                  {% else %}
+                    {{- 'content.item_count' | t: count: products_count -}}
+                  {% endif %}
+                </span>
+              </div>
+
+              {% if block_settings.enable_sorting %}
+                {% render 'sorting',
+                  results: results,
+                  sort_by: sort_by,
+                  filter_style: block_settings.filter_style,
+                  suffix: 'desktop',
+                  sort_position: 'desktop',
+                  should_use_select_on_mobile: false,
+                  section_id: section.id
+                %}
+              {% endif %}
+
+              {% if block_settings.enable_grid_density %}
+                {% render 'grid-density-controls', viewport: 'desktop' %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </form>
+      </facets-form-component>

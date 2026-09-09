@@ -1,0 +1,78 @@
+<section class="made-sec">
+  <div class="container">
+
+    <!-- Heading -->
+    <div class="top-heading">
+      <h2 class="thomasxlheading">
+        {{ section.settings.heading }}
+      </h2>
+    </div>
+
+    <!-- Cards -->
+    <div class="made-list">
+      {% for block in section.blocks %}
+        <div class="made-card" {{ block.shopify_attributes }}>
+          
+          <div class="made-thumb">
+            {% if block.settings.icon != blank %}
+              <img 
+                class="w-full lazyload"
+                src="{{ block.settings.icon | image_url: width: 100 }}" height="auto" width="auto"
+                loading="lazy"
+                alt="{{ block.settings.title }}">
+            {% endif %}
+          </div>
+
+          <div class="thomassmheading">
+            {{ block.settings.title }}
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Shopping Made Simple",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Shopping Made Simple"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Text",
+          "default": "Fastest Delivery"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shopping Made Simple",
+      "blocks": [
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" }
+      ]
+    }
+  ]
+}
+{% endschema %}

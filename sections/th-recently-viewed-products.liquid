@@ -1,0 +1,222 @@
+<div
+  class="bestseller-sec custom-product-gallery section-{{ section.id }}"
+  id="recently-viewed-{{ section.id }}"
+  data-recently-viewed="true"
+  data-max-products="{{ section.settings.max_products }}"
+  data-product-handle="{{ product.handle }}"
+  data-product-card-section-id="th-product-card-recently-viewed"
+>
+  <div class="container">
+    <div class="section-resource-list__content">
+      {% content_for 'blocks' %}
+    </div>
+
+    <div class="swiper custom-product-swiper" id="swiper-recently-viewed-products">
+      <div class="swiper-wrapper">
+        <!-- Recently viewed product slides will be injected here by JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% javascript %}
+  const RECENTLY_VIEWED_STORAGE_KEY = 'recently_viewed_products_v1';
+
+  function getRecentlyViewedHandles() {
+    try {
+      const raw = window.localStorage.getItem(RECENTLY_VIEWED_STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveRecentlyViewedHandle(handle, maxProducts) {
+    if (!handle) return;
+
+    const existing = getRecentlyViewedHandles().filter(function (item) {
+      return item !== handle;
+    });
+
+    existing.unshift(handle);
+
+    const limited = existing.slice(0, maxProducts);
+
+    try {
+      window.localStorage.setItem(RECENTLY_VIEWED_STORAGE_KEY, JSON.stringify(limited));
+    } catch (e) {}
+  }
+
+  function fetchProductCardSection(handle, sectionId) {
+    const url =
+      '/products/' +
+      encodeURIComponent(handle) +
+      '?section_id=' +
+      encodeURIComponent(sectionId);
+
+    return fetch(url)
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Network error for ' + url);
+        }
+        return response.text();
+      })
+      .then(function (html) {
+        const container = document.createElement('div');
+        container.innerHTML = html;
+
+        // Shopify section render usually returns the section root as the first element.
+        // We take its innerHTML as the card markup.
+        const sectionRoot = container.firstElementChild;
+        if (!sectionRoot) return '';
+
+        return sectionRoot.innerHTML || '';
+      })
+      .catch(function () {
+        return '';
+      });
+  }
+
+  function hydrateRecentlyViewedSection(sectionEl) {
+    if (!sectionEl) return;
+
+    var wrapper = sectionEl.querySelector('.swiper-wrapper');
+    if (!wrapper) return;
+
+    var emptyMessageId = 'recently-viewed-empty-message';
+    var emptyMessageEl = sectionEl.querySelector('#' + emptyMessageId);
+
+    var maxProducts = Number(sectionEl.dataset.maxProducts || 8);
+    var currentHandle = sectionEl.dataset.productHandle;
+    var productCardSectionId = sectionEl.dataset.productCardSectionId;
+
+    var handles = getRecentlyViewedHandles()
+      .filter(function (handle) {
+        // Exclude current product from list
+        return handle && handle !== currentHandle;
+      })
+      .slice(0, maxProducts);
+
+    if (!handles.length) {
+      if (!emptyMessageEl) {
+        emptyMessageEl = document.createElement('p');
+        emptyMessageEl.id = emptyMessageId;
+        emptyMessageEl.className = 'recently-viewed-empty-message';
+        emptyMessageEl.textContent = 'You have not viewed any products yet.';
+        sectionEl.appendChild(emptyMessageEl);
+      }
+      emptyMessageEl.hidden = false;
+      sectionEl.remove();
+      return;
+    }
+
+    // Build an array of Promises to fetch each product card
+    var fetchPromises = handles.map(function (handle) {
+      return fetchProductCardSection(handle, productCardSectionId).then(function (cardHtml) {
+        return {
+          handle: handle,
+          html: cardHtml
+        };
+      });
+    });
+
+    Promise.all(fetchPromises).then(function (results) {
+      wrapper.innerHTML = '';
+
+      results.forEach(function (result) {
+        if (!result || !result.html) return;
+
+        var slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        slide.innerHTML = result.html;
+
+        wrapper.appendChild(slide);
+      });
+
+      if (!wrapper.children.length) {
+        if (!emptyMessageEl) {
+          emptyMessageEl = document.createElement('p');
+          emptyMessageEl.id = emptyMessageId;
+          emptyMessageEl.className = 'recently-viewed-empty-message';
+          emptyMessageEl.textContent = 'You have not viewed any products yet.';
+          sectionEl.appendChild(emptyMessageEl);
+        }
+        emptyMessageEl.hidden = false;
+        sectionEl.remove()
+      } else if (emptyMessageEl) {
+        emptyMessageEl.hidden = true;
+      }
+      
+      // If you initialize Swiper manually, you can re-init or update here if needed.
+
+      const mainSwiper = document.getElementById('swiper-recently-viewed-products');
+      if (!mainSwiper) return;
+      if (mainSwiper.swiper) mainSwiper.swiper.destroy(true, true);
+
+      new Swiper(mainSwiper, {
+        slidesPerView: 2,           // Mobile pe 2 cards side by side
+        spaceBetween: 12,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        },
+        breakpoints: {
+          480:  { slidesPerView: 2, spaceBetween: 15 },
+          640:  { slidesPerView: 3, spaceBetween: 18 },
+          768:  { slidesPerView: 3, spaceBetween: 20 },
+          1024: { slidesPerView: 4, spaceBetween: 24 },
+          1200: { slidesPerView: 4, spaceBetween: 19 }
+        }
+      });
+      
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var sections = document.querySelectorAll('[data-recently-viewed="true"]');
+    if (!sections.length) return;
+
+    sections.forEach(function (sectionEl) {
+      var maxProducts = Number(sectionEl.dataset.maxProducts || 8);
+      var currentHandle = sectionEl.dataset.productHandle;
+
+      // 1) Store current product handle in localStorage
+      saveRecentlyViewedHandle(currentHandle, maxProducts);
+
+      // 2) Fetch cards for handles and append into swiper wrapper
+      hydrateRecentlyViewedSection(sectionEl);
+    });
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Recently viewed products",
+  "blocks":[
+    {
+      "type":"@theme"
+    }
+  ],
+  "settings": [
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum number of products",
+      "min": 2,
+      "max": 20,
+      "step": 1,
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently viewed products"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,57 @@
+
+<div class="top-heading top-btn-heading relative {% if block.settings.heading contains 'Review' %}
+customer-review
+{% endif %}  {{ block.settings.class }} " {% if block.settings.padding != blank or block.settings.margin != blank %}style="padding:{{ block.settings.padding }};{% if block.settings.margin %}margin:{{ block.settings.margin}}{%endif%}{% endif %}">
+    {% if block.settings.heading %}
+    <h3 class="thomasxlheading">{{ block.settings.heading }}</h3>
+    {% endif %}
+    {% if block.settings.url %}
+    <a href="{{ block.settings.url }}" class="thomas-btn thomas-black-btn hovertime">{{ block.settings.viewall }}</a>
+    {% endif %}
+</div>
+{% schema %}
+{
+  "name": "t:names.heading",
+  "tag": null,
+  "settings": [
+    {
+        "type":"text",
+        "id":"heading",
+        "label":"Heading",
+        "default": "Shop Bestsellers"
+    },
+    {
+        "type":"url",
+        "id":"url",
+        "label":"Link"
+    },
+    {
+        "type":"text",
+        "id":"viewall",
+        "label":"Link Text",
+        "default": "View All"
+    },
+    {
+        "type":"text",
+        "id":"class",
+        "label":"Class"
+    },
+    {
+      "type":"text",
+      "id":"padding",
+      "label":"Padding"
+    },
+    {
+      "type":"text",
+      "id":"margin",
+      "label":"Margin"
+    }
+  ],
+  "presets": [
+    {
+        "name":"Section Heading"
+    }
+  ]
+}
+{% endschema %}
+{% # theme-check-enable %}

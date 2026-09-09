@@ -1,0 +1,172 @@
+
+<div class="bestseller-sec custom-product-gallery section-{{ section.id }}">
+  <div class="container">
+   <div class="section-resource-list__content">
+      {% content_for 'blocks' %}
+    </div>
+
+  <div class="swiper custom-product-swiper {% if section.settings.mob_slider == true %}desktop-only{%  endif %}" id="swiper-{{ section.id }}">
+    <div class="swiper-wrapper">
+      {% for product in section.settings.collection.products limit: section.settings.limit %}
+        <div class="swiper-slide">
+          {% render 'th-product-card', product: product, section: section,enable_swatches: false %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if section.settings.mob_slider == true %}
+  <div class="custom-product-swiper mobile-only">
+    <div class="swiper-wrappers">
+      {% for product in section.settings.collection.products limit: section.settings.mob_limit %}
+       
+           {% render 'size-chart-popup', product: product %}
+        <div class="swiper-slides">
+          {% render 'th-product-card', product: product, section: section,enable_swatches: false %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+   
+  </div>
+</div>
+
+
+<style>
+  @media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+}
+  @media (max-width: 767px) {
+    .desktop-only {
+      display: none;
+    }
+    .custom-product-swiper .swiper-wrappers {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+        margin: 0 -6px;
+    }
+
+    .custom-product-swiper .swiper-wrappers .swiper-slides {
+                width: 50%;
+        padding: 0 6px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Product Gallery",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Select Collection" },
+    { 
+      "type": "range", "id": "limit", "label": "Number of Products", 
+      "min": 3, "max": 8, "step": 1, "default": 5 
+    },
+    {
+      "type": "checkbox",
+      "id": "mob_slider",
+      "label": "Enable Mobile Grid",
+      "default": false
+    },
+    { 
+      "type": "range", "id": "mob_limit", "label": "Number of Products (Mobile)", 
+      "min": 3, "max": 8, "step": 1, "default": 5 
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show Section Heading",
+      "default": true
+    }
+  ],
+ "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "video"
+    },
+    {
+      "type": "group"
+    },
+    {
+      "type": "spacer"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "presets": [{ "name": "Custom Product Gallery" }]
+}
+{% endschema %}
+
+<script>
+document.addEventListener('DOMContentLoaded', initMainCarousel);
+document.addEventListener('shopify:section:load', function(e) {
+  if (e.detail.sectionId.includes('{{ section.id }}')) initMainCarousel();
+});
+
+function initMainCarousel() {
+  const mainSwiper = document.getElementById('swiper-{{ section.id }}');
+  if (!mainSwiper) return;
+  if (mainSwiper.swiper) mainSwiper.swiper.destroy(true, true);
+
+  new Swiper(mainSwiper, {
+    slidesPerView: 2,           // Mobile pe 2 cards side by side
+    spaceBetween: 12,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+    breakpoints: {
+      480:  { slidesPerView: 2, spaceBetween: 15 },
+      640:  { slidesPerView: 3, spaceBetween: 18 },
+      768:  { slidesPerView: 3, spaceBetween: 20 },
+      1024: { slidesPerView: 4, spaceBetween: 24 },
+      1200: { slidesPerView: 4, spaceBetween: 19 }
+    }
+  });
+}
+</script>
+
+<style>
+
+/* Section Heading */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 0 10px;
+}
+
+.section-heading {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .section-header {
+    padding: 0;
+  }
+}
+</style>

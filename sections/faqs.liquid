@@ -1,0 +1,200 @@
+<section class="faq-sec section-faq-{{ section.id }}" style="padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px">
+  {% if section.settings.heading != blank %}
+    <div class="top-heading">
+      <h1 class="thomasxlheading">{{ section.settings.heading | escape }}</h1>
+    </div>
+  {% endif %}
+
+  <div class="faq-main">
+    {% for block in section.blocks %}
+      {% if block.type == 'faq' %}
+        <div class="faq-card {% if forloop.first==true %}active{% endif %}" {{ block.shopify_attributes }}>
+          <div class="faq-left">
+            <div class="faq-count">
+              {% if forloop.index < 10 %}
+                0{{ forloop.index }}
+              {% else %}
+                {{ forloop.index }}
+              {% endif %}
+            </div>
+
+            <div class="thomassmheading">
+              {{ block.settings.question | escape }}
+            </div>
+
+            {% if block.settings.answer != blank %}
+              <p>
+                {{ block.settings.answer | newline_to_br }}
+              </p>
+            {% endif %}
+          </div>
+
+          <span class="faq-arrow">
+            <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.75 0.75L6.75 6.75L12.75 0.75" stroke="#292929" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </span>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .faq-sec{background: var(--bg-color, #ffffff); padding: 60px 0;}
+  .faq-sec .top-heading{margin-bottom: 30px;}
+  .faq-main{padding: 0;}
+  .faq-card{display: flex; justify-content: space-between; border-top: 1px solid #E6E6E6; padding: 26px max(60px,calc((100vw - 1920px)/2)); cursor: pointer;}
+  .faq-card .faq-left{display: flex;}
+  .faq-card .faq-left .faq-count{font-size: 15px; color: #999; font-weight: 400; line-height: 20px; margin-right: 34px;}
+  .faq-card .faq-left .thomassmheading{color: #1D1D1F; font-weight: 400; line-height: 20px; text-transform: capitalize;}
+  .faq-card .faq-left p{width: 610px; font-size: 14px; color: #6E6E73; font-weight: 500; line-height: 25px; text-transform: capitalize; display: none;}
+  .faq-card .faq-arrow{width: 12px; height: 12px; display: flex; align-items: center;}
+  .faq-card.active{background: #ffffff;}
+  .faq-card.active .faq-left .thomassmheading{width: 274px; font-size: 20px; font-weight: 500; line-height: 28px; margin-right: 109px;}
+  .faq-card.active .faq-left .faq-count{line-height: 28px;}
+  .faq-card.active .faq-left p{display: block;}
+  .faq-card.active .faq-arrow{transform: rotate(-180deg);}
+  .faq-card:last-child{border-bottom: 1px solid #E6E6E6;}
+{% endstylesheet %}
+
+<script>
+  
+  (function() {
+    const sections = document.querySelectorAll('.faq-sec');
+
+    sections.forEach((container) => {
+      const faqCards = container.querySelectorAll('.faq-card');
+
+      faqCards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          faqCards.forEach((item) => {
+            if (item !== card) {
+              item.classList.remove('active');
+            }
+          });
+          
+          e.classList.add('active');
+        });
+      });
+    });
+  })();
+  
+</script>
+
+{% schema %}
+{
+  "name": "FAQs",
+  "tag": "section",
+  "class": "faq-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+        "type":"number",
+        "id":"padding_top",
+        "label":"Padding Top",
+        "default":0
+    },
+    {
+        "type":"number",
+        "id":"padding_left",
+        "label":"Padding Left",
+        "default":0
+    },
+    {
+        "type":"number",
+        "id":"padding_right",
+        "label":"Padding Right",
+        "default":0
+    },
+    {
+        "type":"number",
+        "id":"padding_bottom",
+        "label":"Padding bottom",
+        "default":60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "FAQ question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "FAQ answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQs",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How Do I Choose The Right Size For This Dress?",
+            "answer": "Use the size chart available on the product page. If you're between sizes, we recommend sizing up for a more comfortable fit."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What Material Is This Dress Made Of?",
+            "answer": "The dress is made from high-quality fabric. Please check the product details section for exact material information."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Is This Dress Suitable For Formal Or Casual Occasions?",
+            "answer": "This dress is versatile and can be styled for both formal and casual occasions depending on how you accessorize it."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How Long Will Delivery Take?",
+            "answer": "Delivery usually takes 3–7 business days depending on your location and shipping method selected."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What Is The Return Or Exchange Policy For Dresses?",
+            "answer": "We offer easy returns and exchanges within a specified period. Please refer to our return policy for full details."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Will The Color Look Exactly The Same As In The Images?",
+            "answer": "While we strive for accuracy, slight color variations may occur due to lighting and screen differences."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How Should I Care For This Dress?",
+            "answer": "We recommend gentle washing or dry cleaning as per the care instructions mentioned on the product page."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

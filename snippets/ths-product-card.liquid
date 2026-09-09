@@ -1,0 +1,163 @@
+{% assign card_id = 'card_' | append: section.id %}
+{% assign card_id = card_id | append: product.id %}
+{% assign card_id = card_id | append: block.id %}
+
+{% assign btn_id = "quick_add_" | append: section.id %}
+{% assign btn_id = btn_id | append: product.selected_or_first_available_variant.id %}
+{% assign btn_id = btn_id | append: block.id %}
+
+{% capture card_attr %}
+    data-variant-title="{{ option_label | escape }}"
+    data-quick-add-cart="true"
+    data-product="{{ product.id }}"
+    data-card=".{{ card_id }}"
+    data-global-card=".product-card"
+    data-url="{{ product.url }}"
+    data-size-variant-selector=".variant-size-selector"
+    data-card=".{{ card_id }}"
+    data-quick-add-btn="{{ btn_id }}"
+{% endcapture %}
+<style>
+
+</style>
+{% comment %} 
+<div class="custom-product-card product-card th-product-card {{ card_id }}">
+    <div class="item">
+      <div class="card-image-wrapper">
+        <div
+          class="product-card product-image-slider swiper"
+          id="img-slider-{{ card_id }}"
+          data-product-slider
+        >
+          <div class="swiper-wrapper">
+            {%- if product.images.size > 0 -%}
+              {%- for image in product.images limit: 4 -%}
+                <div class="swiper-slide">
+                  <a href="{{ product.url }}" ref="productLink">
+                    {{
+                      image
+                      | image_url: width: 800
+                      | image_tag:
+                        widths: '400, 800',
+                        class: 'product-image',
+                        loading: 'lazy',
+                        alt: image.alt | default: product.title
+                    }}
+                  </a>
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <div class="swiper-slide">
+                <a href="{{ product.url }}">
+                  {{ 'product-1' | placeholder_svg_tag: 'product-image placeholder-svg' }}
+                </a>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- if featured_variant.compare_at_price > featured_variant.price -%}
+          <div class="sale-badge">
+            Sale
+          </div>
+        {%- endif -%}
+
+        <button
+          class="quick-add-btn quick-add-btn-desktop"
+            {{ card_attr }}
+            onclick="toggleAddToCart(this)"
+          type="button"
+          data-product-id="{{ product.id }}"
+          aria-expanded="false"
+          aria-controls="variant-selector-{{ product.id }}"
+          aria-label="{{ add_to_cart_label | escape }}"
+        >
+          <span class="quick-add-btn__icon" data-default-icon>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 22 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.4375 9.625V5.5C14.4375 4.58832 14.0754 3.71398 13.4307 3.06932C12.7861 2.42466 11.9117 2.0625 11 2.0625C10.0884 2.0625 9.21402 2.42466 8.56937 3.06932C7.92471 3.71398 7.56255 4.58832 7.56255 5.5V9.625M17.9722 7.79808L19.13 18.7981C19.1941 19.4077 18.7175 19.9375 18.1042 19.9375H3.89588C3.75124 19.9377 3.60818 19.9074 3.476 19.8486C3.34382 19.7899 3.22548 19.704 3.12865 19.5966C3.03183 19.4891 2.95869 19.3625 2.914 19.2249C2.8693 19.0874 2.85404 18.9419 2.86921 18.7981L4.02788 7.79808C4.05461 7.54468 4.1742 7.31014 4.36361 7.13969C4.55302 6.96924 4.79882 6.87495 5.05363 6.875H16.9465C17.4745 6.875 17.9172 7.27375 17.9722 7.79808ZM7.9063 9.625C7.9063 9.71617 7.87008 9.8036 7.80562 9.86807C7.74115 9.93253 7.65372 9.96875 7.56255 9.96875C7.47138 9.96875 7.38395 9.93253 7.31948 9.86807C7.25501 9.8036 7.2188 9.71617 7.2188 9.625C7.2188 9.53383 7.25501 9.4464 7.31948 9.38193C7.38395 9.31747 7.47138 9.28125 7.56255 9.28125C7.65372 9.28125 7.74115 9.31747 7.80562 9.38193C7.87008 9.4464 7.9063 9.53383 7.9063 9.625ZM14.7813 9.625C14.7813 9.71617 14.7451 9.8036 14.6806 9.86807C14.6161 9.93253 14.5287 9.96875 14.4375 9.96875C14.3464 9.96875 14.2589 9.93253 14.1945 9.86807C14.13 9.8036 14.0938 9.71617 14.0938 9.625C14.0938 9.53383 14.13 9.4464 14.1945 9.38193C14.2589 9.31747 14.3464 9.28125 14.4375 9.28125C14.5287 9.28125 14.6161 9.31747 14.6806 9.38193C14.7451 9.4464 14.7813 9.53383 14.7813 9.625Z"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </span>
+        </button>
+
+
+
+        {% render 'product-card-size-variants', product: product, card_attr: card_attr %}
+      </div>
+    </div>
+
+    <div class="card-info">
+      <h3 class="product-title">
+        <a href="{{ product.url }}">
+          {{ product.title }}
+        </a>
+      </h3>
+      {% render 'price', product_resource : product %}
+      
+    </div>
+    {% render 'th-quick-add', product: product, section_id: section.id, btn_id: btn_id %}
+  </div> {% endcomment %}
+
+
+{% comment %} <div class="product-card custom-product-card th-product-card {{ card_id }}">
+    <div class="product-thumb">
+        <div class="product-gallery">
+            <a href="{{ product.url }}">
+                <img width="291" height="374" class="w-full lazyload" src="{{ product.featured_image | image_url : width: '300px' }}" alt="Business Essentials">
+            </a>
+        </div>
+        {% render 'product-card-size-variants', product: product, card_attr: card_attr %}
+        <button 
+            class="product-cart-btn" 
+            type="button"
+            {{ card_attr }}
+            onclick="toggleAddToCart(this)"
+        >
+            <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.074 8.0625V3.9375C12.074 3.02582 11.7119 2.15148 11.0672 1.50682C10.4225 0.862164 9.5482 0.5 8.63652 0.5C7.72484 0.5 6.8505 0.862164 6.20584 1.50682C5.56119 2.15148 5.19902 3.02582 5.19902 3.9375V8.0625M15.6087 6.23558L16.7664 17.2356C16.8306 17.8452 16.3539 18.375 15.7407 18.375H1.53236C1.38771 18.3752 1.24465 18.3449 1.11247 18.2861C0.980295 18.2274 0.86195 18.1415 0.765126 18.0341C0.668303 17.9266 0.595168 17.8 0.550472 17.6624C0.505775 17.5249 0.490517 17.3794 0.505689 17.2356L1.66436 6.23558C1.69108 5.98218 1.81068 5.74764 2.00008 5.57719C2.18949 5.40674 2.4353 5.31245 2.69011 5.3125H14.5829C15.1109 5.3125 15.5537 5.71125 15.6087 6.23558ZM5.54277 8.0625C5.54277 8.15367 5.50656 8.2411 5.44209 8.30557C5.37762 8.37003 5.29019 8.40625 5.19902 8.40625C5.10785 8.40625 5.02042 8.37003 4.95595 8.30557C4.89149 8.2411 4.85527 8.15367 4.85527 8.0625C4.85527 7.97133 4.89149 7.8839 4.95595 7.81943C5.02042 7.75497 5.10785 7.71875 5.19902 7.71875C5.29019 7.71875 5.37762 7.75497 5.44209 7.81943C5.50656 7.8839 5.54277 7.97133 5.54277 8.0625ZM12.4178 8.0625C12.4178 8.15367 12.3816 8.2411 12.3171 8.30557C12.2526 8.37003 12.1652 8.40625 12.074 8.40625C11.9829 8.40625 11.8954 8.37003 11.831 8.30557C11.7665 8.2411 11.7303 8.15367 11.7303 8.0625C11.7303 7.97133 11.7665 7.8839 11.831 7.81943C11.8954 7.75497 11.9829 7.71875 12.074 7.71875C12.1652 7.71875 12.2526 7.75497 12.3171 7.81943C12.3816 7.8839 12.4178 7.97133 12.4178 8.0625Z" stroke="#1E1E1E" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+    <div class="product-content">
+        <div class="thomasxxsheading">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </div>
+        {% render 'price', product_resource: product %}
+    </div>
+    {% render 'th-quick-add', product: product, section_id: section.id, btn_id: btn_id %}
+
+</div> {% endcomment %}
+
+<script>
+{% comment %} document.addEventListener('DOMContentLoaded', initMainCarousel);
+document.addEventListener('shopify:section:load', function(e) {
+  if (e.detail.sectionId.includes('{{ section.id }}')) initMainCarousel();
+}); {% endcomment %}
+window.addEventListener('load',function(){
+  let mainSwiper = document.getElementById('img-slider-{{ card_id }}');
+  if (!mainSwiper) return;
+  if (mainSwiper.swiper) mainSwiper.swiper.destroy(true, true);
+
+  new Swiper(mainSwiper, {
+    slidesPerView: 1,           // Mobile pe 2 cards side by side
+    spaceBetween: 0,
+    
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+    
+  });
+})
+
+</script>

@@ -1,0 +1,50 @@
+{% comment %} <div class="pdp-share-wishlist-icon">
+	<button class="pdp-share share-button"
+		data-share-url="{{ request.origin }}{{ product.url }}"
+		data-share-title="{{ product.title | escape }}"
+	>
+		<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="0.5" y="0.5" width="47" height="47" fill="white" stroke="#EEEEEE"/>
+			<path d="M31.59 23L27 18.41V20.87L26.14 21C21.83 21.61 18.91 23.87 17.24 27.33C19.56 25.69 22.44 24.9 26 24.9H27V27.59M25 25.92C20.53 26.13 17.33 27.74 15 31C16 26 19 21 26 20V16L33 23L26 30V25.9C25.67 25.9 25.34 25.91 25 25.92Z" fill="black"/>
+		</svg>
+	</button>
+	<!-- Wishlist Hero App Button -->
+   {% render 'wishlist-hero-product-button' %}
+
+
+	{% comment %} <button class="pdp-wishlist"
+		data-variant="{{ product.variants.first.id }}" 
+		data-product="{{ product.id }}" 
+		data-pTitle="{{ product.title | escape }}"
+	>
+		<span class="wishlist-btn">
+			<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="0.5" y="0.5" width="47" height="47" fill="white" stroke="#EEEEEE"/>
+				<path d="M28.9308 14.25C26.7846 14.25 24.9313 15.4913 24 17.302C23.0687 15.4913 21.2154 14.25 19.0692 14.25C15.9927 14.25 13.5 16.798 13.5 19.934C13.5 23.07 15.4078 25.9447 17.8733 28.306C20.3387 30.6673 24 32.9167 24 32.9167C24 32.9167 27.5427 30.7047 30.1267 28.306C32.883 25.7487 34.5 23.0793 34.5 19.934C34.5 16.7887 32.0073 14.25 28.9308 14.25Z" fill="white" fill-opacity="0.4" stroke="#1E1E1E" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</span>
+		<span class="wishlist-btn-added">
+			<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="0.5" y="0.5" width="47" height="47" fill="white" stroke="#EEEEEE"/>
+				<path d="M28.9308 14.25C26.7846 14.25 24.9313 15.4913 24 17.302C23.0687 15.4913 21.2154 14.25 19.0692 14.25C15.9927 14.25 13.5 16.798 13.5 19.934C13.5 23.07 15.4078 25.9447 17.8733 28.306C20.3387 30.6673 24 32.9167 24 32.9167C24 32.9167 27.5427 30.7047 30.1267 28.306C32.883 25.7487 34.5 23.0793 34.5 19.934C34.5 16.7887 32.0073 14.25 28.9308 14.25Z" fill="white" fill-opacity="0.4" stroke="#1E1E1E" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</span>
+	</button> {% endcomment %}
+</div> {% endcomment %}
+
+
+<div class="pdp-share-sec">
+    <!-- Share Button -->
+    <button class="pdp-share share-button"
+        data-share-url="{{ request.origin }}{{ product.url }}"
+        data-share-title="{{ product.title | escape }}"
+    >
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="47" height="47" fill="white" stroke="#EEEEEE"/>
+            <path d="M31.59 23L27 18.41V20.87L26.14 21C21.83 21.61 18.91 23.87 17.24 27.33C19.56 25.69 22.44 24.9 26 24.9H27V27.59M25 25.92C20.53 26.13 17.33 27.74 15 31C16 26 19 21 26 20V16L33 23L26 30V25.9C25.67 25.9 25.34 25.91 25 25.92Z" fill="black"/>
+        </svg>
+    </button>
+
+    <!-- Wishlist Hero Icon / Button -->
+
+</div>

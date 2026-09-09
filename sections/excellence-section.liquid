@@ -1,0 +1,213 @@
+<section class="excellence-{{ section.id }} theme-{{ section.settings.theme_style }}">
+    <div class="container">
+
+        <h2>{{ section.settings.title }}</h2>
+
+        <p class="desc">
+            {{ section.settings.description }}
+        </p>
+
+        <div class="grid">
+
+            {% for block in section.blocks %}
+                <div class="card" {{ block.shopify_attributes }}>
+
+                    <div class="number">
+                        {{ block.settings.number }}
+                    </div>
+
+                    <h3>{{ block.settings.title }}</h3>
+
+                    <p>{{ block.settings.text }}</p>
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Excellence Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Main Title",
+      "default": "SECRET OF EXCELLENCE, REVEALED"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "theme_style",
+      "label": "Theme Style",
+      "default": "dark",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Black Theme"
+        },
+        {
+          "value": "light",
+          "label": "White Theme"
+        }
+      ]
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "SEDEX-CERTIFIED MANUFACTURER"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Card Text"
+        }
+      ]
+    }
+  ],
+
+  "max_blocks": 6,
+
+  "presets": [
+    {
+      "name": "Excellence Section",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+/* ================= BASE ================= */
+.excellence-{{ section.id }} {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.excellence-{{ section.id }} .container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.excellence-{{ section.id }} h2 {
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.excellence-{{ section.id }} p.desc {
+    font-size: 14px;
+    max-width: 800px;
+    margin: 0 auto 60px;
+    line-height: 1.6;
+}
+
+/* GRID */
+.excellence-{{ section.id }} .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* CARD */
+.excellence-{{ section.id }} .card {
+    padding: 40px 30px;
+    text-align: left;
+    position: relative;
+}
+
+.excellence-{{ section.id }} .number {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.excellence-{{ section.id }} .card h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.excellence-{{ section.id }} .card p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ================= DARK THEME ================= */
+.excellence-{{ section.id }}.theme-dark {
+    background: #000;
+    color: #fff;
+}
+
+.excellence-{{ section.id }}.theme-dark p.desc {
+    color: #aaa;
+}
+
+.excellence-{{ section.id }}.theme-dark .card {
+    border: 1px solid #222;
+}
+
+.excellence-{{ section.id }}.theme-dark .number {
+    color: #777;
+}
+
+.excellence-{{ section.id }}.theme-dark .card p {
+    color: #bbb;
+}
+
+/* ================= LIGHT THEME ================= */
+.excellence-{{ section.id }}.theme-light {
+    background: #fff;
+    color: #000;
+}
+
+.excellence-{{ section.id }}.theme-light p.desc {
+    color: #555;
+}
+
+.excellence-{{ section.id }}.theme-light .card {
+    border: 1px solid #e5e5e5;
+}
+
+.excellence-{{ section.id }}.theme-light .number {
+    color: #999;
+}
+
+.excellence-{{ section.id }}.theme-light .card p {
+    color: #666;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+    .excellence-{{ section.id }} .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .excellence-{{ section.id }} .card {
+        padding: 30px 20px;
+    }
+}
+</style>

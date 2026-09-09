@@ -1,0 +1,55 @@
+
+{% assign section_class = class %}
+{% if section_class == blank %}
+    {% assign section_class ='shop-look-card-inner' %}
+{% endif %}
+{% assign card_id = section_class | append: 'card_' %}
+{% assign card_id = card_id | append: section.id %}
+{% assign card_id = card_id | append: product.id %}
+{% assign card_id = card_id | append: block.id %}
+
+{% assign btn_id = section_class | append: 'quick_add_' %}
+{% assign btn_id = btn_id | append: section.id %}
+{% assign btn_id = btn_id | append: product.selected_or_first_available_variant.id %}
+{% assign btn_id = btn_id | append: block.id %}
+
+{% capture card_attr %}
+    data-quick-add-cart="true"
+    data-product="{{ product.id }}"
+    data-card=".{{ card_id }}"
+    data-global-card=".{{  section_class }}"
+    data-url="{{ product.url }}"
+    data-size-variant-selector=".variant-size-selector"
+    data-card=".{{ card_id }}"
+    data-quick-add-btn="{{ btn_id }}"
+{% endcapture %}
+    <div class="{{ section_class }} {{ card_id }}">
+    <a href="{{ product.url }}" class="shop-look-thumb">
+    <img src="{{ product.featured_image | image_url: width: '200px' }}" alt="{{ product.title }}">
+    </a>
+    <div class="shop-look-content">
+    <div class="thomassmheading">
+        <a href="{{ product.url }}">{{ product.title }}</a>
+    </div>
+        <div class="content">
+        {% render 'price', product_resource: product %}
+    
+        <div class="btn">
+        <button 
+            class="shop-look-quick-add" 
+            data-product-id="{{ product.id }}"
+            {{ card_attr }}
+            onclick="toggleAddToCart(this)"
+        >
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {% comment %} <rect width="32" height="32" rx="4" fill="#000"/> {% endcomment %}
+                                <path d="M12.074 8.0625V3.9375C12.074 3.02582 11.7119 2.15148 11.0672 1.50682C10.4225 0.862164 9.5482 0.5 8.63652 0.5C7.72484 0.5 6.8505 0.862164 6.20584 1.50682C5.56119 2.15148 5.19902 3.02582 5.19902 3.9375V8.0625M15.6087 6.23558L16.7664 17.2356C16.8306 17.8452 16.3539 18.375 15.7407 18.375H1.53236C1.38771 18.3752 1.24465 18.3449 1.11247 18.2861C0.980295 18.2274 0.86195 18.1415 0.765126 18.0341C0.668303 17.9266 0.595168 17.8 0.550472 17.6624C0.505775 17.5249 0.490517 17.3794 0.505689 17.2356L1.66436 6.23558C1.69108 5.98218 1.81068 5.74764 2.00008 5.57719C2.18949 5.40674 2.4353 5.31245 2.69011 5.3125H14.5829C15.1109 5.3125 15.5537 5.71125 15.6087 6.23558ZM5.54277 8.0625C5.54277 8.15367 5.50656 8.2411 5.44209 8.30557C5.37762 8.37003 5.29019 8.40625 5.19902 8.40625C5.10785 8.40625 5.02042 8.37003 4.95595 8.30557C4.89149 8.2411 4.85527 8.15367 4.85527 8.0625C4.85527 7.97133 4.89149 7.8839 4.95595 7.81943C5.02042 7.75497 5.10785 7.71875 5.19902 7.71875C5.29019 7.71875 5.37762 7.75497 5.44209 7.81943C5.50656 7.8839 5.54277 7.97133 5.54277 8.0625ZM12.4178 8.0625C12.4178 8.15367 12.3816 8.2411 12.3171 8.30557C12.2526 8.37003 12.1652 8.40625 12.074 8.40625C11.9829 8.40625 11.8954 8.37003 11.831 8.30557C11.7665 8.2411 11.7303 8.15367 11.7303 8.0625C11.7303 7.97133 11.7665 7.8839 11.831 7.81943C11.8954 7.75497 11.9829 7.71875 12.074 7.71875C12.1652 7.71875 12.2526 7.75497 12.3171 7.81943C12.3816 7.8839 12.4178 7.97133 12.4178 8.0625Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        </div>
+    </div>
+
+    {% render 'product-card-size-variants', product: product, card_attr: card_attr, section_id: section.id, section:section %}
+    {% render 'th-quick-add', product: product, section_id: section.id, btn_id: btn_id %}
+    </div>
+</div>

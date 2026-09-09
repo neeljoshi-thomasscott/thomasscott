@@ -1,0 +1,275 @@
+
+
+<section class="store-locator-sec">
+  <div class="container">
+    <div class="store-locator-list">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          <article class="store-card" {{ block.shopify_attributes }}>
+            <header class="thomasmdheading">
+              {% if block.settings.store_link != blank %}
+                <a href="{{ block.settings.store_link }}">
+                  {{ block.settings.heading | escape }}
+                </a>
+              {% else %}
+                {{ block.settings.heading | escape }}
+              {% endif %}
+            </header>
+
+            {% if block.settings.address != blank %}
+              <p>{{ block.settings.address | escape }}</p>
+            {% endif %}
+
+            <div class="store-card-info">
+              <div class="store-card-left">
+                <div class="thomasxsheading">
+                  Contact details
+                </div>
+
+                {% if block.settings.phone != blank %}
+                  <div class="store-call">
+                    <span class="store-call-icon">
+                      {% if section.settings.phone_icon != blank %}
+                        <img
+                          width="24"
+                          height="24"
+                          class="w-full lazyload"
+                          src="{{ section.settings.phone_icon | image_url }}"
+                          alt="Phone icon"
+                        >
+                      {% endif %}
+                    </span>
+                    <a href="tel:{{ block.settings.phone | replace: ' ', '' }}">
+                      {{ block.settings.phone }}
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="store-card-right">
+                <div class="thomasxsheading">
+                 Timings
+                </div>
+
+                {% if block.settings.hours != blank %}
+                  <div class="store-call">
+                    <span class="store-call-icon">
+                      {% if section.settings.time_icon != blank %}
+                        <img
+                          width="24"
+                          height="24"
+                          class="w-full lazyload"
+                          src="{{ section.settings.time_icon | image_url }}"
+                          alt="Time icon"
+                        >
+                      {% endif %}
+                    </span>
+                    <p>{{ block.settings.hours | escape }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if block.settings.directions_url != blank %}
+              <a
+                href="{{ block.settings.directions_url }}"
+                class="thomas-btn thomas-black-btn hovertime store-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get directions
+              </a>
+            {% endif %}
+          </article>
+        {% endfor %}
+      {% else %}
+        <p>No stores added yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .store-locator-sec {
+    padding: 40px 0;
+  }
+
+  .store-locator-list {
+    display: grid;
+    gap: 24px;
+  }
+
+  .store-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .store-card-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .store-call {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .store-call-icon {
+    flex: 0 0 auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Store locator",
+  "class": "store-locator-main",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Store locator"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_desktop",
+      "label": "Banner image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Banner image (mobile)"
+    },
+    {
+      "type": "image_picker",
+      "id": "phone_icon",
+      "label": "Phone icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "time_icon",
+      "label": "Time icon"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Store",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Store name",
+          "default": "Gopalan Signature Mall"
+        },
+        {
+          "type": "text",
+          "id": "store_link",
+          "label": "Store link (optional)"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "Address",
+          "default": "Store address"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone number",
+          "default": "+91 9000000000"
+        },
+        {
+          "type": "text",
+          "id": "hours",
+          "label": "Timings",
+          "default": "10:30 AM to 10:00 PM"
+        },
+        {
+          "type": "url",
+          "id": "directions_url",
+          "label": "Get directions URL"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 50,
+  "presets": [
+    {
+      "name": "Store locator",
+      "blocks": [
+        {
+          "type": "store",
+          "settings": {
+            "heading": "Gopalan Signature Mall",
+            "store_link": "https://www.google.com/maps/dir//12.993355,77.661575",
+            "address": "Gopalan Signature Mall, 6, Old Madras Road, Nagavarapalya, CV Raman Nagar, Bengaluru, 560093, India",
+            "phone": "+91 9008487597",
+            "hours": "10:30 AM to 10:00 PM",
+            "directions_url": "https://www.google.com/maps/dir//12.993355,77.661575"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "heading": "Hesaraghatta Store",
+            "store_link": "https://www.google.com/maps/dir//13.122636,77.496514",
+            "address": "Hesarghatta Main Road, Near Bagalakunte Bus Stand, Beside Hotel Elite, Bangalore, 560073, India",
+            "phone": "+91 96069 10803",
+            "hours": "10:30 AM to 10:00 PM",
+            "directions_url": "https://www.google.com/maps/dir//13.122636,77.496514"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "heading": "Koramangala Store",
+            "store_link": "https://www.google.com/maps/dir//13.027906,77.575905",
+            "address": "Thomas Scott India Ltd, KR Garden Mall, No. 11, Ground Floor, 1st Cross Road, 80 Feet Rd, opposite Amul Cooperative Dairy Office, Koramangala 8th Block, Koramangala, Bengaluru, 560095, India",
+            "phone": "+91 9606910805",
+            "hours": "10:00 AM to 10:00 PM",
+            "directions_url": "https://www.google.com/maps/dir//13.027906,77.575905"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "heading": "Uttarahalli Store",
+            "store_link": "https://www.google.com/maps/dir//12.905922,77.542673",
+            "address": "#275/244/148/1, Gousiya Complex, Ground Floor, Uttarahalli Circle, 4th Main Rd, Simhadri Layout, Uttarahalli Hobli, Bengaluru, 560061, India",
+            "phone": "+91 9606910804",
+            "hours": "10:30 AM to 10:00 PM",
+            "directions_url": "https://www.google.com/maps/dir//12.905922,77.542673"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "heading": "Vidyaranyapura Store",
+            "store_link": "https://www.google.com/maps/dir//13.079216,77.557312",
+            "address": "Shop no-1269, Ground Floor, 1st Block, Vidyaranyapura Main Road, opp. Kotak Mahindra Bank, BEL Layout 1st Block, BEL Layout, Vidyaranyapura, Bengaluru, 560097, India",
+            "phone": "+91 9606910801",
+            "hours": "10:30 AM to 10:00 PM",
+            "directions_url": "https://www.google.com/maps/dir//13.079216,77.557312"
+          }
+        },
+        {
+          "type": "store",
+          "settings": {
+            "heading": "Yelahanka New Town Store",
+            "store_link": "https://www.google.com/maps/dir//13.120146,77.571571",
+            "address": "Shop no-1132, 16th B Cross Rd, LIG 3rd Stage, Udaya Layout, Yelahanka New Town, Bengaluru, 560064, India",
+            "phone": "+91 96069 10802",
+            "hours": "10:30 AM to 10:00 PM",
+            "directions_url": "https://www.google.com/maps/dir//13.120146,77.571571"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

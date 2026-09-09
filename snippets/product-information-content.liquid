@@ -1,0 +1,368 @@
+{% doc %}
+  Product Information Content
+
+  Renders the product information layout with media gallery and product details.
+  Used by both product-information and featured-product-information sections.
+
+  @param {number} product_media_size - Number of media items in the product
+  @param {string} section_id - Unique section ID
+  @param {object} settings - Section settings object
+  @param {string} media_gallery - Captured HTML for the product media gallery block
+  @param {string} product_details - Captured HTML for the product details block
+  @param {string} additional_blocks - Captured HTML for additional section blocks
+
+  @example
+  {% capture media_gallery %}
+    {% content_for 'block', type: '_product-media-gallery', id: 'media-gallery', closest.product: product %}
+  {% endcapture %}
+
+  {% capture product_details %}
+    {% content_for 'block', type: '_product-details', id: 'product-details', closest.product: product %}
+  {% endcapture %}
+
+  {% capture additional_blocks %}
+    {% content_for 'blocks' %}
+  {% endcapture %}
+
+  {% render 'product-information-content',
+    product_media_size: product.media.size,
+    section_id: section.id,
+    settings: section.settings,
+    media_gallery: media_gallery,
+    product_details: product_details,
+    additional_blocks: additional_blocks
+  %}
+{% enddoc %}
+
+{% liquid
+  # Determine render order based on media position
+  if settings.desktop_media_position == 'left'
+    assign render_order = 'media,product-details'
+  else
+    assign render_order = 'product-details,media'
+  endif
+
+  # Check if product has media
+  assign product_has_media = true
+  if product_media_size == 0
+    assign product_has_media = false
+  endif
+
+  # Build product grid class
+  assign product_grid_class = 'product-information__grid'
+
+  if product_has_media == false
+    assign product_grid_class = product_grid_class | append: ' product-information--media-none'
+  elsif settings.desktop_media_position == 'right'
+    assign product_grid_class = product_grid_class | append: ' product-information--media-right'
+  else
+    assign product_grid_class = product_grid_class | append: ' product-information--media-left'
+  endif
+
+  if settings.equal_columns
+    assign product_grid_class = product_grid_class | append: ' product-information__grid--half'
+
+    if settings.limit_details_width
+      assign product_grid_class = product_grid_class | append: ' product-information__grid--limit-details'
+    endif
+  endif
+
+  # Determine content width
+  case settings.content_width
+    when 'content-center-aligned'
+      assign content_width = 'page-width'
+    when 'content-full-width'
+      assign content_width = 'full-width'
+  endcase
+%}
+
+<div class="section-background color-{{ settings.color_scheme }}"></div>
+<div
+  class="product-information  container section relative"
+  
+  data-testid="product-information"
+>
+  {% if settings.desktop_media_position == 'left' and product_has_media and request.page_type == 'product' %}
+    {% assign product_href = '#ProductInformation-' | append: section_id %}
+    {% render 'skip-to-content-link', href: product_href, text: 'accessibility.skip_to_product_info' %}
+  {% endif %}
+  <div
+    class="{{ product_grid_class }}"
+    data-product-grid-content
+    
+  > 
+    {% assign render_order_array = render_order | split: ',' %}
+    {% capture media %}
+      <div
+        class="product-information__media"
+        data-testid="product-information-media"
+      >
+        <div class="product-media-top-icons">
+          <a href="javascript:history.back()" class="media-back-btn" aria-label="Go Back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="13" viewBox="0 0 8 13" fill="none"> <path d="M6.75 11.75L0.75 6.25L6.75 0.750004" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>
+          </a>
+           <!-- Share Button -->
+    <button class="pdp-share share-button"
+        data-share-url="{{ request.origin }}{{ product.url }}"
+        data-share-title="{{ product.title | escape }}"
+    >
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect 
+    x="0.5" 
+    y="0.5" 
+    width="47" 
+    height="47" 
+    fill="white" 
+    stroke="#EEEEEE"
+  />
+
+  <path 
+    d="M31.59 23L27 18.41V20.87L26.14 21C21.83 21.61 18.91 23.87 17.24 27.33C19.56 25.69 22.44 24.9 26 24.9H27V27.59M25 25.92C20.53 26.13 17.33 27.74 15 31C16 26 19 21 26 20V16L33 23L26 30V25.9C25.67 25.9 25.34 25.91 25 25.92Z"
+    fill="black"
+    stroke="black"
+    stroke-width="0.5"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+</svg>
+        {% comment %} <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="47" height="47" fill="white" stroke="#EEEEEE"/>
+            <path d="M31.59 23L27 18.41V20.87L26.14 21C21.83 21.61 18.91 23.87 17.24 27.33C19.56 25.69 22.44 24.9 26 24.9H27V27.59M25 25.92C20.53 26.13 17.33 27.74 15 31C16 26 19 21 26 20V16L33 23L26 30V25.9C25.67 25.9 25.34 25.91 25 25.92Z" fill="black"/>
+        </svg> {% endcomment %}
+    </button>
+{% render 'wishlisthero-collection-product' with product: product %}
+
+
+          {% comment %} <a href="/a/wishlist-hero/wishlist"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+<rect width="36" height="36" fill="white" fill-opacity="0.4"/>
+<path d="M22.2264 10C20.3868 10 18.7983 11.064 18 12.616C17.2017 11.064 15.6132 10 13.7736 10C11.1366 10 9 12.184 9 14.872C9 17.56 10.6353 20.024 12.7485 22.048C14.8617 24.072 18 26 18 26C18 26 21.0366 24.104 23.2515 22.048C25.614 19.856 27 17.568 27 14.872C27 12.176 24.8634 10 22.2264 10Z" fill="white" fill-opacity="0.4" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> {% endcomment %}
+        </div>
+        {{ media_gallery }}
+      </div>
+    {% endcapture %}
+
+    {% for block in render_order_array %}
+      {% if block == 'media' and product_has_media %}
+        {{ media }}
+      {% elsif block == 'product-details' %}
+        {{ product_details }}
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {{ additional_blocks }}
+</div>
+<script>
+document.dispatchEvent(new CustomEvent("wishlistHeroReload"));
+</script>
+{% stylesheet %}
+  .product-information {
+    gap: var(--gap) 0;
+  }
+
+  /* Base grid layout */
+  .product-information__grid {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+  }
+
+  /* Default column positions */
+  .product-details {
+    order: 1;
+  }
+
+  .product-information__media {
+    order: 0;
+    width: 0;
+    min-width: 100%;
+  }
+
+  .product-information__media .product-media-gallery__placeholder-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Mobile styles */
+  @media screen and (max-width: 749px) {
+    .product-information__media {
+      grid-column: 1 / -1;
+    }
+
+    .product-details {
+      grid-column: 2 / 3;
+    }
+  }
+
+  /* Desktop styles */
+  @media screen and (min-width: 750px) {
+    .product-information__grid {
+      grid-column: 2;
+    }
+
+    /* Position when there is no media */
+    .product-information__grid.product-information--media-none {
+      .product-details {
+        width: var(--narrow-content-width);
+        margin: 0 auto;
+      }
+    }
+
+    /* Position when there is media */
+    .product-information__grid:not(.product-information--media-none) {
+      /* Media on the left side */
+      &.product-information--media-left {
+        grid-template-columns: 1fr min(50vw, var(--sidebar-width));
+
+        .product-information__media {
+          padding-right: calc(var(--gap, 0) / 2);
+        }
+
+        .product-details {
+          padding-left: calc(var(--gap, 0) / 2);
+        }
+
+        &:has(.media-gallery--extend) {
+          grid-column: 1 / 3;
+        }
+      }
+
+      /* Media on the right side */
+      &.product-information--media-right {
+        grid-template-columns: min(50vw, var(--sidebar-width)) 1fr;
+
+        .product-information__media {
+          padding-left: calc(var(--gap, 0) / 2);
+          order: 1;
+        }
+
+        .product-details {
+          padding-right: calc(var(--gap, 0) / 2);
+          order: 0;
+        }
+
+        &:has(.media-gallery--extend) {
+          grid-column: 2 / -1;
+        }
+      }
+
+      /* Equal width columns */
+      &.product-information__grid--half,
+      &.product-information__grid--half:has(.media-gallery--extend) {
+        grid-column: 1 / -1;
+        grid-template-columns:
+          var(--full-page-grid-margin) calc(var(--full-page-grid-central-column-width) / 2) calc(
+            var(--full-page-grid-central-column-width) / 2
+          )
+          var(--full-page-grid-margin);
+
+        &.product-information--media-left {
+          .product-information__media {
+            grid-column: 2 / 3;
+
+            &:has(.media-gallery--extend) {
+              grid-column: 1 / 3;
+            }
+          }
+
+          .product-details {
+            grid-column: 3 / 4;
+          }
+        }
+
+        &.product-information--media-right {
+          .product-information__media {
+            grid-column: 3 / 4;
+
+            &:has(.media-gallery--extend) {
+              grid-column: 3 / -1;
+            }
+          }
+
+          .product-details {
+            grid-column: 2 / 3;
+          }
+        }
+      }
+    }
+
+    /* Handle full width section */
+    .section--full-width {
+      .product-information__grid:not(.product-information--media-none) {
+        &.product-information--media-left,
+        &.product-information--media-right {
+          grid-column: 1 / -1;
+        }
+
+        &.product-information--media-left .product-details {
+          padding-inline-end: var(--padding-lg);
+        }
+
+        &.product-information--media-right .product-details {
+          padding-inline-start: var(--padding-lg);
+        }
+
+        &.product-information__grid--half.product-information--media-left {
+          .product-information__media {
+            grid-column: 1 / 3;
+          }
+
+          .product-details {
+            grid-column: 3 / -1;
+          }
+        }
+
+        &.product-information__grid--half.product-information--media-right {
+          .product-information__media {
+            grid-column: 3 / -1;
+          }
+
+          .product-details {
+            grid-column: 1 / 3;
+          }
+        }
+      }
+    }
+  }
+
+  /* Wider sidebar for large screens */
+  @media screen and (min-width: 1200px) {
+    .product-information__grid:not(
+        .product-information__grid--half,
+        .product-information--media-none
+      ).product-information--media-left {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    .product-information__grid:not(
+        .product-information__grid--half,
+        .product-information--media-none
+      ).product-information--media-right {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+
+  .product-information__grid--limit-details .product-details > .group-block {
+    --details-max-width: var(--sidebar-width);
+    max-width: var(--details-max-width);
+  }
+
+  @media screen and (min-width: 1600px) {
+    .product-information__grid--limit-details .product-details > .group-block {
+      --details-max-width: 32rem;
+    }
+  }
+
+  /* If the header is sticky, make product details content stick underneath the header */
+  body:has(#header-group #header-component[data-sticky-state='active']) .product-details.sticky-content--desktop {
+    --sticky-header-offset: var(--header-height);
+  }
+{% endstylesheet %}
+<script>
+  document.querySelectorAll('.product-media-top-icons a').forEach(el => {
+  el.addEventListener('click', function(e){
+    e.stopPropagation();
+  });
+});
+</script>

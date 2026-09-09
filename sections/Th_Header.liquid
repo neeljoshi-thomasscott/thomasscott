@@ -1,0 +1,955 @@
+<script
+  src="{{ 'cart-icon.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'product-recommendations.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<!-- Top Bar -->
+  {% capture announcement_bar %}
+    {%if section.settings.announcement_text!=blank %}
+    <div class="header-top">
+      <div class="item">
+        <p>{{ settings.announcement_text }}</p>
+      </div>
+    </div>
+  {% endif %}
+  {% endcapture %}
+{% assign menu_title = childlink.title | strip | downcase %}
+
+{% assign enable_secondary_header = false %}
+{% comment %} {% if template == 'product' or template == 'collection' %} {% endcomment %}
+ {% comment %} {% if request.page_type == 'product' 
+   or request.page_type == 'collection'
+   or request.page_type == 'cart'
+   or page.handle == 'privacy-policy'
+   or page.handle == 'about-us'
+      or page.handle == 'contact-us'
+   or page.handle == 'store-locator'
+
+   or page.handle == 'terms-and-conditions'
+   or page.handle == 'shipping-policy'
+   or page.handle == 'refund-policy' %} {% assign enable_secondary_header = true %}
+{% else %}
+  {{ announcement_bar }}
+  {% assign enable_secondary_header = false %}
+{% endif %} {% endcomment %}
+ {% if request.page_type == 'product' 
+   or request.page_type == 'collection'
+   or request.path == '/collections'
+   or request.path == '/search'
+   or request.page_type == 'cart'
+   or request.page_type == 'blog'
+   or request.page_type == 'article'
+   or page.handle == 'privacy-policy'
+   or page.handle == 'about-us'
+   or page.handle == 'contact-us'
+   or page.handle == 'store-locator'
+   or page.handle == 'terms-and-conditions'
+   or page.handle == 'shipping-policy'
+   or page.handle == 'refund-policy'
+ 
+or page.handle == 'faqs' %}
+
+  {% assign enable_secondary_header = true %}
+
+{% else %}
+
+  {{ announcement_bar }}
+  {% assign enable_secondary_header = false %}
+
+{% endif %}
+
+{% capture cart_icon %}
+  <cart-icon
+    class="header-actions__cart-icon{% if display_style == 'text' %} header-actions__cart-icon--text{% endif %}{% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}"
+    data-testid="cart-icon"
+  >
+    
+    <span class="{% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}">
+      {% comment %} {{ 'content.cart_title' | t }} {% endcomment %}
+        {% comment %} <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M12.324 8.3125V4.1875C12.324 3.27582 11.9619 2.40148 11.3172 1.75682C10.6725 1.11216 9.7982 0.75 8.88652 0.75C7.97484 0.75 7.1005 1.11216 6.45584 1.75682C5.81119 2.40148 5.44902 3.27582 5.44902 4.1875V8.3125M15.8587 6.48558L17.0164 17.4856C17.0806 18.0952 16.6039 18.625 15.9907 18.625H1.78236C1.63771 18.6252 1.49465 18.5949 1.36247 18.5361C1.23029 18.4774 1.11195 18.3915 1.01513 18.2841C0.918303 18.1766 0.845168 18.05 0.800472 17.9124C0.755775 17.7749 0.740517 17.6294 0.755689 17.4856L1.91436 6.48558C1.94108 6.23218 2.06068 5.99764 2.25008 5.82719C2.43949 5.65674 2.6853 5.56245 2.94011 5.5625H14.8329C15.3609 5.5625 15.8037 5.96125 15.8587 6.48558ZM5.79277 8.3125C5.79277 8.40367 5.75656 8.4911 5.69209 8.55557C5.62762 8.62003 5.54019 8.65625 5.44902 8.65625C5.35785 8.65625 5.27042 8.62003 5.20595 8.55557C5.14149 8.4911 5.10527 8.40367 5.10527 8.3125C5.10527 8.22133 5.14149 8.1339 5.20595 8.06943C5.27042 8.00497 5.35785 7.96875 5.44902 7.96875C5.54019 7.96875 5.62762 8.00497 5.69209 8.06943C5.75656 8.1339 5.79277 8.22133 5.79277 8.3125ZM12.6678 8.3125C12.6678 8.40367 12.6316 8.4911 12.5671 8.55557C12.5026 8.62003 12.4152 8.65625 12.324 8.65625C12.2329 8.65625 12.1454 8.62003 12.081 8.55557C12.0165 8.4911 11.9803 8.40367 11.9803 8.3125C11.9803 8.22133 12.0165 8.1339 12.081 8.06943C12.1454 8.00497 12.2329 7.96875 12.324 7.96875C12.4152 7.96875 12.5026 8.00497 12.5671 8.06943C12.6316 8.1339 12.6678 8.22133 12.6678 8.3125Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg> {% endcomment %}
+          {% comment %} <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.574 8.5625V4.4375C12.574 3.52582 12.2119 2.65148 11.5672 2.00682C10.9225 1.36216 10.0482 1 9.13652 1C8.22484 1 7.3505 1.36216 6.70584 2.00682C6.06119 2.65148 5.69902 3.52582 5.69902 4.4375V8.5625M16.1087 6.73558L17.2664 17.7356C17.3306 18.3452 16.8539 18.875 16.2407 18.875H2.03236C1.88771 18.8752 1.74465 18.8449 1.61247 18.7861C1.48029 18.7274 1.36195 18.6415 1.26513 18.5341C1.1683 18.4266 1.09517 18.3 1.05047 18.1624C1.00578 18.0249 0.990517 17.8794 1.00569 17.7356L2.16436 6.73558C2.19108 6.48218 2.31068 6.24764 2.50008 6.07719C2.68949 5.90674 2.9353 5.81245 3.19011 5.8125H15.0829C15.6109 5.8125 16.0537 6.21125 16.1087 6.73558ZM6.04277 8.5625C6.04277 8.65367 6.00656 8.7411 5.94209 8.80557C5.87762 8.87003 5.79019 8.90625 5.69902 8.90625C5.60785 8.90625 5.52042 8.87003 5.45595 8.80557C5.39149 8.7411 5.35527 8.65367 5.35527 8.5625C5.35527 8.47133 5.39149 8.3839 5.45595 8.31943C5.52042 8.25497 5.60785 8.21875 5.69902 8.21875C5.79019 8.21875 5.87762 8.25497 5.94209 8.31943C6.00656 8.3839 6.04277 8.47133 6.04277 8.5625ZM12.9178 8.5625C12.9178 8.65367 12.8816 8.7411 12.8171 8.80557C12.7526 8.87003 12.6652 8.90625 12.574 8.90625C12.4829 8.90625 12.3954 8.87003 12.331 8.80557C12.2665 8.7411 12.2303 8.65367 12.2303 8.5625C12.2303 8.47133 12.2665 8.3839 12.331 8.31943C12.3954 8.25497 12.4829 8.21875 12.574 8.21875C12.6652 8.21875 12.7526 8.25497 12.8171 8.31943C12.8816 8.3839 12.9178 8.47133 12.9178 8.5625Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg> {% endcomment %}
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
+<path d="M12.324 8.3125V4.1875C12.324 3.27582 11.9619 2.40148 11.3172 1.75682C10.6725 1.11216 9.7982 0.75 8.88652 0.75C7.97484 0.75 7.1005 1.11216 6.45584 1.75682C5.81119 2.40148 5.44902 3.27582 5.44902 4.1875V8.3125M15.8587 6.48558L17.0164 17.4856C17.0806 18.0952 16.6039 18.625 15.9907 18.625H1.78236C1.63771 18.6252 1.49465 18.5949 1.36247 18.5361C1.23029 18.4774 1.11195 18.3915 1.01513 18.2841C0.918303 18.1766 0.845168 18.05 0.800472 17.9124C0.755775 17.7749 0.740517 17.6294 0.755689 17.4856L1.91436 6.48558C1.94108 6.23218 2.06068 5.99764 2.25008 5.82719C2.43949 5.65674 2.6853 5.56245 2.94011 5.5625H14.8329C15.3609 5.5625 15.8037 5.96125 15.8587 6.48558ZM5.79277 8.3125C5.79277 8.40367 5.75656 8.4911 5.69209 8.55557C5.62762 8.62003 5.54019 8.65625 5.44902 8.65625C5.35785 8.65625 5.27042 8.62003 5.20595 8.55557C5.14149 8.4911 5.10527 8.40367 5.10527 8.3125C5.10527 8.22133 5.14149 8.1339 5.20595 8.06943C5.27042 8.00497 5.35785 7.96875 5.44902 7.96875C5.54019 7.96875 5.62762 8.00497 5.69209 8.06943C5.75656 8.1339 5.79277 8.22133 5.79277 8.3125ZM12.6678 8.3125C12.6678 8.40367 12.6316 8.4911 12.5671 8.55557C12.5026 8.62003 12.4152 8.65625 12.324 8.65625C12.2329 8.65625 12.1454 8.62003 12.081 8.55557C12.0165 8.4911 11.9803 8.40367 11.9803 8.3125C11.9803 8.22133 12.0165 8.1339 12.081 8.06943C12.1454 8.00497 12.2329 7.96875 12.324 7.96875C12.4152 7.96875 12.5026 8.00497 12.5671 8.06943C12.6316 8.1339 12.6678 8.22133 12.6678 8.3125Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+    </span>
+
+    <span
+      class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}"
+      aria-hidden="true"
+    >
+      {% comment %} {{ 'icon-cart.svg' | inline_asset_content }} {% endcomment %}
+       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
+<path d="M12.324 8.3125V4.1875C12.324 3.27582 11.9619 2.40148 11.3172 1.75682C10.6725 1.11216 9.7982 0.75 8.88652 0.75C7.97484 0.75 7.1005 1.11216 6.45584 1.75682C5.81119 2.40148 5.44902 3.27582 5.44902 4.1875V8.3125M15.8587 6.48558L17.0164 17.4856C17.0806 18.0952 16.6039 18.625 15.9907 18.625H1.78236C1.63771 18.6252 1.49465 18.5949 1.36247 18.5361C1.23029 18.4774 1.11195 18.3915 1.01513 18.2841C0.918303 18.1766 0.845168 18.05 0.800472 17.9124C0.755775 17.7749 0.740517 17.6294 0.755689 17.4856L1.91436 6.48558C1.94108 6.23218 2.06068 5.99764 2.25008 5.82719C2.43949 5.65674 2.6853 5.56245 2.94011 5.5625H14.8329C15.3609 5.5625 15.8037 5.96125 15.8587 6.48558ZM5.79277 8.3125C5.79277 8.40367 5.75656 8.4911 5.69209 8.55557C5.62762 8.62003 5.54019 8.65625 5.44902 8.65625C5.35785 8.65625 5.27042 8.62003 5.20595 8.55557C5.14149 8.4911 5.10527 8.40367 5.10527 8.3125C5.10527 8.22133 5.14149 8.1339 5.20595 8.06943C5.27042 8.00497 5.35785 7.96875 5.44902 7.96875C5.54019 7.96875 5.62762 8.00497 5.69209 8.06943C5.75656 8.1339 5.79277 8.22133 5.79277 8.3125ZM12.6678 8.3125C12.6678 8.40367 12.6316 8.4911 12.5671 8.55557C12.5026 8.62003 12.4152 8.65625 12.324 8.65625C12.2329 8.65625 12.1454 8.62003 12.081 8.55557C12.0165 8.4911 11.9803 8.40367 11.9803 8.3125C11.9803 8.22133 12.0165 8.1339 12.081 8.06943C12.1454 8.00497 12.2329 7.96875 12.324 7.96875C12.4152 7.96875 12.5026 8.00497 12.5671 8.06943C12.6316 8.1339 12.6678 8.22133 12.6678 8.3125Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+    </span>
+
+    {% render 'cart-bubble', limit: 100, live_region: true %}
+  </cart-icon>
+  
+
+{% endcapture %}
+
+<div class="container">
+  <div class="header-bottom">
+    <!-- Left Icons -->
+    <div class="header-left">
+      {% if enable_secondary_header == true %}
+      <span class="menu-icon">
+        <a href="{{ routes.root_url }}" class="footer-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6.55659 18.75H3.07306C1.78976 18.75 0.75 17.6999 0.75 16.4039V9.50228C0.750782 8.9995 0.857936 8.5027 1.06428 8.04514C1.27063 7.58759 1.57141 7.17985 1.94647 6.84923L8.22529 1.32605C8.6481 0.954588 9.1896 0.75 9.75 0.75C10.3104 0.75 10.8519 0.954588 11.2747 1.32605L17.5535 6.8503C17.9285 7.1808 18.2292 7.58837 18.4355 8.04573C18.6418 8.50309 18.7491 8.99968 18.75 9.50228V16.4039C18.75 17.0259 18.5054 17.6225 18.07 18.0625C17.6345 18.5024 17.0439 18.7497 16.428 18.75H13.2335V11.7126C13.2335 10.7417 12.4542 9.95355 11.4918 9.95355H8.29941C7.33694 9.95355 6.55765 10.7417 6.55765 11.7126L6.55659 18.75ZM6.55659 18.75H13.2346" stroke="#1E1E1E" stroke-width="1.5" stroke-linejoin="round"></path>
+            </svg>
+        </a>
+      </span>
+      {% else %}
+      <button class="nav-icon">
+          <svg width="21" height="18" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 9H19.6667" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M1 1H14.3333" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M1 17H14.3333" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+      </button>
+      {% endif %}
+      {% comment %}
+        <button class="nav-search">
+             <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+        	<path d="M9.03685 17.0387C13.4755 17.0387 17.0737 13.4483 17.0737 9.01935C17.0737 4.59039 13.4755 1 9.03685 1C4.59822 1 1 4.59039 1 9.01935C1 13.4483 4.59822 17.0387 9.03685 17.0387Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        	<path d="M19.0829 19.1772L14.7966 14.9002" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg></button>
+      {% endcomment %}
+      {% render 'search',
+        style: search_style,
+        class: search_class,
+        display_style: section.settings.actions_display_style
+      %}
+    </div>
+
+    <!-- Menu -->
+    <div class="header-menu">
+      
+      <nav class="menu">
+        
+        <button class="header-close-btn" type="button">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.55786 3.5542L10.6699 10.6662" stroke="#1E1E1E" stroke-width="1.23529" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.55396 10.666L10.666 3.55399" stroke="#1E1E1E" stroke-width="1.23529" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="main-menu-div">
+        <!-- Left Menu -->
+        {% comment %} <ul class="menu-list menu-left">
+          {% for link in linklists[section.settings.left_menu].links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul> {% endcomment %}
+{% comment %} 
+<ul class="menu-list menu-left">
+  {% for link in linklists[section.settings.left_menu].links %}
+    <li class="menu-item">
+
+      <a href="{{ link.url }}">{{ link.title }}</a>
+
+      {% if link.links.size > 0 %}
+        <div class="mega-menu">
+          <ul>
+            {% for childlink in link.links %}
+              <li>
+                <a href="{{ childlink.url }}">{{ childlink.title }}</a>
+
+                {% if childlink.links.size > 0 %}
+                  <ul class="submenu">
+                    {% for grandchild in childlink.links %}
+                      <li>
+                        <a href="{{ grandchild.url }}">
+                          {{ grandchild.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+    </li>
+  {% endfor %}
+</ul> {% endcomment %}
+<ul class="menu-list menu-left">
+  {% for link in linklists[section.settings.left_menu].links %}
+    <li class="menu-item">
+
+      <a href="{{ link.url }}">{{ link.title }}</a>
+  {% if link.links.size > 0 %}
+    <span class="menu-arrow">
+      <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
+        <path d="m3 9 4-4-4-4" stroke="currentColor" stroke-linecap="square"></path>
+      </svg>
+    </span>
+  {% endif %}
+      {% if link.links.size > 0 %}
+        <div class="mega-menu">
+
+          <div class="mega-menu-inner">
+
+            <!-- Left Side Categories -->
+            <div class="mega-menu-columns">
+
+              {% for childlink in link.links %}
+
+                {% assign collection_handle = childlink.url | split: '/collections/' | last %}
+{% assign menu_collection = collections[collection_handle] %}
+{% assign menu_image = menu_collection.featured_image %}
+
+                <div class="mega-column">
+
+                <a
+  href="{{ childlink.url }}"
+  class="menu-link-with-image"
+  {% if menu_image %}
+    data-image="{{ menu_image | image_url: width: 800 }}"
+  {% endif %}
+>
+  {% if menu_image %}
+    <span class="menu-thumb">
+      <img
+        src="{{ menu_image | image_url: width: 120 }}"
+        alt="{{ childlink.title }}"
+        loading="lazy"
+      >
+    </span>
+  {% endif %}
+
+  <span class="menu-title">
+    {{ childlink.title }}
+  </span>
+    {% if childlink.links.size > 0 %}
+    <span class="menu-arrow">
+      <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
+        <path d="m3 9 4-4-4-4" stroke="currentColor" stroke-linecap="square"></path>
+      </svg>
+    </span>
+  {% endif %}
+</a>
+
+                  {% if childlink.links.size > 0 %}
+                    <ul class="submenu">
+                      {% for grandchild in childlink.links %}
+                        <li>
+                          <a href="{{ grandchild.url }}">
+                            {{ grandchild.title }}
+                          </a>
+                           {% if grandchild.links.size > 0 %}
+    <span class="menu-arrow">
+      <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
+        <path d="m3 9 4-4-4-4" stroke="currentColor" stroke-linecap="square"></path>
+      </svg>
+    </span>
+  {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+
+                </div>
+
+              {% endfor %}
+
+            </div>
+
+         
+          </div>
+
+        </div>
+      {% endif %}
+
+    </li>
+  {% endfor %}
+</ul>
+
+        <!-- Logo -->
+        <div class="header-logo">
+          <a href="{{ routes.root_url }}">
+            {% if enable_secondary_header == true %}
+            {% comment %} <button type="button" class="nav-icon nav-icon-menu ">
+               Menu
+            </button> {% endcomment %}
+              <img src="{{ section.settings.logo | image_url }}" width="120">
+            {% else %}
+              <img src="{{ section.settings.logo | image_url }}" width="120">
+            {% endif %}
+          </a>
+        </div>
+
+        <!-- Right Menu -->
+        {% comment %} <ul class="menu-list menu-right" vdvcc>
+          {% for link in linklists[section.settings.right_menu].links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul> {% endcomment %}
+        <ul class="menu-list menu-right">
+  {% for link in linklists[section.settings.right_menu].links %}
+    <li class="menu-item">
+
+      {% comment %} <a href="{{ link.url }}">{{ link.title }} 
+        {% if link.url contains '/archive-sale' %}
+    <img
+      src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/flat_price.png?v=1784355461"
+      alt="Flat Price"
+      class="menu-flat-price-sticker"
+      width="70"
+      height="55"
+    >
+  {% endif %}</a> {% endcomment %}
+
+
+
+      <a href="{{ link.url }}">
+  {% comment %} <span class="menu-link-content"> {% endcomment %}
+    {{ link.title }}
+
+    {% if link.url contains '/archive-sale' %}
+      <span class="menu-flat-price-sticker">Flat Price</span>
+    {% endif %}
+  {% comment %} </span> {% endcomment %}
+</a>
+
+
+       {% if link.links.size > 0 %}
+    <span class="menu-arrow">
+      <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
+        <path d="m3 9 4-4-4-4" stroke="currentColor" stroke-linecap="square"></path>
+      </svg>
+    </span>
+  {% endif %}
+
+      {% if link.links.size > 0 %}
+        <div class="mega-menu right-mega-menu">
+
+          <div class="mega-menu-inner">
+
+            <!-- Left Category Column -->
+            <div class="mega-menu-columns">
+
+              {% for childlink in link.links %}
+
+                {% assign collection_handle = childlink.url | split: '/collections/' | last %}
+                {% assign menu_collection = collections[collection_handle] %}
+                {% assign menu_image = menu_collection.featured_image %}
+
+                <div class="mega-column">
+
+                  <a href="{{ childlink.url }}" class="menu-link-with-image">
+
+                    {% if menu_image %}
+                      <span class="menu-thumb">
+                        <img
+                          data-src="{{ menu_image | image_url: width: 120 }}"
+                          width="120"
+                          height="120"
+                          alt="{{ childlink.title }}"
+                          loading="lazy"
+                          class="lazyload"
+                        >
+                      </span>
+                    {% endif %}
+
+                    {% comment %} <span class="menu-title">
+                      {{ childlink.title }}
+                    </span> {% endcomment %}
+                    <span class="menu-title">
+                      {{ childlink.title }}
+                    </span>
+                      {% if childlink.links.size > 0 %}
+    <span class="menu-arrow">
+      <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
+        <path d="m3 9 4-4-4-4" stroke="currentColor" stroke-linecap="square"></path>
+      </svg>
+    </span>
+  {% endif %}
+
+                  </a>
+
+                {% if childlink.links.size > 0 %}
+  <ul class="submenu">
+    {% for grandchild in childlink.links %}
+
+      {% assign grandchild_handle = grandchild.url | split: '/collections/' | last %}
+      {% assign grandchild_collection = collections[grandchild_handle] %}
+      {% assign grandchild_image = grandchild_collection.featured_image %}
+
+      <li>
+        <a href="{{ grandchild.url }}" class="menu-link-with-image">
+
+          {% if grandchild_image %}
+            <span class="menu-thumb">
+              <img
+                data-src="{{ grandchild_image | image_url: width: 120 }}"
+                width="120"
+                height="120"
+                alt="{{ grandchild.title }}"
+                class="lazyload"
+                loading="lazy"
+              >
+            </span>
+          {% endif %}
+
+          <span class="menu-title">
+            {{ grandchild.title }}
+          </span>
+            {% if grandchild.links.size > 0 %}
+    <span class="menu-arrow">
+      <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
+        <path d="m3 9 4-4-4-4" stroke="currentColor" stroke-linecap="square"></path>
+      </svg>
+    </span>
+  {% endif %}
+
+        </a>
+      </li>
+
+    {% endfor %}
+  </ul>
+{% endif %}
+
+                </div>
+
+              {% endfor %}
+
+            </div>
+
+          </div>
+
+        </div>
+      {% endif %}
+
+    </li>
+  {% endfor %}
+</ul>
+</div>   
+<div class="store-locator">
+  <a href="/pages/store-locator" class="store-loc-text">
+     {% comment %} <img
+      src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/STORE_locator_1.png?v=1787035501"
+      class="store-loc-icon"
+      width="20"
+      height="20"
+      alt=""
+      loading="lazy"
+    > {% endcomment %}<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32" fill="none"  class="store-loc-icon">
+<path d="M28.5455 13.2727C28.5455 22.8182 16.2727 31 16.2727 31C16.2727 31 4 22.8182 4 13.2727C4 10.0178 5.29302 6.89618 7.5946 4.5946C9.89618 2.29302 13.0178 1 16.2727 1C19.5277 1 22.6493 2.29302 24.9509 4.5946C27.2524 6.89618 28.5455 10.0178 28.5455 13.2727Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.2726 17.3636C18.5319 17.3636 20.3635 15.5321 20.3635 13.2727C20.3635 11.0134 18.5319 9.18182 16.2726 9.18182C14.0132 9.18182 12.1816 11.0134 12.1816 13.2727C12.1816 15.5321 14.0132 17.3636 16.2726 17.3636Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    <span>Store locator</span>
+  </a>
+</div>
+{% render 'wishlisthero-header-icon.liquid' %}
+      </nav>
+    </div>
+    <div class="header-logo header-logo-mobile">
+      {% if enable_secondary_header == true %}
+        <a href="javascript:void(0)" class="nav-icon nav-icon-menu">
+            Menu
+        </a>
+      {% else %}
+        <a href="{{ routes.root_url }}">
+           <img src="{{ section.settings.logo | image_url }}" width="120"> </a>
+      {% endif %}
+      
+
+    </div>
+    <!-- Right Icons -->
+    <div class="header-right">
+    
+  <a href="/pages/store-locator" class="store-loc-text store-desktop">
+     {% comment %} <img
+      src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/STORE_locator_1.png?v=1787035501"
+      class="store-loc-icon"
+      width="20"
+      height="20"
+      alt=""
+      loading="lazy"
+    > {% endcomment %}
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32" fill="none"  class="store-loc-icon">
+<path d="M28.5455 13.2727C28.5455 22.8182 16.2727 31 16.2727 31C16.2727 31 4 22.8182 4 13.2727C4 10.0178 5.29302 6.89618 7.5946 4.5946C9.89618 2.29302 13.0178 1 16.2727 1C19.5277 1 22.6493 2.29302 24.9509 4.5946C27.2524 6.89618 28.5455 10.0178 28.5455 13.2727Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.2726 17.3636C18.5319 17.3636 20.3635 15.5321 20.3635 13.2727C20.3635 11.0134 18.5319 9.18182 16.2726 9.18182C14.0132 9.18182 12.1816 11.0134 12.1816 13.2727C12.1816 15.5321 14.0132 17.3636 16.2726 17.3636Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+    <span>Store locator</span>
+  </a>
+
+      {% render 'wishlisthero-header-icon.liquid' %}
+      <a href="{{ routes.account_url }}" class="header-user header__icon--account">
+        <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.76125 16.8948L0.939451 15.487C1.27031 12.8906 3.47533 10.9455 6.08838 10.9455H10.7671C13.3802 10.9455 15.5857 12.8911 15.9144 15.487L16.0931 16.8948C16.1903 17.6568 15.6473 18.2742 14.8807 18.2742H1.97423C1.20758 18.2742 0.664656 17.6568 0.76125 16.8948Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path style d="M11.7497 4.15506C11.7497 6.03556 10.2252 7.56055 8.34441 7.56055C6.46359 7.56055 4.93958 6.036 4.93958 4.15506C4.93958 2.27411 6.46403 0.75 8.34485 0.75C10.2257 0.75 11.7501 2.27455 11.7501 4.15506H11.7497Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </a>
+
+      {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
+        <script
+          src="{{ 'cart-drawer.js' | asset_url }}"
+          type="module"
+          fetchpriority="low"
+        ></script>
+
+        {% capture empty_cart_drawer_content %}
+      <div class="cart-drawer__header">
+        <button
+          ref="closeButton"
+          on:click="cart-drawer-component/close"
+          class="button close-button cart-drawer__close-button button-unstyled"
+          aria-label="{{ 'actions.close_dialog' | t }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </span>
+        </button>
+      </div>
+
+      <div
+        class="cart-drawer__content"
+        aria-label="{{ 'accessibility.cart' | t }}"
+      >
+        <h2
+          class="cart-drawer__heading h4 cart-drawer__heading--empty"
+          id="cart-drawer-heading-empty"
+        >
+          {{ 'content.your_cart_is_empty' | t }}
+        </h2>
+
+        <div class="cart-drawer__items">
+          {% render 'cart-products', force_empty: true %}
+          
+        </div>
+        
+      </div>
+    {% endcapture %}
+
+        <cart-drawer-component
+          class="cart-drawer{% if display_style == 'text' %} cart-drawer--text{% endif %}"
+          {{ block.shopify_attributes }}
+          {% if settings.auto_open_cart_drawer %}
+            auto-open
+          {% endif %}
+        >
+          <template id="empty-cart-template">
+            {{ empty_cart_drawer_content }}
+          </template>
+          <button
+            class="header-actions__action button-unstyled{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+            {% comment %} on:click="/open" {% endcomment %}
+             onclick="window.location.href='{{ routes.cart_url }}'"
+            aria-haspopup="dialog"
+            aria-label="{{ 'accessibility.cart' | t }}"
+            aria-describedby="cart-bubble-text"
+            data-testid="cart-drawer-trigger"
+          >
+            {{ cart_icon }}
+          </button>
+
+          <dialog
+            ref="dialog"
+            class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{%endif%}"
+            data-testid="cart-drawer-dialog"
+            aria-labelledby="{% if cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
+            scroll-lock
+            cart-summary-sticky="true"
+          >
+            <div
+              class="cart-drawer__inner"
+              data-hydration-key="cart-drawer-inner"
+            >
+              <cart-items-component
+                class="cart-items-component"
+                data-drawer
+                data-section-id="{{ section.id }}"
+              >
+                {%- if cart.empty? -%}
+                  {{ empty_cart_drawer_content }}
+                {%- else -%}
+                  <div
+                    class="cart-drawer__header"
+                    id="cart-drawer-header"
+                  >
+                    <h2
+                      class="cart-drawer__heading h4"
+                      id="cart-drawer-heading"
+                    >
+                      {{ 'content.cart_title' | t }}
+                      {% render 'cart-bubble' %}
+                    </h2>
+
+                    <button
+                      ref="closeButton"
+                      on:click="cart-drawer-component/close"
+                      class="button close-button cart-drawer__close-button button-unstyled"
+                      aria-label="{{ 'actions.close_dialog' | t }}"
+                    >
+                      <span class="svg-wrapper">
+                        {{- 'icon-close.svg' | inline_asset_content -}}
+                      </span>
+                    </button>
+                  </div>
+
+                  <scroll-hint
+                    class="cart-drawer__content"
+                    aria-label="{{ 'accessibility.cart' | t }}"
+                    style="--header-height: 60px;"
+                  >
+                    <scroll-hint
+                      class="cart-drawer__items"
+                    >
+                      {% render 'cart-products', drawer_context: 'drawer' %}
+
+                    <div class="cart-recommendation">
+                      {% render 'cart-recommendation', section_id: section.id,  cart: cart %}
+                    </div>
+                    </scroll-hint>
+                    
+                    <div
+                      class="cart-drawer__summary"
+                    >
+                      {% render 'cart-summary', section_id: section.id %}
+                    </div>
+                  </scroll-hint>
+                {%- endif -%}
+              </cart-items-component>
+            </div>
+          </dialog>
+        </cart-drawer-component>
+      {% else %}
+        <a
+          href="{{ routes.cart_url }}"
+          class="header-actions__action action__cart{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+          aria-label="{{ 'accessibility.cart' | t }}"
+          aria-describedby="cart-bubble-text"
+        >
+          {{ cart_icon }}
+        </a>
+      {% endif %}
+      {% comment %}
+        <a href="{{ routes.cart_url }}">
+            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        	<path d="M12.324 8.3125V4.1875C12.324 3.27582 11.9619 2.40148 11.3172 1.75682C10.6725 1.11216 9.7982 0.75 8.88652 0.75C7.97484 0.75 7.1005 1.11216 6.45584 1.75682C5.81119 2.40148 5.44902 3.27582 5.44902 4.1875V8.3125M15.8587 6.48558L17.0164 17.4856C17.0806 18.0952 16.6039 18.625 15.9907 18.625H1.78236C1.63771 18.6252 1.49465 18.5949 1.36247 18.5361C1.23029 18.4774 1.11195 18.3915 1.01513 18.2841C0.918303 18.1766 0.845168 18.05 0.800472 17.9124C0.755775 17.7749 0.740517 17.6294 0.755689 17.4856L1.91436 6.48558C1.94108 6.23218 2.06068 5.99764 2.25008 5.82719C2.43949 5.65674 2.6853 5.56245 2.94011 5.5625H14.8329C15.3609 5.5625 15.8037 5.96125 15.8587 6.48558ZM5.79277 8.3125C5.79277 8.40367 5.75656 8.4911 5.69209 8.55557C5.62762 8.62003 5.54019 8.65625 5.44902 8.65625C5.35785 8.65625 5.27042 8.62003 5.20595 8.55557C5.14149 8.4911 5.10527 8.40367 5.10527 8.3125C5.10527 8.22133 5.14149 8.1339 5.20595 8.06943C5.27042 8.00497 5.35785 7.96875 5.44902 7.96875C5.54019 7.96875 5.62762 8.00497 5.69209 8.06943C5.75656 8.1339 5.79277 8.22133 5.79277 8.3125ZM12.6678 8.3125C12.6678 8.40367 12.6316 8.4911 12.5671 8.55557C12.5026 8.62003 12.4152 8.65625 12.324 8.65625C12.2329 8.65625 12.1454 8.62003 12.081 8.55557C12.0165 8.4911 11.9803 8.40367 11.9803 8.3125C11.9803 8.22133 12.0165 8.1339 12.081 8.06943C12.1454 8.00497 12.2329 7.96875 12.324 7.96875C12.4152 7.96875 12.5026 8.00497 12.5671 8.06943C12.6316 8.1339 12.6678 8.22133 12.6678 8.3125Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+             <span class="bag-count">{{ cart.item_count }}</span>
+           </a>
+      {% endcomment %}
+    </div>
+  </div>
+</div>
+<style>
+  .menu-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu-flat-price-sticker {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: inherit;
+  object-fit: contain;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+    padding: 2px 6px;
+    background: #ff0000;
+    color: #fff;
+    font-size:12px; line-height:16px;
+    font-weight: 600;
+    position:absolute; bottom:10px; left:10px;
+    border-radius: 0px;
+    white-space: nowrap;
+  z-index:12;
+}
+@media (max-width: 1199px) {
+  .header-bottom .menu .menu-list li a{display:flex; align-items:center; justify-content:space-between;}
+  .header-bottom .menu .menu-list li a .menu-flat-price-sticker{width:auto; max-width:inherit; display:block; position:relative; left:0; bottom:0; margin-left:10px;}
+  .menu-flat-price-sticker{bottom:5px; left:5px;}
+}
+</style>
+<style>
+.menu-right .menu-item {
+  position: relative;
+}
+
+#svgkp-path{
+fill: white !important;
+stroke:white !important;
+margin-left:10px;
+}
+.menu-right .right-mega-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: auto;
+  min-width: 262px;
+  background: #fff;
+  z-index: 999;
+  padding: 16px 0;
+  box-shadow: 0 5px 20px rgba(0,0,0,.1);
+}
+
+
+
+{% comment %} .right-mega-menu .mega-menu-inner {
+  display: flex;
+  gap: 40px;
+} {% endcomment %}
+
+{% comment %} .right-mega-menu .mega-menu-columns {
+  display: flex;
+  gap: 40px;
+} {% endcomment %}
+
+.right-mega-menu .mega-column {
+  min-width: 220px;
+}
+
+.right-mega-menu .submenu {
+  margin-top: 12px;
+  display:none;
+  position:absolute;
+  top:0;
+  left:100%;
+  background:#fff;
+  width:262px;
+  box-shadow:0 24px 25px -19px rgba(0, 0, 0, .17);
+  border:1px solid #eee;
+  padding:10px 0;
+  max-height:350px;
+  overflow-y:auto;
+  scrollbar-width: none;-ms-overflow-style: none;
+  z-index:12;
+}
+.mega-menu .mega-column:nth-child(n+4):nth-last-child(-n+3) .submenu{top: auto; bottom: -15px;}
+
+
+.right-mega-menu .submenu li {
+  margin-bottom: 0px;
+}
+
+.right-mega-menu .submenu a {
+  color: #333;
+  text-decoration: none;
+}
+.menu-link-with-image{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+}
+
+.menu-thumb{
+  width:60px;
+  height:60px;
+  flex-shrink:0;
+  overflow:hidden;
+  border-radius:6px;
+}
+
+.menu-thumb img{
+  width:100%;
+  height:auto;
+  object-fit:cover;
+  display:block;
+}
+
+.menu-title{
+  font-size:16px;
+  font-weight:600;
+  color:#000;
+}
+
+.menu-item{
+  position:relative;
+}
+
+.mega-menu{
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  background:#fff;
+  min-width:262px;
+  padding:16px 0 16px;
+  z-index:999;
+  box-shadow:0 5px 20px rgba(0,0,0,.1);
+}
+
+
+
+.mega-menu > ul{
+  display:flex;
+  gap:50px;
+}
+
+.mega-menu ul{
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.submenu{
+  margin-top:10px;
+}
+.mega-menu .mega-column{margin: 10px 0px;padding: 0 18px; display: inline-block; position: relative; vertical-align: top; width: 100%;}
+.mega-menu .mega-column .menu-link-with-image{gap:10px;}
+.mega-menu .mega-column .menu-thumb{width:30px; height:auto; border-radius:0;}
+.mega-menu .mega-column .menu-title{font-size: 12px; font-weight:400; color:var(--primary-color); line-height: 20px;}
+.header-bottom .menu .menu-list li .right-mega-menu .submenu li{display:block; margin:10px 0; padding:0 18px; border:0;}
+@media only screen and (min-width: 1200px) {
+.menu-item:hover .mega-menu, .mega-menu .mega-column:hover .submenu{display:block;}
+.menu-right .menu-item:hover .right-mega-menu {
+  display: block;
+}
+.header-bottom .menu .menu-list li{display:flex; align-items:center;}
+.menu-item .menu-arrow{transform:rotate(90deg); margin-left:10px;}
+.home-header .menu-item .menu-arrow svg path{stroke:#fff;}
+.mega-menu .mega-column .menu-arrow{transform:rotate(0deg); margin-left:auto;}
+.home-header .mega-menu .mega-column .menu-arrow svg path, .mega-menu .mega-column .menu-arrow svg path, .home-header.scrolled .menu-item .menu-arrow svg path{stroke:#000;}
+}
+@media only screen and (max-width: 1199px){
+.mega-menu, .menu-right .right-mega-menu, .right-mega-menu .submenu{min-width:100%; position:relative; padding:16px 0; margin-top:12px; box-shadow:0 5px 20px rgba(0,0,0,.1);}
+.menu-right .right-mega-menu, .mega-menu{max-height:400px; overflow-y:auto;}
+.right-mega-menu .submenu{left:0;}
+.right-mega-menu .submenu{border:0;}
+.header-bottom .menu .menu-list li .right-mega-menu .submenu li{display:inline-block; margin:10px 0; padding:0 18px; border:0;}
+.header-bottom .menu .menu-list li.active .mega-menu, .mega-menu .mega-column .submenu.active{display:block;}
+.header-bottom .menu .menu-list li{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;}
+.mega-menu .mega-column .menu-link-with-image .menu-arrow{margin-left:auto;}
+.menu-item .menu-arrow{width:25px; height:25px; display:flex; align-items:center; justify-content:center;}
+.menu-item .menu-arrow svg path{stroke:#000;}
+.header-bottom .menu .menu-list .mega-menu .mega-column .menu-link-with-image{justify-content:flex-start;}
+.header-bottom .menu .menu-list .mega-menu .mega-column a .menu-link-with-image{display:inline-flex;}
+.mega-menu .mega-column:nth-child(n+4):nth-last-child(-n+3) .submenu{top:0; bottom:0;}
+
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const menuBtn = document.querySelector(".nav-icon-menu");
+
+  if(menuBtn){
+
+    menuBtn.addEventListener("click", function () {
+
+      document.body.classList.add("popup-overlay");
+
+    });
+
+  }
+
+});
+document.body.classList.remove("popup-overlay");
+document.querySelectorAll('.menu-item > .menu-arrow').forEach(arrow => {
+  arrow.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const menuItem = this.closest('.menu-item');
+    const megaMenu = menuItem.querySelector(':scope > .mega-menu');
+
+    const isActive = menuItem.classList.contains('active');
+
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.classList.remove('active');
+    });
+
+    document.querySelectorAll('.mega-menu').forEach(menu => {
+      menu.classList.remove('active');
+    });
+
+    if (!isActive) {
+      menuItem.classList.add('active');
+      megaMenu?.classList.add('active');
+    }
+  });
+});
+document.querySelectorAll('.mega-column .menu-arrow').forEach(arrow => {
+  arrow.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const megaColumn = this.closest('.mega-column');
+    const submenu = megaColumn.querySelector(':scope > .submenu');
+
+    const isActive = megaColumn.classList.contains('active');
+
+    // same mega-menu ke andar hi reset karo
+    const parentMegaMenu = megaColumn.closest('.mega-menu');
+
+    parentMegaMenu.querySelectorAll('.mega-column').forEach(col => {
+      col.classList.remove('active');
+    });
+
+    parentMegaMenu.querySelectorAll('.submenu').forEach(menu => {
+      menu.classList.remove('active');
+    });
+
+    if (!isActive) {
+      megaColumn.classList.add('active');
+      submenu?.classList.add('active');
+    }
+  });
+});
+</script>
+
+
+
+{% schema %}
+{
+  "name": "Custom Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "top_text",
+      "label": "Top Announcement",
+      "default": "Extra 5% OFF + Free Shipping on Prepaid Orders"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "left_menu",
+      "label": "Left Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "right_menu",
+      "label": "Right Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Header"
+    }
+  ]
+}
+{% endschema %}

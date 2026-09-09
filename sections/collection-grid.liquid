@@ -1,0 +1,373 @@
+<style>
+  .categroy-card .categroy-thumb{
+    
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .categroy-card .categroy-thumb img{
+    max-width:100%;
+    max-height:146px;
+    width: auto;
+  }
+</style>
+<section class="categroy-sec" id="shop-by-category-{{ section.id }}">
+  <div class="container">
+    <div class="top-heading">
+      <h1 class="thomasxlheading">
+        {% if section.settings.heading != '' %}
+          {{ section.settings.heading | escape }}
+        {% else %}
+          Shop by category
+        {% endif %}
+      </h1>
+    </div>
+    <div class="slider-rl">
+
+  <!-- FIRST ROW -->
+  <div class="categroy-list categroy-list-1">
+
+    {% for block in section.blocks limit: 4 %}
+
+      {% assign block_collection = block.settings.collection %}
+      {% assign custom_image = block.settings.custom_image %}
+      {% assign custom_title = block.settings.custom_title | strip %}
+
+      {% if block_collection %}
+
+        <div class="item">
+
+          <div class="categroy-card" {{ block.shopify_attributes }}>
+            <a href="{{ block_collection.url }}">
+
+              <div class="categroy-thumb">
+
+                {% if custom_image %}
+                 <img  data-src="{{ custom_image |  image_url: width: 268 }}" loading="lazy" width="134" height="146" fetchpriority="auto" class="lazyload" alt="{{ custom_title | default: block_collection.title }}" />
+
+                  {% comment %} {{ custom_image
+                    | image_url: width: 268
+                    | image_tag:
+                      loading: 'lazy',
+                      width: 134,
+                      height: 146,
+                      fetchpriority: 'auto',
+                      class: 'lazyload',
+                      alt: custom_title | default: block_collection.title
+                  }} {% endcomment %}
+
+                {% elsif block_collection.image %}
+
+                  {{ block_collection.image
+                    | image_url: width: 268
+                    | image_tag:
+                      loading: 'lazy',
+                      width: 134,
+                      height: 146,
+                      fetchpriority: 'auto',
+                      class: 'lazyload',
+                      
+                      alt: block_collection.title
+                  }}
+
+                {% endif %}
+
+              </div>
+
+              <div class="thomassmheading">
+                {{ custom_title | default: block_collection.title }}
+              </div>
+
+            </a>
+          </div>
+
+        </div>
+
+      {% endif %}
+
+    {% endfor %}
+
+  </div>
+
+  <!-- SECOND ROW -->
+  <div class="categroy-list categroy-list-2">
+
+    {% for block in section.blocks offset: 4 limit: 4 %}
+
+      {% assign block_collection = block.settings.collection %}
+      {% assign custom_image = block.settings.custom_image %}
+      {% assign custom_title = block.settings.custom_title | strip %}
+
+      {% if block_collection %}
+
+        <div class="item">
+
+          <div class="categroy-card" {{ block.shopify_attributes }}>
+            <a href="{{ block_collection.url }}">
+
+              <div class="categroy-thumb">
+
+                {% if custom_image %}
+                <img  data-src="{{ custom_image |  image_url: width: 268 }}" loading="lazy" width="134" height="146" fetchpriority="auto" class="lazyload" alt="{{ custom_title | default: block_collection.title }}" />
+
+                    {% comment %} {{ custom_image
+                    | image_url: width: 268
+                    | image_tag:
+                      loading: 'lazy',
+                      width: 134,
+                      height: 146,
+                      class: 'lazyload',
+                      fetchpriority: 'auto',
+                      alt: custom_title | default: block_collection.title
+                  }} {% endcomment %}
+
+                {% elsif block_collection.image %}
+
+                  {{ block_collection.image
+                    | image_url: width: 268
+                    | image_tag:
+                      loading: 'lazy',
+                      width: 134,
+                      height: 146,
+                      class: 'lazyload',
+                      fetchpriority: 'auto',
+                      alt: block_collection.title
+                  }}
+
+                {% endif %}
+
+              </div>
+
+              <div class="thomassmheading">
+                {{ custom_title | default: block_collection.title }}
+              </div>
+
+            </a>
+          </div>
+
+        </div>
+
+      {% endif %}
+
+    {% endfor %}
+
+  </div>
+
+</div>
+    {% comment %} <div class="slider-rl">
+      <div class="categroy-list">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% assign block_collection = block.settings.collection %}
+            {% assign custom_image = block.settings.custom_image %}
+            {% assign custom_title = block.settings.custom_title | strip %}
+            {% assign index_mod2 = forloop.index0 | modulo: 2 %}
+
+            {%- comment -%}
+              Open a new .item wrapper for every pair of cards:
+              - first card (index 0)
+              - then every even index (0, 2, 4, ...)
+            {%- endcomment -%}
+            {% if forloop.index0 == 0 %}
+              <div class="item">
+            {% else %}
+              {% if index_mod2 == 0 %}
+                <div class="item">
+              {% endif %}
+            {% endif %}
+
+              {% if block_collection %}
+                <div class="categroy-card" {{ block.shopify_attributes }}>
+                  <a href="{{ block_collection.url }}">
+                    <div class="categroy-thumb">
+                      {% if custom_image %}
+                        {{ custom_image
+                          | image_url: width: 268, height: 292, crop: 'center'
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 134,
+                            height: 146,
+                            class: ' lazyload',
+                            alt: custom_title | default: block_collection.title
+                        }}
+                      {% elsif block_collection.image %}
+                        {{ block_collection.image
+                          | image_url: width: 268, height: 292, crop: 'center'
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 134,
+                            height: 146,
+                            class: ' lazyload',
+                            alt: block_collection.title
+                        }}
+                      {% else %}
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg w-full lazyload' }}
+                      {% endif %}
+                    </div>
+                    <div class="thomassmheading">
+                      {{ custom_title | default: block_collection.title | escape }}
+                    </div>
+                  </a>
+                </div>
+              {% endif %}
+
+            {%- comment -%}
+              Close the .item wrapper after the second card in the pair
+              (odd index), or if it’s the last block.
+            {%- endcomment -%}
+            {% assign index_mod2_close = forloop.index0 | modulo: 2 %}
+            {% if index_mod2_close == 1 or forloop.last %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <div class="item">
+            <div class="categroy-card">
+              <a href="#">
+                <div class="categroy-thumb">
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg w-full lazyload' }}
+                </div>
+                <div class="thomassmheading">
+                  No collections have been added yet
+                </div>
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+        <div class="categroy-list">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% assign block_collection = block.settings.collection %}
+            {% assign custom_image = block.settings.custom_image %}
+            {% assign custom_title = block.settings.custom_title | strip %}
+            {% assign index_mod2 = forloop.index0 | modulo: 2 %}
+
+            {%- comment -%}
+              Open a new .item wrapper for every pair of cards:
+              - first card (index 0)
+              - then every even index (0, 2, 4, ...)
+            {%- endcomment -%}
+            {% if forloop.index0 == 0 %}
+              <div class="item">
+            {% else %}
+              {% if index_mod2 == 0 %}
+                <div class="item">
+              {% endif %}
+            {% endif %}
+
+              {% if block_collection %}
+                <div class="categroy-card" {{ block.shopify_attributes }}>
+                  <a href="{{ block_collection.url }}">
+                    <div class="categroy-thumb">
+                      {% if custom_image %}
+                        {{ custom_image
+                          | image_url: width: 268, height: 292, crop: 'center'
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 134,
+                            height: 146,
+                            class: ' lazyload',
+                            alt: custom_title | default: block_collection.title
+                        }}
+                      {% elsif block_collection.image %}
+                        {{ block_collection.image
+                          | image_url: width: 268, height: 292, crop: 'center'
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 134,
+                            height: 146,
+                            class: ' lazyload',
+                            alt: block_collection.title
+                        }}
+                      {% else %}
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg w-full lazyload' }}
+                      {% endif %}
+                    </div>
+                    <div class="thomassmheading">
+                      {{ custom_title | default: block_collection.title | escape }}
+                    </div>
+                  </a>
+                </div>
+              {% endif %}
+
+            {%- comment -%}
+              Close the .item wrapper after the second card in the pair
+              (odd index), or if it’s the last block.
+            {%- endcomment -%}
+            {% assign index_mod2_close = forloop.index0 | modulo: 2 %}
+            {% if index_mod2_close == 1 or forloop.last %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <div class="item">
+            <div class="categroy-card">
+              <a href="#">
+                <div class="categroy-thumb">
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg w-full lazyload' }}
+                </div>
+                <div class="thomassmheading">
+                  No collections have been added yet
+                </div>
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div> {% endcomment %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Grid ",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_card",
+      "name": "Collection card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom image"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom title"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Collection Grid",
+      "blocks": [
+        { "type": "collection_card" },
+        { "type": "collection_card" },
+        { "type": "collection_card" },
+        { "type": "collection_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

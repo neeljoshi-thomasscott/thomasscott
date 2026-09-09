@@ -1,0 +1,63 @@
+{% assign variants = product.metafields.variants.list.value %}
+
+{% comment %} {{ variants | json }} {% endcomment %}
+ {% if variants and variants.colour_variant.value.size > 0 %}
+    <style>
+        .variant-list img{
+            max-width:60px;
+        }
+        .variant-list a{
+            display:block;
+            border:1px solid transparent;
+        }
+        .variant-list a.active{
+            border-color:#1e1e1e;
+            display:none;
+        }
+    </style>
+    <div class="color-variant">
+        {% assign colors = product.metafields.shopify.color-pattern %}
+        {% comment %} Colours : {{ colors.value | json }} {% endcomment %}
+        {% capture colorname %}
+            {% for color in colors.value %}
+                {{ color.label }}
+                {% break %}
+            {% endfor %}
+        {% endcapture %}
+
+        {% assign colorname = colorname | strip | strip_newlines %}
+
+        
+        {% if colorname != ''%}
+        <div class="heading">
+            Color: 
+            <span>
+                {% for color in colors.value  %}
+                    {{ color.label  }}
+                    {% break %}
+                {% endfor %}
+            </span>
+        </div>
+        {% endif %}
+        <div class="variant-list" style="display:flex;gap:5">
+        {% for variant in variants.colour_variant.value %}
+            <a href="{% if variant.handle == product.handle %}javascript:void(0);{% else %}{{ variant.url }}{% endif %}" class="{% if variant.handle == product.handle %}active{% endif %}" {% if variant.handle != product.handle %}onclick="document.querySelector('.variant-list').style.opacity='0.5'"{% endif %}>
+                <img src="{{ variant.featured_image | image_url: width: 80 }}" width="60" height="60" alt="{{ variant.title }}" lazy/>
+            </a>
+        {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+    "name":"Product Colour Variants",
+    "settings":[],
+    "class":"variant-list-wrapper",
+    "presets": [
+        {
+            "name":"Linked Variants"
+        }
+    ]
+}
+{% endschema %}

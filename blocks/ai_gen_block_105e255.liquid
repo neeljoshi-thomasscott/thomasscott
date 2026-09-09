@@ -1,0 +1,341 @@
+{% doc %}
+  @prompt
+    Please create product count and it should update automatically if any filter is applied.
+{% enddoc %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+.ai-product-count-{{ ai_gen_id }} {
+  display: block;
+  width: {{ block.settings.desktop_width_percent }}%;
+  padding: {{ block.settings.padding }}px;
+  background-color: {{ block.settings.background_color }};
+  border-radius: {{ block.settings.border_radius }}px;
+  text-align: {{ block.settings.text_alignment }};
+}
+
+.ai-product-count__text-{{ ai_gen_id }} {
+  color: {{ block.settings.text_color }};
+  font-size: {{ block.settings.font_size }}px;
+  font-weight: {{ block.settings.font_weight }};
+  margin: 0;
+}
+
+.ai-product-count__number-{{ ai_gen_id }} {
+  color: {{ block.settings.number_color }};
+  font-weight: {{ block.settings.number_font_weight }};
+}
+
+@media screen and (max-width: 749px) {
+  .ai-product-count-{{ ai_gen_id }} {
+    width: 100%;
+    text-align: {{ block.settings.mobile_text_alignment }};
+  }
+
+  .ai-product-count__text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.mobile_font_size }}px;
+  }
+}
+{% endstyle %}
+
+<product-count-{{ ai_gen_id }}
+  class="ai-product-count-{{ ai_gen_id }} thomas-product-count"
+  {{ block.shopify_attributes }}
+>
+  <p class="ai-product-count__text-{{ ai_gen_id }}">
+    
+    {% if block.settings.show_prefix %}
+      {{ block.settings.prefix_text }}
+    {% endif %}
+
+    <span class="ai-product-count__number-{{ ai_gen_id }}" data-count>
+      {{ collection.products_count }}
+    </span>
+
+    {% if block.settings.show_suffix %}
+      <span data-suffix>
+        {% if collection.products_count == 1 %}
+          {{ block.settings.suffix_text_singular }}
+        {% else %}
+          {{ block.settings.suffix_text_plural }}
+        {% endif %}
+      </span>
+    {% endif %}
+
+  </p>
+</product-count-{{ ai_gen_id }}>
+
+<script>
+(function () {
+
+class ProductCount{{ ai_gen_id }} extends HTMLElement {
+  constructor() {
+    super();
+    this.countEl = this.querySelector('[data-count]');
+    this.suffixEl = this.querySelector('[data-suffix]');
+    this.interval = null;
+  }
+
+  connectedCallback() {
+    this.updateCount();
+
+    this.interval = setInterval(() => {
+      this.updateCount();
+    }, 500);
+  }
+
+  disconnectedCallback() {
+    clearInterval(this.interval);
+  }
+
+  updateCount() {
+
+    /* Horizon theme live count */
+    const source = document.querySelector('.products-count-wrapper span');
+
+    if (!source) return;
+
+    const text = source.textContent;
+
+    /* Extract first number */
+    const match = text.match(/\d+/);
+
+    if (match && this.countEl) {
+      const count = parseInt(match[0], 10);
+
+      this.countEl.textContent = count;
+
+      if (this.suffixEl) {
+        this.suffixEl.textContent =
+          count === 1
+            ? '{{ block.settings.suffix_text_singular }}'
+            : '{{ block.settings.suffix_text_plural }}';
+      }
+    }
+  }
+}
+
+customElements.define(
+  'product-count-{{ ai_gen_id }}',
+  ProductCount{{ ai_gen_id }}
+);
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product count",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_prefix",
+      "label": "Show prefix text",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "prefix_text",
+      "label": "Prefix text",
+      "default": "Showing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_suffix",
+      "label": "Show suffix text",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "suffix_text_singular",
+      "label": "Suffix text (singular)",
+      "default": ":Product"
+    },
+    {
+      "type": "text",
+      "id": "suffix_text_plural",
+      "label": "Suffix text (plural)",
+      "default": "Products"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Desktop text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_alignment",
+      "label": "Mobile text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Number",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Desktop font size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "mobile_font_size",
+      "label": "Mobile font size",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Text font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "number_font_weight",
+      "label": "Number font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "700"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product count"
+    }
+  ]
+}
+{% endschema %}

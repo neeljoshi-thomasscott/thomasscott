@@ -1,0 +1,365 @@
+{%- doc -%}
+  Renders the sorting component.
+
+  @param {object} results - The results of the search
+  @param {string} sort_by - The current sort by
+  @param {string} filter_style - The filter style
+  @param {string} [suffix] - { 'desktop' | 'mobile' | 'overflow' } Used on `form` attributes to connect inputs to a form[id]
+  @param {string} [sort_position] - { 'desktop' | 'mobile' } Used in a data-testID selector for automated testing
+  @param {boolean} should_use_select_on_mobile - Whether to use a select element for the sorting component on mobile
+  @param {string} section_id - The section ID
+{%- enddoc -%}
+
+<sorting-filter-component
+  class="sorting-filter{% if filter_style == 'horizontal' %} sorting-filter__horizontal{% endif %}"
+  on:change="/updateFilterAndSorting"
+  on:keydown="/handleKeyDown"
+  {% if sort_position != blank %}
+    data-testid="sorting-filter-component-{{ sort_position }}"
+  {% endif %}
+  data-should-use-select-on-mobile="{{ should_use_select_on_mobile }}"
+>
+  {% liquid
+    assign default_sort_by = results.default_sort_by
+    for option in results.sort_options
+      if option.value == sort_by
+        assign status = option.name
+      endif
+    endfor
+  %}
+
+  <div class="sorting-filter__container {% if should_use_select_on_mobile %} desktop:hidden {% else %} hidden {% endif %}">
+    <label
+      for="sort-select-{{ section_id }}"
+      class="facets__label"
+    >
+      {{- 'actions.sort' | t -}}
+    </label>
+    <div class="sorting-filter__select-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="14" viewBox="0 0 20 14" fill="none"> <path d="M16.1845 0.049528L16.2134 0.0482526C16.5308 0.0355911 16.8377 0.2095 16.873 0.551569C16.9107 0.917228 16.8932 1.32622 16.893 1.69694L16.8923 3.73304L16.8924 8.20868C16.8851 9.2516 16.8912 10.2946 16.9106 11.3373C17.3135 10.8279 17.7084 10.3299 18.1444 9.84813C18.4945 9.46132 19.179 9.55367 19.2613 10.1076C19.3077 10.4197 19.1017 10.6167 18.9393 10.8535C18.7228 11.1402 18.4473 11.4097 18.2137 11.6907L17.0945 13.0229C16.9324 13.2122 16.7641 13.4335 16.5789 13.5989C16.5052 13.6648 16.3852 13.6802 16.2898 13.6932C16.0769 13.681 15.955 13.62 15.8174 13.4553C15.3262 12.8567 14.7898 12.2723 14.3137 11.6638C14.0166 11.2841 13.3616 10.6357 13.2471 10.1917C13.2634 10.123 13.2796 10.0563 13.3106 9.99362C13.4227 9.76737 13.6606 9.61305 13.9142 9.61254C14.2191 9.61193 14.424 9.86982 14.611 10.0731C14.8436 10.3261 15.0582 10.5838 15.2649 10.8576C15.3788 11.0063 15.5082 11.1712 15.6368 11.3061C15.6781 10.4675 15.6487 9.38376 15.6488 8.52771L15.6486 3.29672L15.6464 1.68621C15.6452 1.36948 15.6371 1.05129 15.6529 0.735112C15.6714 0.366674 15.8074 0.125154 16.1845 0.049528Z" fill="#1E1E1E"/> <path d="M0.788505 0.0155738C1.32805 -0.0158609 2.18058 0.0100143 2.74037 0.0100143L6.57237 0.0102618L10.663 0.0104713C11.5159 0.0104332 12.3714 -0.00748325 13.2227 0.0422677C13.6934 0.0697611 13.8335 0.717475 13.563 1.03807C13.4215 1.20567 13.2153 1.23134 13.011 1.2467C12.26 1.2765 11.3142 1.25095 10.5518 1.25095L5.78464 1.25084L2.3888 1.2516C1.79858 1.25196 1.19855 1.26251 0.609322 1.24114C0.0960098 1.22256 -0.160064 0.580884 0.217217 0.207647C0.405825 0.0210955 0.536076 0.0263883 0.788505 0.0155738Z" fill="#1E1E1E"/> <path d="M0.761438 4.16678C1.29809 4.14218 2.00108 4.16154 2.54962 4.1615L5.96074 4.16148L8.66985 4.16183C9.17037 4.16192 9.66554 4.15987 10.166 4.17376C11.095 4.19954 11.2027 5.22284 10.2535 5.3944C9.61794 5.42096 8.83607 5.40175 8.19228 5.40177L4.39004 5.40168L1.95952 5.4008C1.58238 5.40025 0.96206 5.42788 0.612204 5.3779C-0.18163 5.2645 -0.192791 4.20451 0.761438 4.16678Z" fill="#1E1E1E"/> <path d="M0.627989 8.31325C1.00888 8.29139 1.50589 8.30449 1.89396 8.30462L4.1357 8.30557L6.23297 8.30491C6.57714 8.30489 7.56313 8.25146 7.81895 8.42044C8.26385 8.7143 8.13093 9.42707 7.52612 9.52216C7.21337 9.55692 6.77041 9.54529 6.44831 9.54546L4.76089 9.54598L2.18853 9.54588C1.73332 9.54586 1.27776 9.54723 0.822613 9.54173C0.347133 9.53596 0.141903 9.36814 0 8.9078C0.0897344 8.56931 0.272535 8.35947 0.627989 8.31325Z" fill="#1E1E1E"/> <path d="M0.754584 12.4481C0.92438 12.4402 1.10002 12.4392 1.2714 12.4418C2.45489 12.4597 3.64909 12.4028 4.82955 12.4716C4.906 12.4761 5.02122 12.5455 5.07789 12.595C5.19563 12.6982 5.26733 12.8442 5.27708 13.0004C5.28622 13.1638 5.21364 13.3645 5.10045 13.4818C4.9095 13.6795 4.75221 13.6771 4.50422 13.687C3.77353 13.7147 2.94534 13.666 2.20025 13.6852C1.6886 13.6666 1.06042 13.7289 0.559712 13.6666C0.139104 13.6144 -0.18461 12.984 0.191121 12.658C0.418437 12.4608 0.479992 12.4613 0.754584 12.4481Z" fill="#1E1E1E"/> </svg>
+    
+      <select
+        id="sort-select-{{ section_id }}"
+        name="sort_by"
+        class="sorting-filter__select"
+        {% if should_use_select_on_mobile == false %}
+          disabled
+        {% endif %}
+      >
+        {% comment %} {% for option in results.sort_options %} {% endcomment %}
+         {% for option in results.sort_options %}
+  {% unless option.name == 'Alphabetically, Z-A' or option.name == 'Alphabetically, A-Z'  %}
+          <option
+            value="{{ option.value }}"
+            {% if option.value == sort_by %}
+              selected
+            {% endif %}
+          >
+            {{ option.name }}
+          </option>
+            {% endunless %}
+        {% endfor %}
+      </select>
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="icon icon-caret"
+        width="8"
+        height="13"
+        viewBox="0 0 8 13"
+      >
+        {%- render 'icon', icon: 'double-sided-caret' -%}
+      </svg>
+    </div>
+  </div>
+
+  <accordion-custom
+    {% if filter_style == 'horizontal' %}
+      data-disable-animation-on-desktop="true"
+      data-close-with-escape="true"
+    {% endif %}
+  >
+    <details
+      ref="details"
+      id="Sorting-{{ section_id }}"
+      data-default-sort-by="{{ default_sort_by }}"
+      class="facets__panel {% if should_use_select_on_mobile %} mobile:hidden {% endif %}"
+      data-auto-close-details="desktop,mobile"
+      on:toggle="/handleToggle"
+    >
+
+      <summary
+        class="facets__summary"
+        role="button"
+        aria-expanded="false"
+        aria-controls="sorting-options-{{ section_id }}"
+        ref="summary"
+      ><span class="facets__label sort-by-icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="19" viewBox="0 0 26 19" fill="none">
+<path d="M21.2848 0.0650257L21.3228 0.0633484C21.7403 0.0466978 22.1438 0.2754 22.1902 0.725243C22.2398 1.20611 22.2168 1.74396 22.2166 2.23149L22.2156 4.90909L22.2158 10.7949C22.2061 12.1664 22.2141 13.538 22.2397 14.9093C22.7695 14.2393 23.2888 13.5844 23.8622 12.9509C24.3226 12.4422 25.2228 12.5636 25.3309 13.2921C25.392 13.7026 25.1211 13.9616 24.9075 14.2729C24.6228 14.65 24.2605 15.0045 23.9533 15.374L22.4815 17.1259C22.2683 17.3749 22.047 17.6659 21.8034 17.8834C21.7065 17.97 21.5487 17.9903 21.4233 18.0074C21.1433 17.9913 20.983 17.9111 20.8021 17.6945C20.156 16.9073 19.4507 16.1388 18.8246 15.3386C18.4339 14.8393 17.5725 13.9865 17.4219 13.4027C17.4433 13.3123 17.4646 13.2246 17.5055 13.1422C17.6528 12.8446 17.9656 12.6417 18.2992 12.641C18.7002 12.6402 18.9696 12.9794 19.2155 13.2468C19.5214 13.5793 19.8037 13.9183 20.0755 14.2784C20.2252 14.4739 20.3954 14.6908 20.5645 14.8681C20.6189 13.7654 20.5801 12.3402 20.5803 11.2144L20.58 4.3353L20.5771 2.21737C20.5756 1.80085 20.565 1.38241 20.5857 0.966615C20.61 0.482093 20.7888 0.164479 21.2848 0.0650257Z" fill="#1E1E1E"/>
+<path d="M1.03501 0.0204805C1.74455 -0.0208581 2.86568 0.0131695 3.60184 0.0131695L8.64118 0.013495L14.0206 0.0137704C15.1423 0.0137204 16.2673 -0.00984097 17.3868 0.0555848C18.0058 0.0917405 18.1901 0.943527 17.8343 1.36513C17.6483 1.58554 17.3771 1.61929 17.1084 1.6395C16.1208 1.67869 14.877 1.64508 13.8744 1.64508L7.60526 1.64493L3.1395 1.64593C2.36333 1.64641 1.57424 1.66028 0.799373 1.63219C0.124333 1.60775 -0.212421 0.763901 0.283729 0.27307C0.531761 0.027742 0.70305 0.0347024 1.03501 0.0204805Z" fill="#1E1E1E"/>
+<path d="M1.00255 5.4793C1.70828 5.44695 2.63276 5.47242 3.35412 5.47237L7.83998 5.47234L11.4026 5.47279C12.0609 5.47292 12.712 5.47021 13.3702 5.48849C14.5919 5.52239 14.7335 6.86809 13.4853 7.09371C12.6494 7.12864 11.6212 7.10338 10.7746 7.1034L5.7744 7.10328L2.5781 7.10213C2.08213 7.1014 1.26638 7.13773 0.806294 7.07201C-0.237652 6.92288 -0.25233 5.52893 1.00255 5.4793Z" fill="#1E1E1E"/>
+<path d="M0.825847 10.9327C1.32674 10.9039 1.98035 10.9211 2.49069 10.9213L5.43873 10.9226L8.19678 10.9217C8.64938 10.9217 9.94602 10.8514 10.2824 11.0736C10.8675 11.4601 10.6927 12.3974 9.89735 12.5225C9.48606 12.5682 8.90354 12.5529 8.47996 12.5531L6.2609 12.5538L2.87806 12.5537C2.27944 12.5536 1.68034 12.5554 1.08179 12.5482C0.456503 12.5406 0.186612 12.3199 0 11.7145C0.118007 11.2694 0.358402 10.9935 0.825847 10.9327Z" fill="#1E1E1E"/>
+<path d="M0.992141 16.3706C1.21544 16.3602 1.44642 16.3589 1.67179 16.3623C3.22816 16.3858 4.7986 16.311 6.351 16.4015C6.45153 16.4074 6.60306 16.4986 6.67757 16.5638C6.83241 16.6995 6.92671 16.8915 6.93953 17.097C6.95155 17.3118 6.8561 17.5758 6.70724 17.7299C6.45613 17.99 6.24929 17.9869 5.92316 17.9998C4.96226 18.0363 3.87313 17.9722 2.89329 17.9974C2.22043 17.973 1.39434 18.0549 0.735871 17.973C0.182744 17.9043 -0.242962 17.0754 0.25115 16.6467C0.550085 16.3873 0.631035 16.388 0.992141 16.3706Z" fill="#1E1E1E"/>
+</svg></span>
+        <span
+          class="facets__label"
+          id="sort-label-{{ section_id }}"
+        >
+          {{- 'actions.sort' | t -}}
+        </span>
+        <span
+          class="facets__status h6 desktop:hidden"
+        >
+          {{- status -}}
+        </span>
+        <span class="svg-wrapper icon-caret icon-animated">
+          {{- 'icon-caret.svg' | inline_asset_content -}}
+        </span>
+      </summary>
+      <floating-panel-component
+        id="sorting-options-{{ section_id }}"
+        class="sorting-filter__options color-{{ settings.popover_color_scheme }}"
+        role="listbox"
+        aria-labelledby="sort-label-{{ section_id }}"
+        ref="listbox"
+      >
+        <div class="sorting-filter__options-inner" jdfjsfj>
+          {% for option in results.sort_options %}
+            {% unless option.name == 'Alphabetically, A-Z' or option.name == 'Alphabetically, Z-A' %}
+            <label
+              for="sort-option-{{ option.value }}-{{ section_id }}"
+            >
+              <div
+                class="sorting-filter__option"
+                role="option"
+                aria-selected="{% if option.value == sort_by %}true{% else %}false{% endif %}"
+                tabindex="{% if option.value == sort_by %}0{% else %}-1{% endif %}"
+              >
+                <input
+                  type="radio"
+                  name="sort_by"
+                  id="sort-option-{{ option.value }}-{{ section_id }}"
+                  {% if suffix != blank %}
+                    form="FacetFiltersForm--{{ section_id }}-{{ suffix }}"
+                  {% endif %}
+                  value="{{ option.value }}"
+                  class="sorting-filter__input"
+                  data-option-name="{{ option.name }}"
+                  {% if option.value == sort_by %}
+                    checked
+                  {% endif %}
+                  aria-hidden="true"
+                >
+                <span class="svg-wrapper icon-checkmark sorting-filter__checkmark">
+                  {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                </span>
+                <span class="sorting-filter__label">{{ option.name }}</span>
+              </div>
+            </label>
+            {% endunless %}
+          {% endfor %}
+        </div>
+      </floating-panel-component>
+    </details>
+  </accordion-custom>
+</sorting-filter-component>
+
+{% stylesheet %}
+  .sorting-filter__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--drawer-padding) 0;
+    padding-block: var(--padding-sm);
+    margin-inline-end: var(--margin-md);
+    position: relative;
+  }
+
+  .sorting-filter__container .facets__label {
+    font-size: var(--font-h4--size);
+  }
+
+  .sorting-filter__select-wrapper {
+    display: flex;
+    position: relative;
+    border-radius: var(--variant-picker-button-radius);
+    align-items: center;
+    overflow: clip;
+    padding: var(--padding-2xs) var(--padding-xs);
+  }
+
+  .sorting-filter__select-wrapper:has(:focus-visible) {
+    outline: var(--focus-outline-width) solid currentcolor;
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  .sorting-filter__select-wrapper:has(:focus-visible) .sorting-filter__select {
+    outline: none;
+  }
+
+  .sorting-filter__container .sorting-filter__select {
+    appearance: none;
+    border: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 100%;
+    padding-inline-end: var(--icon-size-2xs);
+    text-align: right;
+
+    /* Needed for Safari */
+    text-align-last: right;
+  }
+
+  .sorting-filter__select .icon {
+    position: absolute;
+    right: var(--padding-md);
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--icon-size-2xs);
+    height: var(--icon-size-2xs);
+    pointer-events: none;
+  }
+
+  .sorting-filter {
+    @media screen and (min-width: 750px) {
+      z-index: var(--facets-upper-z-index);
+    }
+  }
+
+  .sorting-filter__options {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    color: var(--color-foreground);
+    z-index: var(--facets-upper-z-index);
+    box-shadow: var(--shadow-popover);
+    border: var(--style-border-popover);
+    background-color: var(--color-background);
+    border-radius: var(--style-border-radius-popover);
+    width: max-content;
+    min-width: var(--facets-panel-min-width);
+    min-height: 0;
+
+    transition: grid-template-rows var(--animation-speed-slow) var(--animation-easing),
+      opacity var(--animation-speed-slow) var(--animation-easing);
+  }
+
+  details[open] .sorting-filter__options {
+    opacity: 1;
+    grid-template-rows: 1fr;
+  }
+
+  .sorting-filter__options-inner {
+    display: flex;
+    flex-direction: column;
+    grid-row: 1 / span 2;
+    gap: var(--gap-sm);
+    padding: calc(var(--drawer-padding) / 2);
+    color: var(--color-foreground);
+    overflow: clip;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media screen and (min-width: 750px) {
+      gap: 0;
+    }
+  }
+
+  .sorting-filter__option {
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: var(--icon-size-sm) 1fr;
+    gap: var(--margin-2xs);
+    align-items: center;
+    min-width: 180px;
+    max-width: 16em;
+    padding: var(--padding-2xs) calc(var(--drawer-padding) / 2) var(--padding-2xs) var(--padding-2xs);
+
+    &:hover {
+      border-radius: calc(var(--style-border-radius-popover) / 2);
+      background-color: rgb(var(--color-foreground-rgb) / var(--opacity-8));
+    }
+
+    &:focus {
+      border-radius: calc(var(--style-border-radius-popover) / 2);
+    }
+  }
+
+  .sorting-filter__input {
+    display: none;
+
+    &:checked + .sorting-filter__checkmark + .sorting-filter__label {
+      font-weight: 500;
+    }
+  }
+
+  .sorting-filter__checkmark {
+    visibility: hidden;
+  }
+
+  *:checked ~ .sorting-filter__checkmark {
+    visibility: visible;
+  }
+
+  .sorting-filter__label {
+    cursor: pointer;
+    pointer-events: none;
+  }
+
+  .facets-toggle--no-filters .sorting-filter__select-wrapper {
+    @media screen and (max-width: 749px) {
+      padding-inline-start: 0;
+    }
+  }
+
+  .facets-mobile-wrapper .sorting-filter .facets__panel {
+    padding-inline: 0;
+    position: relative;
+  }
+
+  .facets-mobile-wrapper .sorting-filter .facets__status {
+    display: none;
+  }
+
+  .facets-mobile-wrapper:has(> :nth-child(2)) .sorting-filter .sorting-filter__options {
+    left: 0;
+    right: unset;
+  }
+
+  .facets-mobile-wrapper .sorting-filter .facets__label {
+    margin-inline-end: var(--margin-2xs);
+    font-size: var(--font-paragraph--size);
+    color: var(--color-foreground-muted);
+  }
+
+  .facets-toggle .sorting-filter__container {
+    @media screen and (max-width: 749px) {
+      padding: 0;
+    }
+  }
+
+  .facets-toggle .sorting-filter__container .facets__label {
+    @media screen and (max-width: 749px) {
+      display: none;
+    }
+  }
+
+  .facets-toggle .sorting-filter::before {
+    @media screen and (max-width: 749px) {
+      display: none;
+    }
+  }
+
+  .facets--drawer .sorting-filter {
+    @media screen and (min-width: 750px) {
+      display: none;
+    }
+  }
+{% endstylesheet %}

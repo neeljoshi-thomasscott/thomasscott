@@ -1,0 +1,270 @@
+<section class="shop-look" id="shop-look-{{ section.id }}">
+  <div class="container">
+    <div class="top-heading relative">
+      <div class="thomasxlheading">{{ section.settings.heading }}</div>
+    </div>
+
+    <div class="shop-look-banner" style="position:relative;">
+      {% if section.settings.banner != blank or section.settings.banner_mobile != blank %}
+        <picture>
+          {% if section.settings.banner_mobile != blank %}
+            <source media="(max-width:768px)" srcset="{{ section.settings.banner_mobile | img_url: 'master' }}">
+          {% endif %}
+          {% if section.settings.banner != blank %}
+            <img src="{{ section.settings.banner | img_url: 'master' }}" alt="Shop the look" class="w-full" />
+          {% endif %}
+        </picture>
+      {% endif %}
+
+      {% for block in section.blocks %}
+        {% assign product = all_products[block.settings.product] %}
+
+        <!-- HOTSPOT DOT -->
+        <div class="shop-look-point" 
+             style="top:{{ block.settings.top }}%; left:{{ block.settings.left }}%;" 
+             data-target="card-{{ block.id }}"
+             data-slide-index="{{ forloop.index0 }}">
+          <button class="hotspot-dot" aria-label="Open product"></button>
+        </div>
+
+        <!-- DESKTOP POPUP CARD -->
+        <div class="shop-look-card desktop-card" id="card-{{ block.id }}" style="top:calc({{ block.settings.top }}% + 12px); left:{{ block.settings.left }}%;">
+          <button class="close-card" aria-label="Close">×</button>
+
+          {% if product %}
+            <div class="shop-look-card-inner">
+              <a href="{{ product.url }}" class="shop-look-thumb">
+                <img src="{{ product.featured_image | img_url: '200x' }}" alt="{{ product.title }}">
+              </a>
+              <div class="shop-look-content">
+                <div class="thomassmheading">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </div>
+                <div class="product-price">
+                  <span class="regular-price">{{ product.price | money }}</span>
+                  {% if product.compare_at_price > product.price %}
+                    <span class="discount">{{ product.compare_at_price | money }}</span>
+                  {% endif %}
+                </div>
+
+                <button class="shop-look-quick-add" data-product-id="{{ product.id }}">
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="32" height="32" rx="4" fill="#000"/>
+                    <path d="M19.324 13.3125V9.1875C19.324 8.27582 18.9619 7.40148 18.3172 6.75682C17.6725 6.11216 16.7982 5.75 15.8865 5.75C14.9748 5.75 14.1005 6.11216 13.4558 6.75682C12.8112 7.40148 12.449 8.27582 12.449 9.1875V13.3125M22.8587 11.4856L24.0164 22.4856C24.0806 23.0952 23.6039 23.625 22.9907 23.625H8.78236C8.63771 23.6252 8.49465 23.5949 8.36247 23.5361C8.23029 23.4774 8.11195 23.3915 8.01513 23.2841C7.9183 23.1766 7.84517 23.05 7.80047 22.9124C7.75578 22.7749 7.74052 22.6294 7.75569 22.4856L8.91436 11.4856C8.94108 11.2322 9.06068 10.9976 9.25008 10.8272C9.43949 10.6567 9.6853 10.5625 9.94011 10.5625H21.8329C22.3609 10.5625 22.8037 10.9612 22.8587 11.4856Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+
+                <div class="inline-variant-selector" id="size-selector-{{ product.id }}" style="display:none;">
+                  <div class="size-buttons">
+                    {% for variant in product.variants %}
+                      {% if variant.available %}
+                        <button class="size-btn" data-variant-id="{{ variant.id }}" data-product-id="{{ product.id }}">
+                          {{ variant.title }}
+                        </button>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- MOBILE SLIDER -->
+    <div class="mobile-shop-look-swiper">
+      <div class="swiper mobile-swiper" id="mobile-swiper-{{ section.id }}">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            {% assign product = all_products[block.settings.product] %}
+            {% if product %}
+              <div class="swiper-slide" data-slide-index="{{ forloop.index0 }}">
+                <div class="shop-look-mobile-card">
+                  <a href="{{ product.url }}" class="shop-look-thumb">
+                    <img src="{{ product.featured_image | img_url: '400x' }}" alt="{{ product.title }}">
+                  </a>
+                  <div class="shop-look-content">
+                    <div class="thomassmheading">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </div>
+                    <div class="product-price">
+                      <span class="regular-price">{{ product.price | money }}</span>
+                      {% if product.compare_at_price > product.price %}
+                        <span class="discount">{{ product.compare_at_price | money }}</span>
+                      {% endif %}
+                    </div>
+
+                    <button class="shop-look-quick-add" data-product-id="{{ product.id }}">
+                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="4" fill="#000"/>
+                        <path d="M19.324 13.3125V9.1875C19.324 8.27582 18.9619 7.40148 18.3172 6.75682C17.6725 6.11216 16.7982 5.75 15.8865 5.75C14.9748 5.75 14.1005 6.11216 13.4558 6.75682C12.8112 7.40148 12.449 8.27582 12.449 9.1875V13.3125M22.8587 11.4856L24.0164 22.4856C24.0806 23.0952 23.6039 23.625 22.9907 23.625H8.78236C8.63771 23.6252 8.49465 23.5949 8.36247 23.5361C8.23029 23.4774 8.11195 23.3915 8.01513 23.2841C7.9183 23.1766 7.84517 23.05 7.80047 22.9124C7.75578 22.7749 7.74052 22.6294 7.75569 22.4856L8.91436 11.4856C8.94108 11.2322 9.06068 10.9976 9.25008 10.8272C9.43949 10.6567 9.6853 10.5625 9.94011 10.5625H21.8329C22.3609 10.5625 22.8037 10.9612 22.8587 11.4856Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+
+                    <div class="inline-variant-selector" id="size-selector-mobile-{{ product.id }}" style="display:none;">
+                      <div class="size-buttons">
+                        {% for variant in product.variants %}
+                          {% if variant.available %}
+                            <button class="size-btn" data-variant-id="{{ variant.id }}" data-product-id="{{ product.id }}">
+                              {{ variant.title }}
+                            </button>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.shop-look .shop-look-banner{position:relative;}
+.shop-look .shop-look-point{position:absolute;transform:translate(-50%,-50%);}
+.shop-look .hotspot-dot{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #000;cursor:pointer;}
+
+.shop-look .desktop-card{display:none;position:absolute;background:#000;color:#fff;padding:12px;width:300px;z-index:10;border-radius:8px;}
+.shop-look .desktop-card.active{display:flex;}
+.shop-look .shop-look-card-inner{display:flex;gap:12px;align-items:center;}
+.shop-look .shop-look-card img{width:70px;height:auto;border-radius:6px;}
+.shop-look .shop-look-content{flex:1;}
+.shop-look .product-price{display:flex;gap:6px;align-items:center;}
+
+.shop-look-quick-add{background:none;border:none;cursor:pointer;padding:0;margin-top:8px;}
+.inline-variant-selector{margin-top:8px;background:#fff;color:#000;padding:8px 10px;border-radius:30px;box-shadow:0 4px 15px rgba(0,0,0,0.15);width:100%;}
+.size-buttons{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+.size-btn{padding:6px 14px;font-size:13px;border:1px solid #ddd;background:#fff;border-radius:20px;cursor:pointer;position:relative;min-width:48px;}
+.size-btn:hover{background:#000;color:#fff;border-color:#000;}
+
+/* Loader - Fixed */
+.size-btn.loading{color:transparent;pointer-events:none;}
+.size-btn.loading::after{content:"";position:absolute;width:18px;height:18px;top:50%;left:50%;margin:-9px 0 0 -9px;border:2px solid #000;border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.mobile-shop-look-swiper{margin-top:20px;display:none;}
+@media(max-width:768px){
+  .mobile-shop-look-swiper{display:block;}
+  .shop-look .desktop-card{display:none !important;}
+  .mobile-swiper .swiper-slide{padding:8px 0;}
+  .shop-look-mobile-card{background:#fff;color:#000;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);padding:12px;display:flex;gap:12px;align-items:center;}
+  .shop-look-mobile-card img{width:80px;height:auto;border-radius:8px;}
+}
+@media(min-width:769px){.mobile-shop-look-swiper{display:none;}}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const section = document.querySelector('#shop-look-{{ section.id }}');
+  if (!section) return;
+
+  const dots = section.querySelectorAll('.shop-look-point');
+  const desktopCards = section.querySelectorAll('.desktop-card');
+  let mobileSwiper = null;
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = dot.dataset.target;
+      const targetCard = section.querySelector('#' + id);
+      const slideIndex = parseInt(dot.dataset.slideIndex);
+
+      if (window.innerWidth <= 768 && mobileSwiper) {
+        mobileSwiper.slideTo(slideIndex, 600, true);
+        return;
+      }
+
+      if (targetCard.classList.contains('active')) {
+        targetCard.classList.remove('active');
+        return;
+      }
+      desktopCards.forEach(c => c.classList.remove('active'));
+      targetCard.classList.add('active');
+    });
+  });
+
+  section.querySelectorAll('.close-card').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.closest('.desktop-card').classList.remove('active');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!section.contains(e.target)) desktopCards.forEach(c => c.classList.remove('active'));
+  });
+
+  if (window.innerWidth <= 768) {
+    mobileSwiper = new Swiper('#mobile-swiper-' + '{{ section.id }}', {
+      slidesPerView: 1.1,
+      spaceBetween: 16,
+      loop: false,
+    });
+  }
+
+  /* ================== QUICK ADD + SIZES + FIXED LOADER ================== */
+  section.querySelectorAll('.shop-look-quick-add').forEach(btn => {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      const productId = this.dataset.productId;
+      const selectorId = window.innerWidth <= 768 ? 'size-selector-mobile-' + productId : 'size-selector-' + productId;
+      const sizeSelector = document.getElementById(selectorId);
+      
+      sizeSelector.style.display = sizeSelector.style.display === 'block' ? 'none' : 'block';
+      this.style.display = this.style.display === 'none' ? 'block' : 'none';
+    });
+  });
+
+  section.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      
+     
+
+      // Call your original plpAtc function
+      plpAtc(e);
+
+     
+      setTimeout(() => {
+        this.classList.remove('loading');
+      }, 1800);
+    });
+  });
+
+  // Outside click hide sizes
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.shop-look-quick-add') && !e.target.closest('.size-btn')) {
+      section.querySelectorAll('.inline-variant-selector').forEach(s => s.style.display = 'none');
+      section.querySelectorAll('.shop-look-quick-add').forEach(b => b.style.display = 'block');
+    }
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Shop The Look Hotspots",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"Shop the look"},
+    {"type":"image_picker","id":"banner","label":"Desktop Banner Image"},
+    {"type":"image_picker","id":"banner_mobile","label":"Mobile Banner Image"}
+  ],
+  "blocks":[
+    {
+      "type":"hotspot",
+      "name":"Hotspot",
+      "settings":[
+        {"type":"product","id":"product","label":"Select Product"},
+        {"type":"range","id":"top","label":"Vertical Position (%)","min":0,"max":100,"default":50},
+        {"type":"range","id":"left","label":"Horizontal Position (%)","min":0,"max":100,"default":50}
+      ]
+    }
+  ],
+  "presets":[{"name":"Shop The Look11"}]
+}
+{% endschema %}

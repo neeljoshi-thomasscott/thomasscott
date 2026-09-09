@@ -1,0 +1,438 @@
+
+{% if template == 'index' %}
+{% if section.blocks.size > 0 %}
+  <div
+    id="AnnouncementMarquee-{{ section.id }}"
+    class="announcement-marquee"
+    style="
+      --announcement-speed: {{ section.settings.speed }}s;
+      --announcement-bg: {{ section.settings.background_color }};
+      --announcement-color: {{ section.settings.text_color }};
+      --announcement-gap: {{ section.settings.gap }}px;
+      --announcement-container-width: {{ section.settings.container_width }}px;
+    "
+  >
+    <div class="announcement-marquee__container">
+      <div class="announcement-marquee__viewport">
+        <div class="announcement-marquee__track">
+
+          <div class="announcement-marquee__group">
+            {% for block in section.blocks %}
+              <div
+                class="announcement-marquee__item"
+                {{ block.shopify_attributes }}
+              >
+                {% if block.settings.link != blank %}
+                  <a href="{{ block.settings.link }}">
+                    {{ block.settings.text }}
+                  </a>
+                {% else %}
+                  <span>{{ block.settings.text }}</span>
+                {% endif %}
+              </div>
+
+              <span class="announcement-marquee__separator">
+                {{ section.settings.separator }}
+              </span>
+            {% endfor %}
+          </div>
+
+          <div
+            class="announcement-marquee__group"
+            aria-hidden="true"
+          >
+            {% for block in section.blocks %}
+              <div class="announcement-marquee__item">
+                {% if block.settings.link != blank %}
+                  <a href="{{ block.settings.link }}" tabindex="-1">
+                    {{ block.settings.text }}
+                  </a>
+                {% else %}
+                  <span>{{ block.settings.text }}</span>
+                {% endif %}
+              </div>
+
+              <span class="announcement-marquee__separator">
+                {{ section.settings.separator }}
+              </span>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<style>
+  #AnnouncementMarquee-{{ section.id }} {
+    width: 100%;
+    background: var(--announcement-bg);
+    color: var(--announcement-color);
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__container {
+    position: relative;
+    width: calc(100% - 30px);
+    max-width: var(--announcement-container-width);
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__viewport {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__track {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    will-change: transform;
+
+    animation-name: announcement-scroll-{{ section.id }};
+    animation-duration: var(--announcement-speed);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--announcement-gap);
+    padding-right: var(--announcement-gap);
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__item {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    min-height: {{ section.settings.height }}px;
+    white-space: nowrap;
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+    line-height: 1.2;
+    letter-spacing: {{ section.settings.letter_spacing }}px;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__item a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.25s ease;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__item a:hover {
+    opacity: 0.75;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__separator {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    font-size: {{ section.settings.separator_size }}px;
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  {% if section.settings.pause_on_hover %}
+    #AnnouncementMarquee-{{ section.id }}:hover
+    .announcement-marquee__track {
+      animation-play-state: paused;
+    }
+  {% endif %}
+
+  @keyframes announcement-scroll-{{ section.id }} {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__container {
+      width: calc(100% - 20px);
+    }
+
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__viewport {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 12%,
+        black 88%,
+        transparent 100%
+      );
+
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 12%,
+        black 88%,
+        transparent 100%
+      );
+    }
+
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__item {
+      min-height: {{ section.settings.mobile_height }}px;
+      font-size: {{ section.settings.mobile_font_size }}px;
+    }
+
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__group {
+      gap: {{ section.settings.mobile_gap }}px;
+      padding-right: {{ section.settings.mobile_gap }}px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__track {
+      animation-play-state: paused;
+    }
+  }
+</style>
+{% else %}
+
+<style>
+  .header-top {
+    display: none;
+  }
+</style>
+
+{%endif %}
+{% schema %}
+{
+  "name": "Announcement marquee",
+  "class": "header-top",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 700,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scrolling speed",
+      "info": "Lower value means faster scrolling",
+      "min": 8,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Desktop text spacing",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile text spacing",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Desktop bar height",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile bar height",
+      "min": 30,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Desktop font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "mobile_font_size",
+      "label": "Mobile font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "default": "500",
+      "options": [
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 2,
+      "step": 0.1,
+      "unit": "px",
+      "default": 0.2
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator",
+      "default": "✦"
+    },
+    {
+      "type": "range",
+      "id": "separator_size",
+      "label": "Separator size",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause scrolling on hover",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Extra 5% OFF + Free Shipping on Prepaid Orders"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement marquee",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Extra 5% OFF + Free Shipping on Prepaid Orders"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Free Shipping on Orders Above ₹1,299"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Easy Returns and Secure Payments"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

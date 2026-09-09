@@ -1,0 +1,385 @@
+{% if product.available %}
+<style>
+  .buy-now-all-btn[disabled]{
+    opacity:0.7
+  }
+</style>
+<section class="customers-bought" >
+  <div class="container">
+        <div class="top-heading relative">
+          <h2 class="thomasxlheading">Customers also bought</h2>
+        </div>
+
+        <div class="customers-main">
+          <div class="customers-list">
+            
+              <div class="customers-card customer-card-1">
+                {%- render 'th-product-card', product: product -%}
+              </div>
+            
+            
+                <div class="plus-mid" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.5986 0.75V26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M0.75 13.5999H26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              
+
+              <div class="customers-card customer-card-2">
+                
+              </div>
+
+            
+              <div class="plus-mid" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.5986 0.75V26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M0.75 13.5999H26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              
+
+              <div class="customers-card customer-card-3">
+                
+              </div>
+
+          </div>
+          <button class="buy-now-all-btn thomas-wht-btn hovertime customers-bought__buy-all" data-variants=""></button>
+          
+        </div>
+  </div>
+</section>
+<script>
+  var collections = [
+    'shirts',
+    'jeans',
+    'bags',
+    'tshirts'
+  ];
+
+  var productCollections = {{ product.collections | map: 'handle' | json }};
+  var currentProductHandle = {{ product.handle | json }};
+  var currentVariantId = {{ product.selected_or_first_available_variant.id | json }};
+
+  // Remove assigned collections
+  var availableCollections = collections.filter(function(collectionHandle) {
+    return !productCollections.includes(collectionHandle);
+  });
+
+  // Custom logic
+  // If product has shirts → remove tshirts
+  if (productCollections.includes('shirts')) {
+    availableCollections = availableCollections.filter(function(item) {
+      return item !== 'tshirts';
+    });
+  }
+
+  // If product has tshirts → remove shirts
+  if (productCollections.includes('tshirts')) {
+    availableCollections = availableCollections.filter(function(item) {
+      return item !== 'shirts';
+    });
+  }
+
+  {% comment %} var randomCollections = availableCollections.slice(0, 2); {% endcomment %}
+   var randomCollections = availableCollections;
+
+  function getRandomItem(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  async function fetchRandomProductFromCollection(collectionHandle) {
+    const res = await fetch(`/collections/${collectionHandle}/products.json?limit=20`);
+    const data = await res.json();
+
+    if (!data.products || !data.products.length) return null;
+
+    // only in-stock products
+    const availableProducts = data.products.filter(function(product) {
+      return product.variants.some(function(variant) {
+        return variant.available === true;
+      });
+    });
+
+    if (!availableProducts.length) return null;
+
+    return getRandomItem(availableProducts);
+  }
+
+  async function fetchProductCard(productHandle) {
+    const res = await fetch(`/products/${productHandle}?section_id=th-product-card-cbb`);
+    return await res.text();
+  }
+
+  function getVariantIdFromCard(card) {
+    const variantInput = card.querySelector('input[name="variant_id"]');
+
+    if (!variantInput || !variantInput.value) {
+      return null;
+    }
+
+    return variantInput.value;
+  }
+  function getCardData(card) {
+    const variantInput = card.querySelector('input[name="variant_id"]');
+    const priceInput = card.querySelector('input[name="variant_price"]');
+    const comparePriceInput = card.querySelector('input[name="variant_comparePrice"]');
+
+    return {
+      variantId: variantInput ? variantInput.value : null,
+      price: priceInput ? Number(priceInput.value) : 0,
+      comparePrice: comparePriceInput && comparePriceInput.value
+        ? Number(comparePriceInput.value)
+        : 0
+    };
+  }
+
+  function formatMoney(cents) {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(cents / 100);
+  }
+  function updateBundleButton() {
+    const button = document.querySelector('.buy-now-all-btn');
+    if (!button) return;
+
+    const variantIds = [];
+    let totalPrice = 0;
+    let totalComparePrice = 0;
+
+    // Current product
+    const currentVariantId = {{ product.selected_or_first_available_variant.id | json }};
+    const currentPrice = Number({{ product.selected_or_first_available_variant.price | json }});
+    const currentComparePrice = Number({{ product.selected_or_first_available_variant.compare_at_price | default: product.selected_or_first_available_variant.price | json }});
+
+    variantIds.push(currentVariantId);
+    totalPrice += currentPrice;
+    totalComparePrice += currentComparePrice || currentPrice;
+
+    // Dynamic cards
+    document.querySelectorAll('.customer-card-2, .customer-card-3').forEach(function(card) {
+      const data = getCardData(card);
+
+      if (data.variantId) {
+        variantIds.push(data.variantId);
+        totalPrice += data.price;
+        totalComparePrice += data.comparePrice || data.price;
+      }
+    });
+
+    button.setAttribute('data-variants', variantIds.join(','));
+    button.setAttribute('data-total-price', totalPrice);
+    button.setAttribute('data-total-compare-price', totalComparePrice);
+
+    button.innerHTML = `
+      <span class="bundle-btn-text">Buy now all 3 at</span>
+      <span class="bundle-price">${formatMoney(totalPrice)}</span>
+      ${
+        totalComparePrice > totalPrice
+          ? `<s class="bundle-compare-price">${formatMoney(totalComparePrice)}</s>`
+          : ''
+      }
+    `;
+  }
+
+  {% comment %} async function buildCBB(collections) {
+    const section = document.querySelector('.auto-bundle-section');
+
+    if (!collections.length) {
+      if (section) section.remove();
+      return;
+    }
+
+    const cardSelectors = ['.customer-card-2', '.customer-card-3'];
+
+    // hide section/cards while loading
+    if (section) section.style.visibility = 'hidden';
+
+    try {
+      const cardResults = await Promise.all(
+        collections.map(async function(collectionHandle, index) {
+          const product = await fetchRandomProductFromCollection(collectionHandle);
+
+          if (!product || !product.handle) {
+            return {
+              index,
+              html: null
+            };
+          }
+
+          const cardHtml = await fetchProductCard(product.handle);
+
+          return {
+            index,
+            html: cardHtml
+          };
+        })
+      );
+
+      cardResults.forEach(function(result) {
+        const target = document.querySelector(cardSelectors[result.index]);
+
+        if (!target) return;
+
+        if (!result.html) {
+          target.style.display = 'none';
+          return;
+        }
+
+        target.innerHTML = result.html;
+      });
+
+      updateBundleButton();
+
+      // show all cards together
+      if (section) section.style.visibility = 'visible';
+
+    } catch (error) {
+      console.error('CBB Error:', error);
+      if (section) section.remove();
+    }
+  } {% endcomment %}
+  async function buildCBB(collections) {
+  const section = document.querySelector('.customers-bought');
+  const cardSelectors = ['.customer-card-2', '.customer-card-3'];
+
+  if (section) section.style.visibility = 'hidden';
+
+  try {
+    let filledCards = 0;
+
+    for (const collectionHandle of collections) {
+      if (filledCards >= 2) break;
+
+      const product = await fetchRandomProductFromCollection(collectionHandle);
+
+      if (!product || !product.handle || product.handle === currentProductHandle) {
+        continue;
+      }
+
+      const cardHtml = await fetchProductCard(product.handle);
+
+      if (!cardHtml || !cardHtml.trim()) {
+        continue;
+      }
+
+      const target = document.querySelector(cardSelectors[filledCards]);
+
+      if (target) {
+        target.innerHTML = cardHtml;
+        filledCards++;
+      }
+    }
+
+    if (filledCards < 2) {
+      console.warn('Only found', filledCards, 'bundle products');
+    }
+
+    updateBundleButton();
+
+    if (section) section.style.visibility = 'visible';
+
+  } catch (error) {
+    console.error('CBB Error:', error);
+    if (section) section.style.display = 'none';
+  }
+}
+async function addBundleToCart(variantIds, button) {
+  if (!variantIds.length) return;
+
+  const originalHtml = button.innerHTML;
+
+  button.disabled = true;
+  button.innerHTML = 'Adding...';
+
+  try {
+    const items = variantIds.map(function(id) {
+      return {
+        id: Number(id),
+        quantity: 1
+      };
+    });
+
+    const res = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ items: items })
+    });
+
+    if (!res.ok) {
+      throw new Error('Unable to add bundle to cart');
+    }
+
+    const data = await res.json();
+
+    button.innerHTML = 'Added';
+
+    document.dispatchEvent(
+          new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: {
+              data: {
+                {% comment %} itemCount: itemCount, {% endcomment %}
+                source: 'th-product-card-cbb'
+              }
+            }
+          })
+        );
+
+  } catch (error) {
+    console.error('Bundle Add Error:', error);
+    button.innerHTML = 'SOLD OUT';
+  } finally {
+    setTimeout(function() {
+      {% comment %} button.disabled = false; {% endcomment %}
+      {% comment %} button.innerHTML = originalHtml; {% endcomment %}
+    }, 1500);
+  }
+}
+document.addEventListener('click', function(event) {
+  const button = event.target.closest('.buy-now-all-btn');
+
+  if (!button) return;
+
+  const variants = button.getAttribute('data-variants');
+
+  if (!variants) return;
+
+  const variantIds = variants
+    .split(',')
+    .map(function(id) {
+      return id.trim();
+    })
+    .filter(Boolean);
+
+  addBundleToCart(variantIds, button);
+});
+  buildCBB(randomCollections);
+  
+</script>
+{% endif %}
+{% schema %}
+{
+  "name": "Auto Bundle",
+  "tag": "section",
+  "class": "auto-bundle-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Customer Also Bought"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Auto Bundle"
+    }
+  ]
+}
+{% endschema %}

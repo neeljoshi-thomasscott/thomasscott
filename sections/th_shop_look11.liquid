@@ -1,0 +1,186 @@
+<section class="shop-look" id="shop-look-{{ section.id }}">
+  <div class="container">
+    <div class="top-heading relative">
+      <div class="thomasxlheading">{{ section.settings.heading }}</div>
+    </div>
+
+    <div class="shop-look-banner" style="position:relative;">
+      {% if section.settings.banner != blank or section.settings.banner_mobile != blank %}
+        <picture>
+          {% if section.settings.banner_mobile != blank %}
+            <source media="(max-width:768px)" srcset="{{ section.settings.banner_mobile | img_url: 'master' }}">
+          {% endif %}
+          {% if section.settings.banner != blank %}
+            <img src="{{ section.settings.banner | img_url: 'master' }}" alt="Shop the look" class="w-full" />
+          {% endif %}
+        </picture>
+      {% endif %}
+
+      {% for block in section.blocks %}
+        {% assign product = all_products[block.settings.product] %}
+
+        <!-- HOTSPOT DOT -->
+        <div class="shop-look-point" 
+             style="top:{{ block.settings.top }}%; left:{{ block.settings.left }}%;" 
+             data-target="card-{{ block.id }}"
+             data-slide-index="{{ forloop.index0 }}">
+          <button class="hotspot-dot" aria-label="Open product"></button>
+        </div>
+
+        <!-- DESKTOP POPUP CARD - Using your th-product-card -->
+        <div class="shop-look-card desktop-card" id="card-{{ block.id }}" 
+             style="top:calc({{ block.settings.top }}% + 12px); left:{{ block.settings.left }}%;">
+          
+          <button class="close-card" aria-label="Close">×</button>
+
+          {% if product %}
+            <div class="shop-look-card-inner">
+              {% render 'th-product-card', product: product, section: section %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- MOBILE SLIDER -->
+    <div class="mobile-shop-look-swiper">
+      <div class="swiper mobile-swiper" id="mobile-swiper-{{ section.id }}">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            {% assign product = all_products[block.settings.product] %}
+            {% if product %}
+              <div class="swiper-slide" data-slide-index="{{ forloop.index0 }}">
+                <div class="shop-look-mobile-card">
+                  {% render 'th-product-card', product: product, section: section %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+@media (min-width: 769px) {
+  .mobile-shop-look-swiper { display: none; }
+}
+
+/* Optional: Better styling for popup with your product card */
+.shop-look-card-inner {
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  max-width: 380px;
+  position: relative;
+}
+
+.close-card {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.close-card:hover {
+  background: #f8f8f8;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const section = document.querySelector('#shop-look-{{ section.id }}');
+  if (!section) return;
+
+  const dots = section.querySelectorAll('.shop-look-point');
+  const desktopCards = section.querySelectorAll('.desktop-card');
+  let mobileSwiper = null;
+
+  // ================== HOTSPOT CLICK ==================
+  dots.forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetId = dot.dataset.target;
+      const targetCard = section.querySelector('#' + targetId);
+      const slideIndex = parseInt(dot.dataset.slideIndex || 0);
+
+      // Mobile: Scroll to slide
+      if (window.innerWidth <= 768 && mobileSwiper) {
+        mobileSwiper.slideTo(slideIndex, 600);
+        return;
+      }
+
+      // Desktop: Toggle card
+      if (targetCard.classList.contains('active')) {
+        targetCard.classList.remove('active');
+      } else {
+        desktopCards.forEach(card => card.classList.remove('active'));
+        targetCard.classList.add('active');
+      }
+    });
+  });
+
+  // ================== CLOSE BUTTON (FIXED) ==================
+  section.querySelectorAll('.close-card').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.desktop-card');
+      if (card) card.classList.remove('active');
+    });
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!section.contains(e.target)) {
+      desktopCards.forEach(card => card.classList.remove('active'));
+    }
+  });
+
+  // ================== MOBILE SWIPER ==================
+  {% comment %} if (window.innerWidth <= 768) {
+    mobileSwiper = new Swiper('#mobile-swiper-' + '{{ section.id }}', {
+      slidesPerView: 1.1,
+      spaceBetween: 16,
+      loop: false,
+    });
+  } {% endcomment %}
+
+});
+</script>
+
+{% schema %}
+{
+  "name": "Shop The Look Hotspots",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"Shop the look"},
+    {"type":"image_picker","id":"banner","label":"Desktop Banner Image"},
+    {"type":"image_picker","id":"banner_mobile","label":"Mobile Banner Image"}
+  ],
+  "blocks":[
+    {
+      "type":"hotspot",
+      "name":"Hotspot",
+      "settings":[
+        {"type":"product","id":"product","label":"Select Product"},
+        {"type":"range","id":"top","label":"Vertical Position (%)","min":0,"max":100,"default":50},
+        {"type":"range","id":"left","label":"Horizontal Position (%)","min":0,"max":100,"default":50}
+      ]
+    }
+  ],
+  "presets":[{"name":"Shop The Look12"}]
+}
+{% endschema %}

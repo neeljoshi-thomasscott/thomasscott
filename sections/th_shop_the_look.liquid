@@ -1,0 +1,268 @@
+<style>
+
+.watch-buy-card .product-mini-card{transition:.4s}
+.watch-buy-card .product-mini-card .shop-look-thumb{width: 76px; min-width: 76px;}
+.watch-buy-card .product-mini-card .shop-look-content{width: 100%;}
+.watch-buy-card .product-mini-card .inclusive,.watch-buy-card .product-mini-card .price-discount{display:none}
+.watch-buy-card .product-mini-card .content{display:flex;align-items:center;}
+
+.watch-buy-card .product-mini-card .inclusive,.watch-buy-card .product-price{width:100%}
+.watch-buy-card .product-mini-card .btn{height:18px;}
+.watch-buy-card .product-mini-card .shop-look-quick-add{margin:0;height:auto;}
+{% comment %} .watch-buy-card .product-mini-card .shop-look-quick-add svg {width:20px;height:20px;} {% endcomment %}
+.watch-buy-card .product-mini-card .shop-look-quick-add svg rect{display:none}
+.watch-buy-card .product-mini-card .shop-look-quick-add svg path{stroke:#000;}
+.watch-buy-card .product-mini-card .thomassmheading a{width: 100%; display: block; font-size: 12px; font-weight: 600; color: var(--pra-color); line-height: 18px; text-decoration: none; margin-bottom: 17px; overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 36px;}
+.watch-buy-card .product-mini-card .product-price{display: flex; align-items: center;  gap: 6px;}
+.watch-buy-card .product-mini-card .product-price .price-mrp{order:2}
+
+</style>
+<section class="shop-look" id="shop-look-{{ section.id }}">
+  <div class="container">
+    <div class="top-heading relative">
+      <div class="thomasxlheading">{{ section.settings.heading }}</div>
+    </div>
+
+    <div class="shop-look-banner" style="position:relative;">
+      {% if section.settings.banner != blank or section.settings.banner_mobile != blank %}
+        <picture>
+          {% if section.settings.banner_mobile != blank %}
+            <source media="(max-width:768px)" srcset="{{ section.settings.banner_mobile  | image_url: width: '400' }}">
+          {% endif %}
+          {% if section.settings.banner != blank %}
+            <img data-src="{{ section.settings.banner  | image_url: width: '1440' }}" width="800" height="600" alt="Shop the look" class="w-full lazyload" />
+          {% endif %}
+        </picture>
+      {% endif %}
+
+      {% for block in section.blocks %}
+        {% assign product = all_products[block.settings.product] %}
+
+        <!-- HOTSPOT DOT -->
+        <div class="shop-look-point" 
+             style="top:{{ block.settings.card_top }}%; left:{{ block.settings.card_left }}%;"
+             data-target="card-{{ block.id }}"
+             data-slide-index="{{ forloop.index0 }}">
+          <button class="hotspot-dot" aria-label="Open product"></button>
+        </div>
+
+        <!-- DESKTOP POPUP CARD (exactly your working code) -->
+        <div class="shop-look-card desktop-card" id="card-{{ block.id }}" style="top:calc({{ block.settings.top }}% + 12px); left:{{ block.settings.left }}%;">
+          <button class="close-card" aria-label="Close">×</button>
+
+          {% if product %}
+              
+            {% render 'th-shop-look-card', product: product, section: section, block: block %}
+            {% render 'size-chart-popup', product: product %}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- 🔥 MOBILE SLIDER - JUST BELOW IMAGE -->
+    <div class="mobile-shop-look-swiper">
+      <div class="swiper mobile-swiper shop-look-only-mobile" id="mobile-swiper-{{ section.id }}">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            {% assign product = all_products[block.settings.product] %}
+            {% if product %}
+              <div class="swiper-slide" data-slide-index="{{ forloop.index0 }}">
+                
+                {% render 'th-shop-look-card', product: product, section: section, block: block, class: 'shop-look-mobile-card' %}
+               
+              </div>
+            {% endif %}
+          {% endfor %}
+          {% for block in section.blocks %}
+            {% assign product = all_products[block.settings.product] %}
+
+              {% render 'size-chart-popup', product: product %}
+              {% endfor %}
+        </div>
+      </div>
+    </div> 
+  </div>
+</section>
+
+<style>
+
+
+@media(min-width:769px){.mobile-shop-look-swiper{display:none;}}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const section = document.querySelector('#shop-look-{{ section.id }}');
+
+  if (!section) return;
+
+  const dots = section.querySelectorAll('.shop-look-point');
+  const desktopCards = section.querySelectorAll('.desktop-card');
+
+  let mobileSwiper;
+
+  // =========================================
+  // MOBILE SWIPER INIT
+  // =========================================
+ function initMobileSwiper() {
+
+    const swiperEl = section.querySelector('#mobile-swiper-{{ section.id }}');
+
+    if (!swiperEl) return;
+
+    // already initialized
+    if (swiperEl.classList.contains('swiper-initialized')) {
+      mobileSwiper = swiperEl.swiper;
+      return;
+    }
+
+    mobileSwiper = new Swiper(swiperEl, {
+      slidesPerView: 1.2,
+      spaceBetween: 16,
+      loop: false,
+      speed: 500,
+      observer: true,
+      observeParents: true,
+    });
+
+  } 
+
+  // delay for shopify rendering
+  setTimeout(function () {
+
+    if (window.innerWidth <= 768) {
+      initMobileSwiper();
+    }
+
+  }, 200);
+
+  // =========================================
+  // HOTSPOT CLICK
+  // =========================================
+  dots.forEach(function(dot) {
+
+    dot.addEventListener('click', function(e) {
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const targetId = this.dataset.target;
+      const slideIndex = parseInt(this.dataset.slideIndex || 0);
+
+      // MOBILE
+      if (window.innerWidth <= 768 && mobileSwiper) {
+
+        mobileSwiper.slideTo(slideIndex);
+
+        dots.forEach(function(d){
+          d.classList.remove('active');
+        });
+
+        this.classList.add('active');
+
+        return;
+      }
+
+      // DESKTOP
+      const targetCard = section.querySelector('#' + targetId);
+
+      if (!targetCard) return;
+
+      if (targetCard.classList.contains('active')) {
+
+        targetCard.classList.remove('active');
+
+      } else {
+
+        desktopCards.forEach(function(card){
+          card.classList.remove('active');
+        });
+
+        targetCard.classList.add('active');
+      }
+
+    });
+
+  });
+
+  // =========================================
+  // CLOSE CARD
+  // =========================================
+  section.querySelectorAll('.close-card').forEach(function(btn){
+
+    btn.addEventListener('click', function(e){
+
+      e.stopPropagation();
+
+      const card = this.closest('.desktop-card');
+
+      if(card){
+        card.classList.remove('active');
+      }
+
+    });
+
+  });
+
+  // =========================================
+  // OUTSIDE CLICK
+  // =========================================
+  document.addEventListener('click', function(e){
+
+    if (!section.contains(e.target)) {
+
+      desktopCards.forEach(function(card){
+        card.classList.remove('active');
+      });
+
+    }
+
+  });
+
+});
+</script>
+
+{% schema %}
+{
+  "name": "Shop The Look Hotspots",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"Shop the look"},
+    {"type":"image_picker","id":"banner","label":"Desktop Banner Image"},
+    {"type":"image_picker","id":"banner_mobile","label":"Mobile Banner Image"}
+  ],
+  "blocks":[
+    {
+      "type":"hotspot",
+      "name":"Hotspot",
+      "settings":[
+        {"type":"product","id":"product","label":"Select Product"},
+        {"type":"range","id":"top","label":"Vertical Position (%)","min":0,"max":100,"default":50},
+        {"type":"range","id":"left","label":"Horizontal Position (%)","min":0,"max":100,"default":50},
+        {
+"type":"range",
+  "id":"card_top",
+  "label":"Card Vertical Position (%)",
+  "min":0,
+  "max":100,
+  "default":50
+},
+{
+  "type":"range",
+  "id":"card_left",
+  "label":"Card Horizontal Position (%)",
+  "min":0,
+  "max":100,
+  "default":50
+}
+      ]
+    }
+  ],
+  "presets":[{"name":"Shop The Look"}]
+}
+{% endschema %}
