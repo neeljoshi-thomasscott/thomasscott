@@ -263,7 +263,8 @@ button.wishlisthero-product-in-wishlist svg.svg-inline--fa.fa-heart.fa-w-16.fa-1
 .home-banner .banner-content .thomasxlheading{color: var(--white-color); font-weight: 500; line-height: 40px; text-transform: uppercase; margin-bottom: 20px;}
 .home-banner .banner-content .thomas-wht-btn{margin: 0 auto;}
 .slick-dots{align-items: center; justify-content: center; bottom: 54px;}
-.home-banner .swiper-wrapper, .home-banner:not(.swiper-initialized){display:flex; overflow:hidden;}
+.home-banner .swiper-wrapper{display:flex;}
+.home-banner:not(.swiper-initialized){display:flex; overflow:hidden;}
 .home-banner:not(.swiper-initialized) .item{min-width: calc(100% / 1);}
 /* banner-section-end */
 
