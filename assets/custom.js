@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     initSwiperSlider('.home-banner', {
         slidesPerView: 1,
-        loop: true,
+        rewind: true,
         autoplay: { delay: 4000, disableOnInteraction: false },
         speed: 800,
         dots: true,
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     initSwiperSlider('.customer-slider', {
         slidesPerView: 1,
-        loop: true,
+        rewind: true,
         autoplay: { delay: 2000, disableOnInteraction: false },
         dots: true,
         breakpoints: {
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     initSwiperSlider('.secret-slider', {
         slidesPerView: 1,
-        loop: true,
+        rewind: true,
         autoplay: { delay: 800, disableOnInteraction: false },
         breakpoints: {
             768: { slidesPerView: 2 },
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     initSwiperSlider('.fashion-slider', {
         slidesPerView: 1,
-        loop: true,
+        rewind: true,
         autoplay: { delay: 800, disableOnInteraction: false },
         breakpoints: {
             768: { slidesPerView: 2 },
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     initSwiperSlider('.blog-slider', {
         slidesPerView: 1,
-        loop: true,
+        rewind: true,
         centeredSlides: true,
         autoplay: { delay: 3000, disableOnInteraction: false },
     });
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         initSwiperSlider('.categroy-list', {
             slidesPerView: 2.1,
-            loop: true,
+            rewind: true,
         });
 
         initSwiperSlider('.contact-info-list', {
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         initSwiperSlider('.bestseller-slider', {
             slidesPerView: 1,
-            loop: true,
+            rewind: true,
             dots: true,
             breakpoints: {
                 768: { slidesPerView: 2 },
