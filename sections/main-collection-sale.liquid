@@ -279,6 +279,18 @@
       opacity: 1 !important;
       overflow-x: auto !important;
     }
+
+    /* snippets/grid-density-controls.liquid renders an inline <style> tag
+       (comment: "krishna css for plp") that unconditionally hides
+       .plp-right-sec .tabs-wrapp with !important below 549px, for every
+       collection that uses grid density controls, not just archive-sale.
+       It has the same specificity as the rule above and is emitted later
+       in the document (inline, at the point of render), so it wins on tie.
+       Out-specificity it here instead of touching that shared snippet. */
+    body.page_archive-sale .plp-right-sec .tabs-wrapp {
+      display: flex !important;
+      width: 100% !important;
+    }
   }
 {% endstylesheet %}
 
