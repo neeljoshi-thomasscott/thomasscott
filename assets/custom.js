@@ -1,111 +1,220 @@
-/* =========================================
-   Swiper slider initializer
-   Converts a flat "container > .item" list into the
-   .swiper > .swiper-wrapper > .swiper-slide structure
-   Swiper requires, then instantiates it. Reuses the
-   existing "slick-dots" / "slick-dot" / "slick-active"
-   class names so the existing CSS keeps working unchanged.
-========================= */
-function initSwiperSlider(selector, options) {
-    document.querySelectorAll(selector).forEach(function (el) {
-        if (el.dataset.swiperInit === '1') return;
-
-        var items = Array.prototype.slice.call(el.children);
-        if (items.length <= 1) return;
-
-        el.dataset.swiperInit = '1';
-
-        var wrapper = document.createElement('div');
-        wrapper.className = 'swiper-wrapper';
-
-        items.forEach(function (item) {
-            item.classList.add('swiper-slide');
-            wrapper.appendChild(item);
-        });
-
-        el.appendChild(wrapper);
-        el.classList.add('swiper');
-
-        var config = Object.assign({}, options);
-
-        if (config.dots) {
-            var dots = document.createElement('div');
-            dots.className = 'slick-dots';
-            el.appendChild(dots);
-            config.pagination = {
-                el: dots,
-                clickable: true,
-                bulletClass: 'slick-dot',
-                bulletActiveClass: 'slick-active',
-            };
-        }
-        delete config.dots;
-
-        new Swiper(el, config);
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
+$(document).ready(function ($) {
 
     /* =========================
        Home Banner Slider
     ========================= */
-    initSwiperSlider('.home-banner', {
-        slidesPerView: 1,
-        rewind: true,
-        autoplay: { delay: 4000, disableOnInteraction: false },
-        speed: 800,
+    $('.home-banner').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: true,
         dots: true,
+        autoplay: true,
+        autoplaySpeed: 4000,
+        speed: 800,
+        pauseOnHover: false,
+        pauseOnFocus: false,
+    });
+
+    /* =========================
+       Watch Buy Slider
+    ========================= */
+    // $('.watch-buy-slider').slick({
+    //     slidesToShow: 4,
+    //     slidesToScroll: 1,
+    //     arrows: false,
+    //     infinite: false,
+    //     responsive: [
+    //         {
+    //             breakpoint: 1199,
+    //             settings: {
+    //                 slidesToShow: 2,
+    //                 slidesToScroll: 1
+    //             }
+    //         },
+    //         {
+    //             breakpoint: 767,
+    //             settings: {
+    //                 arrows: false,
+    //                 dots: false,
+    //                 slidesToShow: 1,
+    //                 slidesToScroll: 1
+    //             }
+    //         }
+    //     ]
+    // });
+
+    /* =========================
+       Deal Slider
+    ========================= */
+    $('.deal-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: false,
+        responsive: [
+            {
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    arrows: false,
+                    dots: true,
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
     });
 
     /* =========================
        Customer Slider
     ========================= */
-    initSwiperSlider('.customer-slider', {
-        slidesPerView: 1,
-        rewind: true,
-        autoplay: { delay: 2000, disableOnInteraction: false },
+    $('.customer-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: true,
         dots: true,
-        breakpoints: {
-            768: { slidesPerView: 2 },
-            1200: { slidesPerView: 3 },
-        },
+        autoplay: true,
+        autoplaySpeed: 2000,
+        responsive: [
+            {
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    arrows: false,
+                    dots: false,
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
     });
 
     /* =========================
-       Secret Slider
+       Shop New Slider
     ========================= */
-    initSwiperSlider('.secret-slider', {
-        slidesPerView: 1,
-        rewind: true,
-        autoplay: { delay: 800, disableOnInteraction: false },
-        breakpoints: {
-            768: { slidesPerView: 2 },
-            1200: { slidesPerView: 3 },
-        },
+    $('.shop-new-slider').slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: false,
+        dots: true,
+        responsive: [
+            {
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    arrows: false,
+                    dots: false,
+                    slidesToShow: 2.1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
+    });
+
+   /* =========================
+   Secret Slider
+========================= */
+    $('.secret-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: true,
+        dots: false,
+        autoplay: true,
+        autoplaySpeed: 800,
+
+        responsive: [
+            {
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    arrows: false,
+                    dots: false,
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
     });
 
     /* =========================
-       Fashion Slider
+    Fashion Slider
     ========================= */
-    initSwiperSlider('.fashion-slider', {
-        slidesPerView: 1,
-        rewind: true,
-        autoplay: { delay: 800, disableOnInteraction: false },
-        breakpoints: {
-            768: { slidesPerView: 2 },
-            1200: { slidesPerView: 3 },
-        },
+    $('.fashion-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: true,
+        dots: false,
+        autoplay: true,
+        autoplaySpeed: 800,
+
+        responsive: [
+            {
+                breakpoint: 1199,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    arrows: false,
+                    dots: false,
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
     });
 
     /* =========================
        Blog Slider
     ========================= */
-    initSwiperSlider('.blog-slider', {
-        slidesPerView: 1,
-        rewind: true,
-        centeredSlides: true,
-        autoplay: { delay: 3000, disableOnInteraction: false },
+    $('.blog-slider').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: true,
+        dots: false,
+        centerMode: true,
+        autoplay:true,
+    });
+    $('.column-options__option').on('click', function() {
+        $('.column-options__option').removeClass('grid-active');
+        $(this).addClass('grid-active');
+    
+    });
+    $('.quick-add-btn').on('click', function() {
+        $('.header').addClass('scrolled');
     });
 
     /* =========================
@@ -113,15 +222,21 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     if (window.matchMedia("(max-width: 767px)").matches) {
 
-        initSwiperSlider('.categroy-list', {
-            slidesPerView: 2.1,
-            rewind: true,
+        $('.categroy-list').slick({
+            slidesToShow: 2.1,
+            slidesToScroll: 1,
+            arrows: false,
+            dots: false,
+            infinite: true,
         });
 
-        initSwiperSlider('.contact-info-list', {
-            slidesPerView: 1,
-            loop: false,
-            centeredSlides: true,
+        $('.contact-info-list').slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows: false,
+            dots: false,
+            infinite: false,
+            centerMode: true,
         });
     }
 
@@ -130,36 +245,32 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================= */
     if (window.matchMedia("(min-width: 768px)").matches) {
 
-        initSwiperSlider('.bestseller-slider', {
-            slidesPerView: 1,
-            rewind: true,
+        $('.bestseller-slider').slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            arrows: false,
+            infinite: true,
             dots: true,
-            breakpoints: {
-                768: { slidesPerView: 2 },
-                1200: { slidesPerView: 4 },
-            },
+            responsive: [
+                {
+                    breakpoint: 1199,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 767,
+                    settings: {
+                        arrows: false,
+                        dots: false,
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
         });
     }
-
-    /* =========================
-       Grid column toggle / quick add header state
-       (previously jQuery)
-    ========================= */
-    document.querySelectorAll('.column-options__option').forEach(function (option) {
-        option.addEventListener('click', function () {
-            document.querySelectorAll('.column-options__option').forEach(function (el) {
-                el.classList.remove('grid-active');
-            });
-            option.classList.add('grid-active');
-        });
-    });
-
-    document.querySelectorAll('.quick-add-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var header = document.querySelector('.header');
-            if (header) header.classList.add('scrolled');
-        });
-    });
 
     /* =========================
        Mobile Navigation
@@ -339,6 +450,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* =========================
+       Footer Accordion
+    ========================= */
+    // const footerTabs = document.querySelectorAll('.footer-col');
+
+    // footerTabs.forEach(tab => {
+
+    //     const footerHeader = tab.querySelector('.footer-toggle');
+
+    //     if (!footerHeader) return;
+
+    //     footerHeader.addEventListener('click', () => {
+
+    //         footerTabs.forEach(item => {
+
+    //             if (item !== tab) {
+    //                 item.classList.remove('active');
+    //             }
+    //         });
+
+    //         tab.classList.toggle('active');
+    //     });
+    // });
+
+    /* =========================
        Product Variant Toggle
     ========================= */
     document.addEventListener("click", function (e) {
@@ -378,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function () {
             realBtn.click();
         });
     }
-
+    
 
 });
 
@@ -421,3 +556,6 @@ document.addEventListener("click", function (e) {
   });
 
 });
+
+
+
