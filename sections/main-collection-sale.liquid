@@ -1,0 +1,459 @@
+{%- doc -%}
+  Dedicated collection container for the Archive Sale collection and its
+  metaobject-linked sub-collections (assigned via templates/collection.archive-sale.json).
+
+  Forked from sections/main-collection.liquid so archive-sale-specific behaviour
+  (sub-collection tabs, mobile layout fix) doesn't have to live in the shared
+  collection template used by every other collection on the store.
+
+  Differences from main-collection.liquid:
+  - The sub-collection tabs always read their metafield from the canonical
+    `archive-sale` collection (not `collection`), so the tabs render on every
+    sub-collection page too, not just on /collections/archive-sale itself.
+  - Added a scoped mobile fix so the tabs/sort row is visible on small screens.
+{%- enddoc -%}
+
+<script
+  src="{{ 'results-list.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<style>
+  #filters-drawer .facets-drawer__filters .facets__item .checkbox .checkbox__input:checked+.checkbox__label .icon-checkmark{
+  background:black;
+}
+</style>
+{% javascript %}
+  const url = new URL(window.location.href);
+  if (url.hash) {
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+        const card = document.getElementById(url.hash.slice(1));
+        if (card) {
+          card.scrollIntoView({ behavior: 'instant' });
+        }
+      },
+      { once: true }
+    );
+  }
+{% endjavascript %}
+
+<div class="{{ section.settings.custom_class }} ">
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  <results-list
+    class="section product-grid-container color-{{ section.settings.color_scheme }}"
+    style="--padding-block-start: {{ section.settings.padding-block-start }}px; --padding-block-end: {{ section.settings.padding-block-end }}px;"
+    section-id="{{ section.id }}"
+    infinite-scroll="false"
+  >
+    {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
+
+    <div
+      class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}"
+    >
+      {% content_for 'block',
+        type: 'filters',
+        id: 'filters',
+        results: collection,
+        results_size: collection.products_count
+      %}
+
+      {%- assign sale_root_collection = collections['archive-sale'] -%}
+      {%- assign sub_meta = sale_root_collection.metafields.custom.new_sub_cat.value -%}
+
+      <div class="plp-right-sec">
+      <div class="sub-collections-wrapper">
+        <div class="custom-filter-wrapp">
+          {% content_for 'block',
+            type: 'filters',
+            id: 'filtersa',
+            results: collection,
+            results_size: collection.products_count
+          %}
+        </div>
+
+        <div class="tabs-wrapp">
+          {%- if sub_meta != blank -%}
+  {%- assign sub_collections = sub_meta.collections -%}
+  <div class="tab-block">
+    {%- for subColl in sub_collections.value -%}
+      <a
+        href="{{ subColl.url }}"
+        class="pills__pill {% if request.path == subColl.url %}active{% endif %}">
+        <p style="text-align:center">
+          {% if forloop.first == true %}
+            All
+          {% elsif subColl.metafields.custom.sub_coll_title.value != blank %}
+  {{ subColl.metafields.custom.sub_coll_title.value }}
+{% else %}
+  {{ subColl.title }}
+{% endif %}
+        </p>
+      </a>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+          <div
+            class="facets facets--horizontal facets-controls-wrapper spacing-style"
+            style="{% render 'spacing-style', settings: block_settings %}{% if block_settings.text_label_case == 'uppercase' %} --facet-label-transform: uppercase;{% endif %}"
+          >
+            {% render 'grid-density-controls', viewport: 'desktop' %}
+          </div>
+        </div>
+      </div>
+
+      {% assign products_per_page = section.settings.products_per_page %}
+
+      {% paginate collection.products by products_per_page %}
+        {% capture children %}
+        {% for product in collection.products %}
+          <li
+            id="{{ section.id }}-{{ product.id }}"
+            class="product-grid__item product-grid__item--{{ forloop.index0 }}"
+            data-page="{{ paginate.current_page }}"
+            data-product-id="{{ product.id }}"
+            ref="cards[]"
+          >
+            {% # theme-check-disable %}
+            {% content_for 'block', type: 'th-product-card', id: 'product-card', closest.product: product, enable_swatches: true %}
+            {% # theme-check-enable %}
+          </li>
+        {% endfor %}
+      {% endcapture %}
+
+        {% render 'product-grid',
+          section: section,
+          children: children,
+          products: collection.products,
+          paginate: paginate,
+          enable_infinite_scroll: false
+        %}
+      {% endpaginate %}
+    </div>
+    </div>
+  </results-list>
+</div>
+
+{% stylesheet %}
+  .custom-filter-wrapp .facets-block-wrapper.facets-block-wrapper--horizontal facets-form-component.facets__form-wrapper .products-count-wrapper {
+      display: none;
+  }
+
+  .custom-filter-wrapp .facets-block-wrapper.facets-block-wrapper--horizontal facets-form-component.facets__form-wrapper sorting-filter-component.sorting-filter.sorting-filter__horizontal {
+      display: block;
+  }
+
+  .facets-block-wrapper.facets-block-wrapper--horizontal facets-form-component.facets__form-wrapper sorting-filter-component.sorting-filter.sorting-filter__horizontal, sorting-filter-component.sorting-filter {
+      display: none;
+  }
+
+  .custom-filter-wrapp .facets-block-wrapper.facets-block-wrapper--horizontal facets-form-component.facets__form-wrapper .column-options-wrapper {
+      display: none;
+  }
+
+  .custom-filter-wrapp .facets-block-wrapper.facets-block-wrapper--horizontal facets-form-component.facets__form-wrapper .facets-remove.facets-remove--mobile-and-vertical {
+      display: flex;
+      flex-direction: row !important;
+      flex-wrap: nowrap;
+  }
+
+  .facets-remove.facets-remove--mobile-and-vertical:not(.custom-filter-wrapp) {
+      display: none;
+  }
+
+  .main-collection-grid {
+    grid-column: var(--grid-column--mobile);
+
+    @media screen and (min-width: 750px) {
+      grid-column: var(--grid-column--desktop);
+    }
+  }
+
+  /* ── Hide default pagination rendered by product-grid snippet ── */
+  /* Our custom pagination is inside .pagination-wrapper — hide everything else */
+  results-list nav.pagination-nav,
+  results-list .paginate-wrapper,
+  results-list [data-pagination]:not(.pagination-wrapper),
+  .product-grid__pagination,
+  ul.pagination:not(.pagination-wrapper ul) {
+    display: none !important;
+  }
+
+  /* ── Pagination ── */
+  .pagination-wrapper {
+    width: 100%;
+    padding: 32px 0 16px;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pagination__item {
+    display: flex;
+    align-items: center;
+  }
+
+  .pagination__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-foreground, #1a1a1a);
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+  }
+
+  .pagination__link:hover {
+    background-color: var(--color-background-secondary, #f5f5f5);
+    border-color: var(--color-border, #e0e0e0);
+  }
+
+  .pagination__link--current {
+    background-color: var(--color-foreground, #1a1a1a);
+    color: var(--color-background, #ffffff);
+    border-color: var(--color-foreground, #1a1a1a);
+    pointer-events: none;
+  }
+
+  .pagination__link--ellipsis {
+    pointer-events: none;
+    border: none;
+    color: var(--color-foreground, #1a1a1a);
+    opacity: 0.5;
+  }
+
+  .pagination__link--prev,
+  .pagination__link--next {
+    font-weight: 600;
+    padding: 0 12px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pagination {
+      gap: 2px;
+    }
+    .pagination__link {
+      min-width: 36px;
+      height: 36px;
+      font-size: 13px;
+    }
+  }
+
+  /* ── Archive Sale mobile fix ──
+     .page_archive-sale is only present on collections using this section's
+     template, so this can't affect any other collection on the store.
+     The shared main-collection.liquid layout keeps .collection-wrapper as a
+     flex row (see assets/style.css) with no mobile column switch, which
+     squeezes .plp-right-sec (and the sub-collection tabs inside it) into a
+     narrow sliver next to the mobile filter button. Force it to stack. */
+  @media screen and (max-width: 767px) {
+    .page_archive-sale .collection-wrapp .collection-wrapper {
+      flex-direction: column;
+    }
+    .page_archive-sale .plp-right-sec {
+      width: 100%;
+    }
+    .page_archive-sale .sub-collections-wrapper,
+    .page_archive-sale .tabs-wrapp,
+    .page_archive-sale .tab-block {
+      display: flex;
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Archive sale collection",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "t:settings.type",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "organic",
+          "label": "t:options.editorial"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "product_card_size",
+      "label": "t:settings.card_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        },
+        {
+          "value": "extra-large",
+          "label": "t:options.extra_large"
+        }
+      ],
+      "default": "medium",
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_product_card_size",
+      "label": "t:settings.mobile_card_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "t:settings.products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "product_grid_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "centered",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_on_mobile",
+      "label": "t:settings.full_width_on_mobile",
+      "default": true,
+      "visible_if": "{{ section.settings.product_grid_width != 'full-width' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap_horizontal",
+      "label": "t:settings.horizontal_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "columns_gap_vertical",
+      "label": "t:settings.vertical_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.section_layout"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": []
+}
+{% endschema %}

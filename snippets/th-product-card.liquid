@@ -72,7 +72,7 @@
     <div class="card-image-wrapper">
      {% if is_sold_out %}
           <div class="sold-out-badge sale-badge">Sold Out</div>
-          {% elsif collection.handle == 'archive-sale' %}
+          {% elsif collection.handle == 'archive-sale' or template.suffix == 'archive-sale' %}
           <div class="flat-price-badge sale-badge">Flat Price</div>
            {% elsif is_new_product %}
           <div class="new-badge sale-badge">New Arrivals</div>
