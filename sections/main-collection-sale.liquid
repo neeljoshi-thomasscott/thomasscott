@@ -272,8 +272,12 @@
     .page_archive-sale .sub-collections-wrapper,
     .page_archive-sale .tabs-wrapp,
     .page_archive-sale .tab-block {
-      display: flex;
-      width: 100%;
+      display: flex !important;
+      width: 100% !important;
+      max-width: none !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      overflow-x: auto !important;
     }
   }
 {% endstylesheet %}
