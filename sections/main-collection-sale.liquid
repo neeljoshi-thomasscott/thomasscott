@@ -281,6 +281,22 @@
       display: flex !important;
       width: 100% !important;
     }
+
+    /* Root cause of the blank gap above the product grid: this div also
+       matches the generic .facets rule in blocks/filters.liquid, which sets
+       height: var(--drawer-height) (a near-full-screen height meant for the
+       slide-out filter drawer) with no mobile guard. It's forced visible by
+       grid-density-controls.liquid's own `.facets-controls-wrapper{display:
+       flex !important}` rule, even though its only content (the desktop
+       grid-density radio buttons) is already hidden on mobile. Confirmed via
+       a headless-browser layout dump: this element alone was 812px tall on
+       an 812px-tall viewport. Hiding it here has no visible effect since it
+       has no visible content on mobile anyway. */
+    .page_archive-sale .plp-right-sec .tabs-wrapp .facets-controls-wrapper {
+      display: none !important;
+      height: auto !important;
+      max-height: none !important;
+    }
   }
 {% endstylesheet %}
 
