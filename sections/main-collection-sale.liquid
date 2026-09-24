@@ -257,18 +257,8 @@
 
   /* ── Archive Sale mobile fix ──
      .page_archive-sale is only present on collections using this section's
-     template, so this can't affect any other collection on the store.
-     The shared main-collection.liquid layout keeps .collection-wrapper as a
-     flex row (see assets/style.css) with no mobile column switch, which
-     squeezes .plp-right-sec (and the sub-collection tabs inside it) into a
-     narrow sliver next to the mobile filter button. Force it to stack. */
+     template, so this can't affect any other collection on the store. */
   @media screen and (max-width: 767px) {
-    .page_archive-sale .collection-wrapp .collection-wrapper {
-      flex-direction: column;
-    }
-    .page_archive-sale .plp-right-sec {
-      width: 100%;
-    }
     .page_archive-sale .sub-collections-wrapper,
     .page_archive-sale .tabs-wrapp,
     .page_archive-sale .tab-block {
