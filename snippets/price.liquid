@@ -85,7 +85,7 @@ endif
         {% if discount_percentage %}
           <span class="price-discount">({{ discount_percentage }}% Off)</span>
         {% endif %}
-       {% if collection.handle == 'flat-prices'
+       {% comment %} {% if collection.handle == 'flat-prices'
           or collection.handle == 'flat-70-80-off'
           or collection.handle == 'liberty-sale-shirts'
           or collection.handle == '70-80-off-sale-trousers'
@@ -101,8 +101,8 @@ endif
           or collection.handle == 'flat-price-sale-joggers'
           or collection.handle == 'new-arrivals'
       %}
+{% endif %} {% endcomment %}
   <span class="price-discount">({{ discount_percentage }}% Off)</span>
-{% endif %}
       </span>
     {% endif %}
     <span role="group">
