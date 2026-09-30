@@ -114,7 +114,8 @@ endif
       <span role="group" class="price-mrp">
         <span class="visually-hidden">{{ 'content.price_regular' | t }}&nbsp;</span>
         <span class="compare-at-price discount">{{- compare_at_price -}}</span>
-        {% if collection.handle == 'flat-prices'
+        <span class="price-discount">({{ discount_percentage }}% Off)</span>
+        {% comment %} {% if collection.handle == 'flat-prices'
           or collection.handle == 'flat-70-80-off'
           or collection.handle == 'liberty-sale-shirts'
           or collection.handle == '70-80-off-sale-trousers'
@@ -132,7 +133,7 @@ endif
         {% if discount_percentage %}
           <span class="price-discount">({{ discount_percentage }}% Off)</span>
         {% endif %}
-        {%endif %}
+        {%endif %} {% endcomment %}
       </span>
     {% endif %}
 
@@ -148,9 +149,7 @@ endif
     {% if show_sale_price_first == true and show_compare_price %}
         <span class="visually-hidden">{{ 'content.price_regular' | t }}&nbsp;</span>
         <span class="compare-at-price discount">{{- compare_at_price -}}</span>
-        {% if discount_percentage %}
           <span class="price-discount">({{ discount_percentage }}% Off)</span>
-        {% endif %}
     {% endif %}
   {% endif %}
   {%- if selected_variant.unit_price and show_unit_price %}
