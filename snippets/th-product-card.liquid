@@ -15,6 +15,21 @@
 {% assign fifteen_days_seconds = 15 | times: 24 | times: 60 | times: 60 %}
 {% assign product_age = current_time | minus: product_created_time %}
 
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign selling_price = current_variant.price %}
+{% assign mrp_price = current_variant.compare_at_price %}
+
+{% assign discount_percentage = 0 %}
+
+{% if mrp_price != blank and mrp_price > selling_price %}
+  {% assign discount_amount = mrp_price | minus: selling_price %}
+  {% assign discount_percentage = discount_amount
+    | times: 100.0
+    | divided_by: mrp_price
+    | round
+  %}
+{% endif %}
+
 {% assign is_new_product = false %}
 {% if product_age <= fifteen_days_seconds %}
   {% assign is_new_product = true %}
