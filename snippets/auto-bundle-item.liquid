@@ -14,7 +14,13 @@
 
   # Only pre-pick a size when there is no choice to make, or the shopper already chose one on this page
   assign preselect = blank
-  if item.has_only_default_variant
+  # Single-variant products (Default Title or e.g. "Onesize") need no size choice
+  assign one_size = false
+  if item.variants.size == 1
+    assign one_size = true
+  endif
+
+  if one_size
     assign preselect = item.selected_or_first_available_variant.id
   elsif is_current and item.selected_variant and item.selected_variant.available
     assign preselect = item.selected_variant.id
@@ -68,7 +74,7 @@
       {%- endif -%}
     </div>
 
-    {%- if item.has_only_default_variant -%}
+    {%- if one_size -%}
       <span class="ab-onesize">One size</span>
       <input
         type="hidden"
