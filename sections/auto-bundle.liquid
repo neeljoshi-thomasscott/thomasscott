@@ -1,30 +1,73 @@
 {%- liquid
   # ------------------------------------------------------------------
   # Pick up to 2 products that complete the look of the current product.
+  # Every product fills an outfit slot (top / bottom / bag), read from its
+  # product type (full-outfit types such as co-ord sets fill top and bottom).
   # 1. Complementary products set in the Search & Discovery app (merchant curated)
-  # 2. Fallback: one product per category from "Fallback collections", skipping
-  #    categories the current product (or an earlier pick) already covers.
-  #    Only one "tops" category is ever used, so a shirt never gets a T-shirt.
-  #    Within a category the collection's own sort order is used (in-stock first),
-  #    and the product id spreads different PDPs across the top items, so a given
-  #    page always shows the same, stable bundle.
+  # 2. Fallback: for each "collection:slot" entry, in order, add one product
+  #    when that slot is still empty. A shirt page gets a bottom + a bag,
+  #    a jeans page a top + a bag, a bag page a top + a bottom.
+  #    Within a collection its own sort order is used (in-stock first), and the
+  #    product id spreads different PDPs across the top items, so a given page
+  #    always shows the same, stable bundle.
   # ------------------------------------------------------------------
   assign max_picks = 2
+
+  assign top_types = ','
+  assign type_parts = section.settings.top_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign top_types = top_types | append: clean_type | append: ','
+  endfor
+  assign bottom_types = ','
+  assign type_parts = section.settings.bottom_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign bottom_types = bottom_types | append: clean_type | append: ','
+  endfor
+  assign bag_types = ','
+  assign type_parts = section.settings.bag_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign bag_types = bag_types | append: clean_type | append: ','
+  endfor
+  assign outfit_types = ','
+  assign type_parts = section.settings.outfit_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign outfit_types = outfit_types | append: clean_type | append: ','
+  endfor
+
+  assign fallback_entries = section.settings.fallback_collections | remove: ' ' | split: ','
+
+  # Slots already filled, e.g. ",top,bag,"
+  assign covered = ','
+  assign type_key = product.type | downcase | strip
+  assign type_key = ',' | append: type_key | append: ','
+  if top_types contains type_key or outfit_types contains type_key
+    assign covered = covered | append: 'top,'
+  endif
+  if bottom_types contains type_key or outfit_types contains type_key
+    assign covered = covered | append: 'bottom,'
+  endif
+  if bag_types contains type_key
+    assign covered = covered | append: 'bag,'
+  endif
+
+  # A product whose type is unknown still counts for any fallback collection it belongs to
   assign current_handles = product.collections | map: 'handle'
-  assign fallback_collections = section.settings.fallback_collections | remove: ' ' | split: ','
-  assign tops_collections = section.settings.tops_collections | remove: ' ' | split: ','
-
-  assign covered = current_handles | join: ','
-  assign covered = ',' | append: covered | append: ','
-  assign picked = ','
-  assign pick_count = 0
-
-  assign top_used = false
-  for handle in tops_collections
-    if current_handles contains handle
-      assign top_used = true
+  for entry in fallback_entries
+    assign entry_parts = entry | split: ':'
+    if current_handles contains entry_parts[0]
+      assign slot_key = ',' | append: entry_parts[1] | append: ','
+      unless covered contains slot_key
+        assign covered = covered | append: entry_parts[1] | append: ','
+      endunless
     endif
   endfor
+
+  assign picked = ','
+  assign pick_count = 0
 
   assign complementary = product.metafields['shopify--discovery--product_recommendation'].complementary_products.value
   for candidate in complementary
@@ -36,28 +79,31 @@
       unless picked contains key
         assign picked = picked | append: candidate.handle | append: ','
         assign pick_count = pick_count | plus: 1
-        assign candidate_handles = candidate.collections | map: 'handle'
-        assign candidate_joined = candidate_handles | join: ','
-        assign covered = covered | append: candidate_joined | append: ','
-        for handle in tops_collections
-          if candidate_handles contains handle
-            assign top_used = true
-          endif
-        endfor
+        assign type_key = candidate.type | downcase | strip
+        assign type_key = ',' | append: type_key | append: ','
+        if top_types contains type_key or outfit_types contains type_key
+          assign covered = covered | append: 'top,'
+        endif
+        if bottom_types contains type_key or outfit_types contains type_key
+          assign covered = covered | append: 'bottom,'
+        endif
+        if bag_types contains type_key
+          assign covered = covered | append: 'bag,'
+        endif
       endunless
     endif
   endfor
 
-  for handle in fallback_collections
+  for entry in fallback_entries
     if pick_count >= max_picks
       break
     endif
 
-    assign key = ',' | append: handle | append: ','
-    if covered contains key
-      continue
-    endif
-    if top_used and tops_collections contains handle
+    assign entry_parts = entry | split: ':'
+    assign handle = entry_parts[0]
+    assign slot = entry_parts[1]
+    assign slot_key = ',' | append: slot | append: ','
+    if handle == blank or slot == blank or covered contains slot_key
       continue
     endif
 
@@ -95,10 +141,7 @@
       endif
     endfor
 
-    assign covered = covered | append: handle | append: ','
-    if tops_collections contains handle
-      assign top_used = true
-    endif
+    assign covered = covered | append: slot | append: ','
   endfor
 
   assign pick_handles = picked | split: ','
@@ -499,21 +542,39 @@
     },
     {
       "type": "paragraph",
-      "content": "Complementary products set in the Search & Discovery app are used first. Empty slots are filled with one product from each fallback collection the current product is not already in."
+      "content": "Complementary products set in the Search & Discovery app are used first. Empty slots are filled so the bundle completes an outfit: a top gets a bottom and a bag, a bottom gets a top and a bag, a bag gets a top and a bottom."
     },
     {
       "type": "text",
       "id": "fallback_collections",
       "label": "Fallback collections",
-      "info": "Collection handles, comma-separated, in priority order.",
-      "default": "shirts-view-all,jeans,bags,tshirts"
+      "info": "collection-handle:slot pairs in priority order. Slot is top, bottom or bag. One product is added for each slot the current product doesn't fill.",
+      "default": "shirts-view-all:top,jeans:bottom,bags:bag,tshirts:top"
     },
     {
       "type": "text",
-      "id": "tops_collections",
-      "label": "Tops collections",
-      "info": "Only one of these is ever shown in a bundle, and none if the current product is already one of them.",
-      "default": "shirts-view-all,shirts,tshirts"
+      "id": "top_types",
+      "label": "Top product types",
+      "default": "Shirts,Tshirts,Sweatshirts,Sweaters,Jackets,Shackets,Blazers"
+    },
+    {
+      "type": "text",
+      "id": "bottom_types",
+      "label": "Bottom product types",
+      "default": "Jeans,Trousers,Cargo,Cargos,Shorts,Chinos,Joggers,Corduroy Trousers,Track Pants,Track Pant,Bottom"
+    },
+    {
+      "type": "text",
+      "id": "bag_types",
+      "label": "Bag product types",
+      "default": "Bags"
+    },
+    {
+      "type": "text",
+      "id": "outfit_types",
+      "label": "Full-outfit product types",
+      "info": "Count as both top and bottom, so only a bag is suggested.",
+      "default": "Co-ord Sets"
     }
   ],
   "presets": [
