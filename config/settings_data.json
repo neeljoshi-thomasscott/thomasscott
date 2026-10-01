@@ -141,11 +141,6 @@
           "disableAutomaticButtonAddition": false
         }
       },
-      "1409715032340194113": {
-        "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
-        "disabled": false,
-        "settings": {}
-      },
       "2567389343055140935": {
         "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
         "disabled": false,
@@ -178,6 +173,11 @@
       },
       "1917235024560766291": {
         "type": "shopify://apps/buffy-ai-chatbot-sales-agent/blocks/search-takeover/019ce6c1-a2b9-7cb4-9c77-450dc2529ffa",
+        "disabled": true,
+        "settings": {}
+      },
+      "1409715032340194113": {
+        "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
         "disabled": true,
         "settings": {}
       }
