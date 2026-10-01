@@ -10,8 +10,22 @@
   #    Within a collection its own sort order is used (in-stock first), and the
   #    product id spreads different PDPs across the top items, so a given page
   #    always shows the same, stable bundle.
+  # 3. Plus-size products fill their top / bottom slots only from the plus-size
+  #    collection (matched by product type), so the suggestions come in the same
+  #    size range. Bags still come from the regular fallback collection.
   # ------------------------------------------------------------------
   assign max_picks = 2
+
+  assign plus_handle = section.settings.plus_collection | strip
+  assign fit_value = product.metafields.specs.fit | downcase | strip
+  assign parent_cat = product.metafields.custom.parent_category | downcase | strip
+  assign product_handles = product.collections | map: 'handle'
+  assign is_plus = false
+  if fit_value == 'plus size' or parent_cat == 'plus size'
+    assign is_plus = true
+  elsif plus_handle != blank and product_handles contains plus_handle
+    assign is_plus = true
+  endif
 
   assign top_types = ','
   assign type_parts = section.settings.top_types | downcase | split: ','
@@ -107,17 +121,36 @@
       continue
     endif
 
+    # Plus-size pages take tops and bottoms from the plus-size collection, filtered by type
+    assign slot_types = blank
+    assign scan_limit = 12
+    if is_plus and plus_handle != blank
+      if slot == 'top'
+        assign handle = plus_handle
+        assign slot_types = top_types
+        assign scan_limit = 50
+      elsif slot == 'bottom'
+        assign handle = plus_handle
+        assign slot_types = bottom_types
+        assign scan_limit = 50
+      endif
+    endif
+
     assign fallback_collection = collections[handle]
     if fallback_collection == blank
       continue
     endif
 
     assign eligible = 0
-    for candidate in fallback_collection.products limit: 12
+    for candidate in fallback_collection.products limit: scan_limit
       assign candidate_key = ',' | append: candidate.handle | append: ','
+      assign candidate_type = candidate.type | downcase | strip
+      assign candidate_type = ',' | append: candidate_type | append: ','
       if candidate.available and candidate.id != product.id
         unless picked contains candidate_key
-          assign eligible = eligible | plus: 1
+          if slot_types == blank or slot_types contains candidate_type
+            assign eligible = eligible | plus: 1
+          endif
         endunless
       endif
     endfor
@@ -127,16 +160,20 @@
 
     assign target = product.id | modulo: eligible
     assign index = 0
-    for candidate in fallback_collection.products limit: 12
+    for candidate in fallback_collection.products limit: scan_limit
       assign candidate_key = ',' | append: candidate.handle | append: ','
+      assign candidate_type = candidate.type | downcase | strip
+      assign candidate_type = ',' | append: candidate_type | append: ','
       if candidate.available and candidate.id != product.id
         unless picked contains candidate_key
-          if index == target
-            assign picked = picked | append: candidate.handle | append: ','
-            assign pick_count = pick_count | plus: 1
-            break
+          if slot_types == blank or slot_types contains candidate_type
+            if index == target
+              assign picked = picked | append: candidate.handle | append: ','
+              assign pick_count = pick_count | plus: 1
+              break
+            endif
+            assign index = index | plus: 1
           endif
-          assign index = index | plus: 1
         endunless
       endif
     endfor
@@ -550,6 +587,13 @@
       "label": "Fallback collections",
       "info": "collection-handle:slot pairs in priority order. Slot is top, bottom or bag. One product is added for each slot the current product doesn't fill.",
       "default": "shirts-view-all:top,jeans:bottom,bags:bag,tshirts:top"
+    },
+    {
+      "type": "text",
+      "id": "plus_collection",
+      "label": "Plus-size collection",
+      "info": "On plus-size products (in this collection, or with fit / parent category \"Plus Size\"), tops and bottoms are picked from this collection by product type.",
+      "default": "plus-size"
     },
     {
       "type": "text",
