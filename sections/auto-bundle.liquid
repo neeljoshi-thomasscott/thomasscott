@@ -155,7 +155,7 @@
       --ab-line: #2a2a2a;
       --ab-text: #ffffff;
       --ab-muted: rgba(255, 255, 255, 0.55);
-      --ab-accent: #e9b949;
+      --ab-accent: #ffffff;
       --ab-disabled: #3a3a3a;
       background: var(--ab-bg);
       color: var(--ab-text);
@@ -163,9 +163,9 @@
     }
     .ab-wrap { max-width: 1200px; margin: 0 auto; }
     .ab-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
-    .ab-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ab-accent); margin: 0 0 10px; }
+    .ab-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ab-muted); margin: 0 0 10px; }
     .ab-title.thomasxlheading { color: var(--ab-text); text-transform: uppercase; margin: 0; }
-    .ab-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border: 1px solid rgba(233, 185, 73, 0.45); border-radius: 999px; background: rgba(233, 185, 73, 0.1); color: var(--ab-accent); font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .ab-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border: 1px solid #fff; border-radius: 999px; background: #fff; color: #000; font-size: 12px; font-weight: 600; white-space: nowrap; }
     .ab-badge[hidden] { display: none; }
 
     .ab-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; }
@@ -180,13 +180,13 @@
     .ab-item__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
     .ab-price { font-weight: 700; font-size: 16px; }
     .ab-compare { color: var(--ab-muted); font-size: 12px; }
-    .ab-off { color: var(--ab-accent); font-size: 12px; font-weight: 600; }
+    .ab-off { padding: 1px 6px; border-radius: 3px; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
     .ab-onesize { color: var(--ab-muted); font-size: 12px; line-height: 36px; }
 
     .ab-select { width: 100%; height: 36px; padding: 0 10px; background: #111; color: var(--ab-text); border: 1px solid #3a3a3a; border-radius: 4px; font-size: 13px; cursor: pointer; }
     .ab-select:focus-visible { outline: 2px solid var(--ab-accent); outline-offset: 1px; }
     .ab-select option { background: #111; color: #fff; }
-    .ab-select.is-invalid { border-color: var(--ab-accent); animation: ab-shake 0.35s; }
+    .ab-select.is-invalid { border-color: #fff; box-shadow: 0 0 0 1px #fff; animation: ab-shake 0.35s; }
     @keyframes ab-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 
     .ab-check { position: absolute; top: 10px; left: 10px; z-index: 1; cursor: pointer; }
@@ -203,7 +203,7 @@
     .ab-line__price { font-weight: 700; white-space: nowrap; }
     .ab-row { display: flex; justify-content: space-between; font-size: 13px; padding-top: 12px; }
     .ab-row--mrp { color: var(--ab-muted); }
-    .ab-row--save { color: var(--ab-accent); font-weight: 600; }
+    .ab-row--save { color: var(--ab-text); font-weight: 700; }
     .ab-row--total { align-items: baseline; padding-top: 18px; margin-bottom: 18px; }
     .ab-total { font-size: 26px; font-weight: 700; }
     .ab-selected-count, .ab-total-compare, .ab-mobile-save { display: none; }
@@ -237,11 +237,11 @@
 
       .ab-summary { position: static; background: transparent; border: 0; padding: 4px 0 0; }
       .ab-summary__label, .ab-lines, .ab-row--mrp, .ab-row--save { display: none; }
-      .ab-selected-count { display: block; font-size: 12px; color: var(--ab-accent); margin: 0 0 4px; }
+      .ab-selected-count { display: block; font-size: 12px; color: var(--ab-muted); margin: 0 0 4px; }
       .ab-row--total { padding-top: 0; margin-bottom: 14px; justify-content: space-between; }
       .ab-total-wrap { display: flex; align-items: baseline; gap: 8px; }
       .ab-total-compare { display: inline; color: var(--ab-muted); font-size: 13px; }
-      .ab-mobile-save { display: inline; color: var(--ab-accent); font-size: 12px; font-weight: 600; }
+      .ab-mobile-save { display: inline; padding: 1px 6px; border-radius: 3px; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
       .ab-row--total > .ab-total-label { display: none; }
     }
   </style>
