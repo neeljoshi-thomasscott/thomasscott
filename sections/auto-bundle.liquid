@@ -490,10 +490,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify({
-              // _source is a hidden line-item property so orders from this section can be identified in admin.
-              items: selected.map(function (d) {
-                return { id: Number(d.variantId), quantity: 1, properties: { _source: 'Customers also bought' } };
-              })
+              items: selected.map(function (d) { return { id: Number(d.variantId), quantity: 1 }; })
             })
           });
           var data = await res.json().catch(function () { return {}; });
