@@ -1,0 +1,114 @@
+{%- comment -%}
+  One product in the "Customers also bought" bundle.
+
+  Accepts:
+  - item {product}: the product to render
+  - is_current {boolean}: true for the product whose page we are on
+{%- endcomment -%}
+{%- liquid
+  assign item_tags = item.tags | join: ',' | downcase
+  assign hide_compare = false
+  if item_tags contains 'archive sale'
+    assign hide_compare = true
+  endif
+
+  # Only pre-pick a size when there is no choice to make, or the shopper already chose one on this page
+  assign preselect = blank
+  # Single-variant products (Default Title or e.g. "Onesize") need no size choice
+  assign one_size = false
+  if item.variants.size == 1
+    assign one_size = true
+  endif
+
+  if one_size
+    assign preselect = item.selected_or_first_available_variant.id
+  elsif is_current and item.selected_variant and item.selected_variant.available
+    assign preselect = item.selected_variant.id
+  endif
+
+  assign display_variant = item.selected_or_first_available_variant
+  assign display_price = display_variant.price
+  assign display_compare = display_variant.compare_at_price | default: display_price
+  if hide_compare or display_compare < display_price
+    assign display_compare = display_price
+  endif
+
+  assign short_title = item.metafields.custom.short_title | default: item.title | remove_first: 'Men ' | remove_first: 'Women '
+-%}
+<div
+  class="ab-item is-checked"
+  data-ab-item
+  data-name="{{ short_title | escape }}"
+  data-price="{{ display_price }}"
+  data-compare="{{ display_compare }}"
+  {% if is_current %}
+    data-ab-current
+  {% endif %}
+>
+  <label class="ab-check">
+    <input type="checkbox" checked data-ab-toggle aria-label="Include {{ item.title | escape }} in bundle">
+    <span class="ab-check__box" aria-hidden="true">
+      <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+  </label>
+
+  <a class="ab-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+    {%- if item.featured_image -%}
+      {{
+        item.featured_image
+        | image_url: width: 600
+        | image_tag: loading: 'lazy', widths: '200, 300, 450, 600', sizes: '(max-width: 749px) 90px, 240px', alt: item.featured_image.alt
+      }}
+    {%- endif -%}
+  </a>
+
+  <div class="ab-item__info">
+    <a class="ab-item__title" href="{{ item.url }}">{{ item.title }}</a>
+
+    <div class="ab-item__price" data-ab-price>
+      <span class="ab-price">{{ display_price | money_without_trailing_zeros }}</span>
+      {%- if display_compare > display_price -%}
+        {%- assign off = display_compare | minus: display_price | times: 100 | divided_by: display_compare -%}
+        <s class="ab-compare">{{ display_compare | money_without_trailing_zeros }}</s>
+        <span class="ab-off">{{ off }}% off</span>
+      {%- endif -%}
+    </div>
+
+    {%- if one_size -%}
+      <span class="ab-onesize">One size</span>
+      <input
+        type="hidden"
+        data-ab-variant
+        value="{{ preselect }}"
+        data-price="{{ display_price }}"
+        data-compare="{{ display_compare }}"
+      >
+    {%- else -%}
+      <select class="ab-select" data-ab-variant aria-label="Select size for {{ item.title | escape }}">
+        <option value="" disabled {% if preselect == blank %}selected{% endif %}>Select size</option>
+        {%- for variant in item.variants -%}
+          {%- liquid
+            assign v_compare = variant.compare_at_price | default: variant.price
+            if hide_compare or v_compare < variant.price
+              assign v_compare = variant.price
+            endif
+          -%}
+          <option
+            value="{{ variant.id }}"
+            data-price="{{ variant.price }}"
+            data-compare="{{ v_compare }}"
+            {% unless variant.available %}
+              disabled
+            {% endunless %}
+            {% if variant.id == preselect %}
+              selected
+            {% endif %}
+          >
+            {{- variant.title -}}
+            {%- unless variant.available %} – Sold out{% endunless -%}
+          </option>
+        {%- endfor -%}
+      </select>
+    {%- endif -%}
+  </div>
+</div>

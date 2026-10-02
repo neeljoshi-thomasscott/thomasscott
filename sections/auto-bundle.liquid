@@ -1,368 +1,577 @@
-{% if product.available %}
-<style>
-  .buy-now-all-btn[disabled]{
-    opacity:0.7
-  }
-</style>
-<section class="customers-bought" >
-  <div class="container">
-        <div class="top-heading relative">
-          <h2 class="thomasxlheading">Customers also bought</h2>
-        </div>
+{%- liquid
+  # ------------------------------------------------------------------
+  # Pick up to 2 products that complete the look of the current product.
+  # Every product fills an outfit slot (top / bottom / bag), read from its
+  # product type (full-outfit types such as co-ord sets fill top and bottom).
+  # 1. Complementary products set in the Search & Discovery app (merchant curated)
+  # 2. Fallback: for each "collection:slot" entry, in order, add one product
+  #    when that slot is still empty. A shirt page gets a bottom + a bag,
+  #    a jeans page a top + a bag, a bag page a top + a bottom.
+  #    Within a collection its own sort order is used (in-stock first), and the
+  #    product id spreads different PDPs across the top items, so a given page
+  #    always shows the same, stable bundle.
+  # 3. Plus-size products fill their top / bottom slots only from the plus-size
+  #    collection (matched by product type), so the suggestions come in the same
+  #    size range. Bags still come from the regular fallback collection.
+  # ------------------------------------------------------------------
+  assign max_picks = 2
 
-        <div class="customers-main">
-          <div class="customers-list">
-            
-              <div class="customers-card customer-card-1">
-                {%- render 'th-product-card', product: product -%}
-              </div>
-            
-            
-                <div class="plus-mid" aria-hidden="true">
-                  <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13.5986 0.75V26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M0.75 13.5999H26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              
+  assign plus_handle = section.settings.plus_collection | strip
+  assign fit_value = product.metafields.specs.fit | downcase | strip
+  assign parent_cat = product.metafields.custom.parent_category | downcase | strip
+  assign product_handles = product.collections | map: 'handle'
+  assign is_plus = false
+  if fit_value == 'plus size' or parent_cat == 'plus size'
+    assign is_plus = true
+  elsif plus_handle != blank and product_handles contains plus_handle
+    assign is_plus = true
+  endif
 
-              <div class="customers-card customer-card-2">
-                
-              </div>
+  assign top_types = ','
+  assign type_parts = section.settings.top_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign top_types = top_types | append: clean_type | append: ','
+  endfor
+  assign bottom_types = ','
+  assign type_parts = section.settings.bottom_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign bottom_types = bottom_types | append: clean_type | append: ','
+  endfor
+  assign bag_types = ','
+  assign type_parts = section.settings.bag_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign bag_types = bag_types | append: clean_type | append: ','
+  endfor
+  assign outfit_types = ','
+  assign type_parts = section.settings.outfit_types | downcase | split: ','
+  for type_part in type_parts
+    assign clean_type = type_part | strip
+    assign outfit_types = outfit_types | append: clean_type | append: ','
+  endfor
 
-            
-              <div class="plus-mid" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M13.5986 0.75V26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M0.75 13.5999H26.4493" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              
+  assign fallback_entries = section.settings.fallback_collections | remove: ' ' | split: ','
 
-              <div class="customers-card customer-card-3">
-                
-              </div>
+  # Slots already filled, e.g. ",top,bag,"
+  assign covered = ','
+  assign type_key = product.type | downcase | strip
+  assign type_key = ',' | append: type_key | append: ','
+  if top_types contains type_key or outfit_types contains type_key
+    assign covered = covered | append: 'top,'
+  endif
+  if bottom_types contains type_key or outfit_types contains type_key
+    assign covered = covered | append: 'bottom,'
+  endif
+  if bag_types contains type_key
+    assign covered = covered | append: 'bag,'
+  endif
 
+  # A product whose type is unknown still counts for any fallback collection it belongs to
+  assign current_handles = product.collections | map: 'handle'
+  for entry in fallback_entries
+    assign entry_parts = entry | split: ':'
+    if current_handles contains entry_parts[0]
+      assign slot_key = ',' | append: entry_parts[1] | append: ','
+      unless covered contains slot_key
+        assign covered = covered | append: entry_parts[1] | append: ','
+      endunless
+    endif
+  endfor
+
+  assign picked = ','
+  assign pick_count = 0
+
+  assign complementary = product.metafields['shopify--discovery--product_recommendation'].complementary_products.value
+  for candidate in complementary
+    if pick_count >= max_picks
+      break
+    endif
+    assign key = ',' | append: candidate.handle | append: ','
+    if candidate.available and candidate.id != product.id
+      unless picked contains key
+        assign picked = picked | append: candidate.handle | append: ','
+        assign pick_count = pick_count | plus: 1
+        assign type_key = candidate.type | downcase | strip
+        assign type_key = ',' | append: type_key | append: ','
+        if top_types contains type_key or outfit_types contains type_key
+          assign covered = covered | append: 'top,'
+        endif
+        if bottom_types contains type_key or outfit_types contains type_key
+          assign covered = covered | append: 'bottom,'
+        endif
+        if bag_types contains type_key
+          assign covered = covered | append: 'bag,'
+        endif
+      endunless
+    endif
+  endfor
+
+  for entry in fallback_entries
+    if pick_count >= max_picks
+      break
+    endif
+
+    assign entry_parts = entry | split: ':'
+    assign handle = entry_parts[0]
+    assign slot = entry_parts[1]
+    assign slot_key = ',' | append: slot | append: ','
+    if handle == blank or slot == blank or covered contains slot_key
+      continue
+    endif
+
+    # Plus-size pages take tops and bottoms from the plus-size collection, filtered by type
+    assign slot_types = blank
+    assign scan_limit = 12
+    if is_plus and plus_handle != blank
+      if slot == 'top'
+        assign handle = plus_handle
+        assign slot_types = top_types
+        assign scan_limit = 50
+      elsif slot == 'bottom'
+        assign handle = plus_handle
+        assign slot_types = bottom_types
+        assign scan_limit = 50
+      endif
+    endif
+
+    assign fallback_collection = collections[handle]
+    if fallback_collection == blank
+      continue
+    endif
+
+    assign eligible = 0
+    for candidate in fallback_collection.products limit: scan_limit
+      assign candidate_key = ',' | append: candidate.handle | append: ','
+      assign candidate_type = candidate.type | downcase | strip
+      assign candidate_type = ',' | append: candidate_type | append: ','
+      if candidate.available and candidate.id != product.id
+        unless picked contains candidate_key
+          if slot_types == blank or slot_types contains candidate_type
+            assign eligible = eligible | plus: 1
+          endif
+        endunless
+      endif
+    endfor
+    if eligible == 0
+      continue
+    endif
+
+    assign target = product.id | modulo: eligible
+    assign index = 0
+    for candidate in fallback_collection.products limit: scan_limit
+      assign candidate_key = ',' | append: candidate.handle | append: ','
+      assign candidate_type = candidate.type | downcase | strip
+      assign candidate_type = ',' | append: candidate_type | append: ','
+      if candidate.available and candidate.id != product.id
+        unless picked contains candidate_key
+          if slot_types == blank or slot_types contains candidate_type
+            if index == target
+              assign picked = picked | append: candidate.handle | append: ','
+              assign pick_count = pick_count | plus: 1
+              break
+            endif
+            assign index = index | plus: 1
+          endif
+        endunless
+      endif
+    endfor
+
+    assign covered = covered | append: slot | append: ','
+  endfor
+
+  assign pick_handles = picked | split: ','
+-%}
+
+{%- if product.available and pick_count > 0 -%}
+  <style>
+    #AutoBundle-{{ section.id }} {
+      --ab-bg: #0a0a0a;
+      --ab-surface: #141414;
+      --ab-line: #2a2a2a;
+      --ab-text: #ffffff;
+      --ab-muted: rgba(255, 255, 255, 0.55);
+      --ab-accent: #ffffff;
+      --ab-disabled: #3a3a3a;
+      background: var(--ab-bg);
+      color: var(--ab-text);
+      padding: 64px 0;
+    }
+    .ab-wrap { max-width: 1200px; margin: 0 auto; }
+    .ab-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+    .ab-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ab-muted); margin: 0 0 10px; }
+    .ab-title.thomasxlheading { color: var(--ab-text); text-transform: uppercase; margin: 0; }
+    .ab-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border: 1px solid #fff; border-radius: 999px; background: #fff; color: #000; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .ab-badge[hidden] { display: none; }
+
+    .ab-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; }
+    .ab-items { display: grid; grid-template-columns: repeat(var(--ab-count), minmax(0, 1fr)); gap: 16px; }
+
+    .ab-item { position: relative; display: flex; flex-direction: column; transition: opacity 0.2s; }
+    .ab-item:not(.is-checked) { opacity: 0.45; }
+    .ab-item__media { display: block; aspect-ratio: 3 / 4; border-radius: 6px; overflow: hidden; background: #1c1c1c; }
+    .ab-item__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ab-item__info { padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .ab-item__title { color: var(--ab-text); font-size: 13px; line-height: 1.4; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .ab-item__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
+    .ab-price { font-weight: 700; font-size: 16px; }
+    .ab-compare { color: var(--ab-muted); font-size: 12px; }
+    .ab-off { padding: 1px 6px; border-radius: 3px; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
+    .ab-onesize { color: var(--ab-muted); font-size: 12px; line-height: 36px; }
+
+    .ab-select { width: 100%; height: 36px; padding: 0 10px; background: #111; color: var(--ab-text); border: 1px solid #3a3a3a; border-radius: 4px; font-size: 13px; cursor: pointer; }
+    .ab-select:focus-visible { outline: 2px solid var(--ab-accent); outline-offset: 1px; }
+    .ab-select option { background: #111; color: #fff; }
+    .ab-select.is-invalid { border-color: #fff; box-shadow: 0 0 0 1px #fff; animation: ab-shake 0.35s; }
+    @keyframes ab-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+    .ab-check { position: absolute; top: 10px; left: 10px; z-index: 1; cursor: pointer; }
+    .ab-check input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+    .ab-check__box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; border: 1.5px solid #fff; background: rgba(0, 0, 0, 0.55); color: transparent; }
+    .ab-check input:checked + .ab-check__box { background: #fff; color: #000; }
+    .ab-check input:focus-visible + .ab-check__box { outline: 2px solid var(--ab-accent); outline-offset: 2px; }
+
+    .ab-summary { background: var(--ab-surface); border: 1px solid var(--ab-line); border-radius: 8px; padding: 22px; position: sticky; top: 100px; }
+    .ab-summary__label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ab-muted); margin: 0 0 16px; }
+    .ab-lines { list-style: none; margin: 0; padding: 0 0 14px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--ab-line); }
+    .ab-line { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
+    .ab-line__size { color: var(--ab-muted); }
+    .ab-line__price { font-weight: 700; white-space: nowrap; }
+    .ab-row { display: flex; justify-content: space-between; font-size: 13px; padding-top: 12px; }
+    .ab-row--mrp { color: var(--ab-muted); }
+    .ab-row--save { color: var(--ab-text); font-weight: 700; }
+    .ab-row--total { align-items: baseline; padding-top: 18px; margin-bottom: 18px; }
+    .ab-total { font-size: 26px; font-weight: 700; }
+    .ab-selected-count, .ab-total-compare, .ab-mobile-save { display: none; }
+    .ab-row[hidden] { display: none; }
+
+    .ab-submit { width: 100%; min-height: 48px; padding: 12px; border: 0; border-radius: 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; background: #fff; color: #000; transition: background 0.2s, color 0.2s; }
+    .ab-submit.is-pending, .ab-submit:disabled { background: var(--ab-disabled); color: rgba(255, 255, 255, 0.75); }
+    .ab-submit:disabled { cursor: not-allowed; }
+    .ab-message { min-height: 18px; margin: 10px 0 0; font-size: 12px; color: var(--ab-accent); text-align: center; }
+    .ab-message:empty { display: none; }
+
+    @media screen and (max-width: 989px) {
+      .ab-body { grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
+    }
+
+    @media screen and (max-width: 749px) {
+      #AutoBundle-{{ section.id }} { padding: 40px 0; }
+      .ab-head { flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; }
+      .ab-badge { display: none; }
+      .ab-body { grid-template-columns: 1fr; gap: 16px; }
+      .ab-items { grid-template-columns: 1fr; gap: 10px; }
+
+      .ab-item { flex-direction: row; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--ab-line); border-radius: 8px; background: var(--ab-surface); }
+      .ab-check { position: relative; top: auto; left: auto; flex: none; }
+      .ab-item__media { width: 72px; flex: none; }
+      .ab-item__info { padding-top: 0; gap: 6px; min-width: 0; flex: 1; }
+      .ab-item__title { font-size: 13px; }
+      .ab-price { font-size: 15px; }
+      .ab-select { width: auto; min-width: 130px; height: 32px; }
+      .ab-onesize { line-height: 1.4; }
+
+      .ab-summary { position: static; background: transparent; border: 0; padding: 4px 0 0; }
+      .ab-summary__label, .ab-lines, .ab-row--mrp, .ab-row--save { display: none; }
+      .ab-selected-count { display: block; font-size: 12px; color: var(--ab-muted); margin: 0 0 4px; }
+      .ab-row--total { padding-top: 0; margin-bottom: 14px; justify-content: space-between; }
+      .ab-total-wrap { display: flex; align-items: baseline; gap: 8px; }
+      .ab-total-compare { display: inline; color: var(--ab-muted); font-size: 13px; }
+      .ab-mobile-save { display: inline; padding: 1px 6px; border-radius: 3px; background: #fff; color: #000; font-size: 11px; font-weight: 700; }
+      .ab-row--total > .ab-total-label { display: none; }
+    }
+  </style>
+
+  <div id="AutoBundle-{{ section.id }}" class="auto-bundle" data-currency="{{ cart.currency.iso_code }}">
+    <div class="container">
+      <div class="ab-wrap">
+        <div class="ab-head">
+          <div>
+            {%- if section.settings.eyebrow != blank -%}
+              <p class="ab-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+            {%- endif -%}
+            <h2 class="ab-title thomasxlheading">{{ section.settings.heading | escape }}</h2>
           </div>
-          <button class="buy-now-all-btn thomas-wht-btn hovertime customers-bought__buy-all" data-variants=""></button>
-          
+          {%- if section.settings.show_badge -%}
+            <span class="ab-badge" data-ab-badge hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/></svg>
+              <span data-ab-badge-text></span>
+            </span>
+          {%- endif -%}
         </div>
+
+        <div class="ab-body">
+          <div class="ab-items" style="--ab-count: {{ pick_count | plus: 1 }};">
+            {%- render 'auto-bundle-item', item: product, is_current: true -%}
+            {%- for handle in pick_handles -%}
+              {%- if handle != blank -%}
+                {%- render 'auto-bundle-item', item: all_products[handle], is_current: false -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="ab-summary">
+            <p class="ab-summary__label">Your bundle</p>
+            <ul class="ab-lines" data-ab-lines></ul>
+            <div class="ab-row ab-row--mrp" data-ab-mrp-row>
+              <span>MRP</span><s data-ab-mrp></s>
+            </div>
+            <div class="ab-row ab-row--save" data-ab-save-row>
+              <span>You save</span><span data-ab-save></span>
+            </div>
+            <p class="ab-selected-count" data-ab-count></p>
+            <div class="ab-row ab-row--total">
+              <span class="ab-total-label">Total</span>
+              <span class="ab-total-wrap">
+                <span class="ab-total" data-ab-total></span>
+                <s class="ab-total-compare" data-ab-total-compare></s>
+              </span>
+              <span class="ab-mobile-save" data-ab-mobile-save></span>
+            </div>
+            <button type="button" class="ab-submit" data-ab-submit></button>
+            <p class="ab-message" data-ab-message role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</section>
-<script>
-  var collections = [
-    'shirts',
-    'jeans',
-    'bags',
-    'tshirts'
-  ];
 
-  var productCollections = {{ product.collections | map: 'handle' | json }};
-  var currentProductHandle = {{ product.handle | json }};
-  var currentVariantId = {{ product.selected_or_first_available_variant.id | json }};
+  <script>
+    (function () {
+      var root = document.getElementById('AutoBundle-{{ section.id }}');
+      if (!root) return;
 
-  // Remove assigned collections
-  var availableCollections = collections.filter(function(collectionHandle) {
-    return !productCollections.includes(collectionHandle);
-  });
+      var items = Array.prototype.slice.call(root.querySelectorAll('[data-ab-item]'));
+      var submit = root.querySelector('[data-ab-submit]');
+      var message = root.querySelector('[data-ab-message]');
+      var busy = false;
 
-  // Custom logic
-  // If product has shirts → remove tshirts
-  if (productCollections.includes('shirts')) {
-    availableCollections = availableCollections.filter(function(item) {
-      return item !== 'tshirts';
-    });
-  }
-
-  // If product has tshirts → remove shirts
-  if (productCollections.includes('tshirts')) {
-    availableCollections = availableCollections.filter(function(item) {
-      return item !== 'shirts';
-    });
-  }
-
-  {% comment %} var randomCollections = availableCollections.slice(0, 2); {% endcomment %}
-   var randomCollections = availableCollections;
-
-  function getRandomItem(items) {
-    return items[Math.floor(Math.random() * items.length)];
-  }
-
-  async function fetchRandomProductFromCollection(collectionHandle) {
-    const res = await fetch(`/collections/${collectionHandle}/products.json?limit=20`);
-    const data = await res.json();
-
-    if (!data.products || !data.products.length) return null;
-
-    // only in-stock products
-    const availableProducts = data.products.filter(function(product) {
-      return product.variants.some(function(variant) {
-        return variant.available === true;
+      var formatter = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: root.dataset.currency || 'INR',
+        maximumFractionDigits: 0
       });
-    });
+      function money(cents) { return formatter.format(cents / 100); }
+      function percentOff(price, compare) { return compare > price ? Math.floor(((compare - price) * 100) / compare) : 0; }
 
-    if (!availableProducts.length) return null;
-
-    return getRandomItem(availableProducts);
-  }
-
-  async function fetchProductCard(productHandle) {
-    const res = await fetch(`/products/${productHandle}?section_id=th-product-card-cbb`);
-    return await res.text();
-  }
-
-  function getVariantIdFromCard(card) {
-    const variantInput = card.querySelector('input[name="variant_id"]');
-
-    if (!variantInput || !variantInput.value) {
-      return null;
-    }
-
-    return variantInput.value;
-  }
-  function getCardData(card) {
-    const variantInput = card.querySelector('input[name="variant_id"]');
-    const priceInput = card.querySelector('input[name="variant_price"]');
-    const comparePriceInput = card.querySelector('input[name="variant_comparePrice"]');
-
-    return {
-      variantId: variantInput ? variantInput.value : null,
-      price: priceInput ? Number(priceInput.value) : 0,
-      comparePrice: comparePriceInput && comparePriceInput.value
-        ? Number(comparePriceInput.value)
-        : 0
-    };
-  }
-
-  function formatMoney(cents) {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(cents / 100);
-  }
-  function updateBundleButton() {
-    const button = document.querySelector('.buy-now-all-btn');
-    if (!button) return;
-
-    const variantIds = [];
-    let totalPrice = 0;
-    let totalComparePrice = 0;
-
-    // Current product
-    const currentVariantId = {{ product.selected_or_first_available_variant.id | json }};
-    const currentPrice = Number({{ product.selected_or_first_available_variant.price | json }});
-    const currentComparePrice = Number({{ product.selected_or_first_available_variant.compare_at_price | default: product.selected_or_first_available_variant.price | json }});
-
-    variantIds.push(currentVariantId);
-    totalPrice += currentPrice;
-    totalComparePrice += currentComparePrice || currentPrice;
-
-    // Dynamic cards
-    document.querySelectorAll('.customer-card-2, .customer-card-3').forEach(function(card) {
-      const data = getCardData(card);
-
-      if (data.variantId) {
-        variantIds.push(data.variantId);
-        totalPrice += data.price;
-        totalComparePrice += data.comparePrice || data.price;
+      function readItem(item) {
+        var input = item.querySelector('[data-ab-variant]');
+        var source = input.tagName === 'SELECT' ? input.options[input.selectedIndex] : input;
+        var hasVariant = Boolean(input.value);
+        return {
+          el: item,
+          input: input,
+          checked: item.querySelector('[data-ab-toggle]').checked,
+          variantId: input.value,
+          sizeLabel: input.tagName === 'SELECT' && hasVariant ? source.textContent.trim() : '',
+          needsSize: !hasVariant,
+          name: item.dataset.name,
+          price: Number(hasVariant ? source.dataset.price : item.dataset.price),
+          compare: Number(hasVariant ? source.dataset.compare : item.dataset.compare)
+        };
       }
-    });
 
-    button.setAttribute('data-variants', variantIds.join(','));
-    button.setAttribute('data-total-price', totalPrice);
-    button.setAttribute('data-total-compare-price', totalComparePrice);
-
-    button.innerHTML = `
-      <span class="bundle-btn-text">Buy now all 3 at</span>
-      <span class="bundle-price">${formatMoney(totalPrice)}</span>
-      ${
-        totalComparePrice > totalPrice
-          ? `<s class="bundle-compare-price">${formatMoney(totalComparePrice)}</s>`
-          : ''
+      function renderItemPrice(data) {
+        var box = data.el.querySelector('[data-ab-price]');
+        var off = percentOff(data.price, data.compare);
+        box.textContent = '';
+        var price = document.createElement('span');
+        price.className = 'ab-price';
+        price.textContent = money(data.price);
+        box.appendChild(price);
+        if (off > 0) {
+          var compare = document.createElement('s');
+          compare.className = 'ab-compare';
+          compare.textContent = money(data.compare);
+          var tag = document.createElement('span');
+          tag.className = 'ab-off';
+          tag.textContent = off + '% off';
+          box.appendChild(compare);
+          box.appendChild(tag);
+        }
       }
-    `;
-  }
 
-  {% comment %} async function buildCBB(collections) {
-    const section = document.querySelector('.auto-bundle-section');
+      function render() {
+        var all = items.map(readItem);
+        var selected = all.filter(function (d) { return d.checked; });
+        var missing = selected.filter(function (d) { return d.needsSize; });
+        var total = 0;
+        var mrp = 0;
 
-    if (!collections.length) {
-      if (section) section.remove();
-      return;
-    }
+        var lines = root.querySelector('[data-ab-lines]');
+        lines.textContent = '';
 
-    const cardSelectors = ['.customer-card-2', '.customer-card-3'];
+        all.forEach(function (d) {
+          d.el.classList.toggle('is-checked', d.checked);
+          renderItemPrice(d);
+          if (!d.checked) return;
 
-    // hide section/cards while loading
-    if (section) section.style.visibility = 'hidden';
+          total += d.price;
+          mrp += Math.max(d.compare, d.price);
 
-    try {
-      const cardResults = await Promise.all(
-        collections.map(async function(collectionHandle, index) {
-          const product = await fetchRandomProductFromCollection(collectionHandle);
+          var li = document.createElement('li');
+          li.className = 'ab-line';
+          var name = document.createElement('span');
+          name.textContent = d.name;
+          if (d.input.tagName === 'SELECT') {
+            var size = document.createElement('span');
+            size.className = 'ab-line__size';
+            size.textContent = ' · ' + (d.sizeLabel || 'size?');
+            name.appendChild(size);
+          }
+          var price = document.createElement('span');
+          price.className = 'ab-line__price';
+          price.textContent = money(d.price);
+          li.appendChild(name);
+          li.appendChild(price);
+          lines.appendChild(li);
+        });
 
-          if (!product || !product.handle) {
-            return {
-              index,
-              html: null
-            };
+        var save = mrp - total;
+        root.querySelector('[data-ab-mrp]').textContent = money(mrp);
+        root.querySelector('[data-ab-save]').textContent = money(save);
+        root.querySelector('[data-ab-mrp-row]').hidden = save <= 0;
+        root.querySelector('[data-ab-save-row]').hidden = save <= 0;
+        root.querySelector('[data-ab-total]').textContent = money(total);
+        root.querySelector('[data-ab-total-compare]').textContent = save > 0 ? money(mrp) : '';
+        root.querySelector('[data-ab-mobile-save]').textContent = save > 0 ? 'You save ' + money(save) : '';
+        root.querySelector('[data-ab-count]').textContent = selected.length + ' of ' + all.length + ' items selected';
+
+        if (busy) return;
+        submit.disabled = selected.length === 0;
+        submit.classList.toggle('is-pending', missing.length > 0);
+        if (selected.length === 0) {
+          submit.textContent = 'Select at least one item';
+        } else if (missing.length > 0) {
+          submit.textContent = 'Select size for ' + missing.length + (missing.length === 1 ? ' item' : ' items');
+        } else {
+          submit.textContent = 'Add ' + selected.length + (selected.length === 1 ? ' item' : ' items') + ' to cart';
+        }
+      }
+
+      function renderBadge() {
+        var badge = root.querySelector('[data-ab-badge]');
+        if (!badge) return;
+        var best = items.map(readItem).reduce(function (max, d) {
+          return Math.max(max, percentOff(d.price, d.compare));
+        }, 0);
+        if (best <= 0) return;
+        root.querySelector('[data-ab-badge-text]').textContent = 'Up to ' + best + '% off when bought together';
+        badge.hidden = false;
+      }
+
+      async function tagCartSource(selected) {
+        var key = '_customers_also_bought';
+        var base = window.Shopify.routes.root;
+        var cart = await fetch(base + 'cart.js', { headers: { Accept: 'application/json' } }).then(function (r) { return r.json(); });
+        var existing = (cart.attributes && cart.attributes[key]) ? cart.attributes[key].split(' | ') : [];
+        selected.forEach(function (d) {
+          var label = (d.name || 'Item') + (d.sizeLabel ? ' (' + d.sizeLabel + ')' : '') + ' #' + d.variantId;
+          if (existing.indexOf(label) === -1) existing.push(label);
+        });
+        var attributes = {};
+        attributes[key] = existing.join(' | ');
+        await fetch(base + 'cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ attributes: attributes })
+        });
+      }
+
+      async function addToCart(selected) {
+        busy = true;
+        submit.disabled = true;
+        submit.textContent = 'Adding…';
+        message.textContent = '';
+
+        try {
+          var res = await fetch(window.Shopify.routes.root + 'cart/add.js?sections=cart-count', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({
+              items: selected.map(function (d) { return { id: Number(d.variantId), quantity: 1 }; })
+            })
+          });
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) throw new Error(data.description || data.message || 'Could not add the bundle to your cart.');
+
+          // Record bundle items as a hidden cart attribute (carried to the order) so sales from this
+          // section can be identified in admin. Line-item properties are avoided because the GoKwik
+          // cart drawer displays them, even underscore-prefixed ones.
+          tagCartSource(selected).catch(function (error) { console.warn('Auto bundle: could not tag cart', error); });
+
+          var countHtml = data.sections && data.sections['cart-count'];
+          var itemCount = 0;
+          if (countHtml) {
+            var doc = new DOMParser().parseFromString(countHtml, 'text/html');
+            itemCount = parseInt((doc.body.textContent || '').trim(), 10) || 0;
           }
 
-          const cardHtml = await fetchProductCard(product.handle);
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: { data: { itemCount: itemCount, source: 'auto-bundle' } }
+          }));
+          if (typeof window.initMiniCartProductRecommendations === 'function') window.initMiniCartProductRecommendations();
 
-          return {
-            index,
-            html: cardHtml
-          };
-        })
-      );
+          var drawer = document.querySelector('cart-drawer-component');
+          if (drawer && drawer.hasAttribute('auto-open') && typeof drawer.open === 'function') drawer.open();
 
-      cardResults.forEach(function(result) {
-        const target = document.querySelector(cardSelectors[result.index]);
-
-        if (!target) return;
-
-        if (!result.html) {
-          target.style.display = 'none';
-          return;
+          submit.classList.remove('is-pending');
+          submit.textContent = 'Added to cart ✓';
+          await new Promise(function (resolve) { setTimeout(resolve, 2500); });
+        } catch (error) {
+          console.error('Auto bundle:', error);
+          message.textContent = error.message;
+        } finally {
+          busy = false;
+          render();
         }
+      }
 
-        target.innerHTML = result.html;
+      root.addEventListener('change', function (event) {
+        if (event.target.matches('[data-ab-variant]')) event.target.classList.remove('is-invalid');
+        message.textContent = '';
+        render();
       });
 
-      updateBundleButton();
+      submit.addEventListener('click', function () {
+        if (busy) return;
+        var selected = items.map(readItem).filter(function (d) { return d.checked; });
+        if (!selected.length) return;
 
-      // show all cards together
-      if (section) section.style.visibility = 'visible';
+        var missing = selected.filter(function (d) { return d.needsSize; });
+        if (missing.length) {
+          missing.forEach(function (d) {
+            d.input.classList.remove('is-invalid');
+            void d.input.offsetWidth;
+            d.input.classList.add('is-invalid');
+          });
+          missing[0].input.focus();
+          message.textContent = 'Please choose a size for each selected item.';
+          return;
+        }
+        addToCart(selected);
+      });
 
-    } catch (error) {
-      console.error('CBB Error:', error);
-      if (section) section.remove();
-    }
-  } {% endcomment %}
-  async function buildCBB(collections) {
-  const section = document.querySelector('.customers-bought');
-  const cardSelectors = ['.customer-card-2', '.customer-card-3'];
+      // Keep the current product's size in step with the size picked in the main product form
+      document.addEventListener('variant:update', function (event) {
+        var variant = event.detail && event.detail.resource;
+        var current = root.querySelector('[data-ab-current] select[data-ab-variant]');
+        if (!variant || !variant.id || !current) return;
+        var option = current.querySelector('option[value="' + variant.id + '"]');
+        if (!option || option.disabled) return;
+        current.value = String(variant.id);
+        current.classList.remove('is-invalid');
+        render();
+      });
 
-  if (section) section.style.visibility = 'hidden';
+      renderBadge();
+      render();
+    })();
+  </script>
+{%- endif -%}
 
-  try {
-    let filledCards = 0;
-
-    for (const collectionHandle of collections) {
-      if (filledCards >= 2) break;
-
-      const product = await fetchRandomProductFromCollection(collectionHandle);
-
-      if (!product || !product.handle || product.handle === currentProductHandle) {
-        continue;
-      }
-
-      const cardHtml = await fetchProductCard(product.handle);
-
-      if (!cardHtml || !cardHtml.trim()) {
-        continue;
-      }
-
-      const target = document.querySelector(cardSelectors[filledCards]);
-
-      if (target) {
-        target.innerHTML = cardHtml;
-        filledCards++;
-      }
-    }
-
-    if (filledCards < 2) {
-      console.warn('Only found', filledCards, 'bundle products');
-    }
-
-    updateBundleButton();
-
-    if (section) section.style.visibility = 'visible';
-
-  } catch (error) {
-    console.error('CBB Error:', error);
-    if (section) section.style.display = 'none';
-  }
-}
-async function addBundleToCart(variantIds, button) {
-  if (!variantIds.length) return;
-
-  const originalHtml = button.innerHTML;
-
-  button.disabled = true;
-  button.innerHTML = 'Adding...';
-
-  try {
-    const items = variantIds.map(function(id) {
-      return {
-        id: Number(id),
-        quantity: 1
-      };
-    });
-
-    const res = await fetch('/cart/add.js', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ items: items })
-    });
-
-    if (!res.ok) {
-      throw new Error('Unable to add bundle to cart');
-    }
-
-    const data = await res.json();
-
-    button.innerHTML = 'Added';
-
-    document.dispatchEvent(
-          new CustomEvent('cart:update', {
-            bubbles: true,
-            detail: {
-              data: {
-                {% comment %} itemCount: itemCount, {% endcomment %}
-                source: 'th-product-card-cbb'
-              }
-            }
-          })
-        );
-
-  } catch (error) {
-    console.error('Bundle Add Error:', error);
-    button.innerHTML = 'SOLD OUT';
-  } finally {
-    setTimeout(function() {
-      {% comment %} button.disabled = false; {% endcomment %}
-      {% comment %} button.innerHTML = originalHtml; {% endcomment %}
-    }, 1500);
-  }
-}
-document.addEventListener('click', function(event) {
-  const button = event.target.closest('.buy-now-all-btn');
-
-  if (!button) return;
-
-  const variants = button.getAttribute('data-variants');
-
-  if (!variants) return;
-
-  const variantIds = variants
-    .split(',')
-    .map(function(id) {
-      return id.trim();
-    })
-    .filter(Boolean);
-
-  addBundleToCart(variantIds, button);
-});
-  buildCBB(randomCollections);
-  
-</script>
-{% endif %}
 {% schema %}
 {
   "name": "Auto Bundle",
@@ -371,9 +580,68 @@ document.addEventListener('click', function(event) {
   "settings": [
     {
       "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Complete the look"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Section heading",
-      "default": "Customer Also Bought"
+      "default": "Customers also bought"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show \"Up to X% off\" badge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product picks"
+    },
+    {
+      "type": "paragraph",
+      "content": "Complementary products set in the Search & Discovery app are used first. Empty slots are filled so the bundle completes an outfit: a top gets a bottom and a bag, a bottom gets a top and a bag, a bag gets a top and a bottom."
+    },
+    {
+      "type": "text",
+      "id": "fallback_collections",
+      "label": "Fallback collections",
+      "info": "collection-handle:slot pairs in priority order. Slot is top, bottom or bag. One product is added for each slot the current product doesn't fill.",
+      "default": "shirts-view-all:top,jeans:bottom,bags:bag,tshirts:top"
+    },
+    {
+      "type": "text",
+      "id": "plus_collection",
+      "label": "Plus-size collection",
+      "info": "On plus-size products (in this collection, or with fit / parent category \"Plus Size\"), tops and bottoms are picked from this collection by product type.",
+      "default": "plus-size"
+    },
+    {
+      "type": "text",
+      "id": "top_types",
+      "label": "Top product types",
+      "default": "Shirts,Tshirts,Sweatshirts,Sweaters,Jackets,Shackets,Blazers"
+    },
+    {
+      "type": "text",
+      "id": "bottom_types",
+      "label": "Bottom product types",
+      "default": "Jeans,Trousers,Cargo,Cargos,Shorts,Chinos,Joggers,Corduroy Trousers,Track Pants,Track Pant,Bottom"
+    },
+    {
+      "type": "text",
+      "id": "bag_types",
+      "label": "Bag product types",
+      "default": "Bags"
+    },
+    {
+      "type": "text",
+      "id": "outfit_types",
+      "label": "Full-outfit product types",
+      "info": "Count as both top and bottom, so only a bag is suggested.",
+      "default": "Co-ord Sets"
     }
   ],
   "presets": [
