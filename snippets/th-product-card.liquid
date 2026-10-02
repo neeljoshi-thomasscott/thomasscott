@@ -10,6 +10,8 @@
 {% assign btn_id = btn_id | append: '_' | append: ts %}
 {% assign has_sale_tag = false %}
 {% assign is_bestseller = false %}
+{% assign has_b2g1 = false %}
+{% assign has_b3g2 = false %}
 {% assign current_time = 'now' | date: '%s' %}
 {% assign product_created_time = product.created_at | date: '%s' %}
 {% assign fifteen_days_seconds = 15 | times: 24 | times: 60 | times: 60 %}
@@ -41,6 +43,13 @@
 
   {% if normalized_tag == 'bestseller' %}
     {% assign is_bestseller = true %}
+  {% endif %}
+
+  {% comment %} Offer ribbons: tag products "offer-b2g1" and/or "offer-b3g2" {% endcomment %}
+  {% if normalized_tag == 'offer-b2g1' %}
+    {% assign has_b2g1 = true %}
+  {% elsif normalized_tag == 'offer-b3g2' %}
+    {% assign has_b3g2 = true %}
   {% endif %}
 {% endfor %}
 {% capture card_attr %}
@@ -88,6 +97,13 @@
         {% elsif is_bestseller %}
           <div class="bestseller-badge sale-badge">Bestseller</div>
       {% endif %}
+
+      {%- if has_b2g1 or has_b3g2 -%}
+        <div class="offer-ribbons{% if has_b2g1 and has_b3g2 %} offer-ribbons--rotate{% endif %}">
+          {%- if has_b2g1 -%}<span class="offer-ribbon offer-ribbon--b2g1">Buy 2 Get 1 Free</span>{%- endif -%}
+          {%- if has_b3g2 -%}<span class="offer-ribbon offer-ribbon--b3g2">Buy 3 Get 2 Free</span>{%- endif -%}
+        </div>
+      {%- endif -%}
 
      {% render 'wishlisthero-collection-product', product: product %}
       
