@@ -12,6 +12,16 @@
     "th_home_page_banner_UyyE9D": {
       "type": "th_home_page_banner",
       "blocks": {
+        "slide_9LjfQX": {
+          "type": "slide",
+          "settings": {
+            "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
+            "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
+            "heading": "",
+            "button_text": "",
+            "button_link": "shopify://collections/plus-size"
+          }
+        },
         "slide_nkYm46": {
           "type": "slide",
           "name": "Archive Sale",
@@ -157,6 +167,7 @@
         }
       },
       "block_order": [
+        "slide_9LjfQX",
         "slide_nkYm46",
         "slide_GCfPQQ",
         "slide_VhFdqW",
