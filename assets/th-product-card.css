@@ -164,10 +164,13 @@ th-product-card .th-product-card__mobile-label,
 /* Offer ribbons (B2G1 / B3G2) — top-left of card image; rotate when a product has both */
 .custom-product-card .offer-ribbons{position:absolute; top:10px; left:0; z-index:12; pointer-events:none; display:grid;}
 .custom-product-card .offer-ribbon{grid-area:1/1; display:inline-flex; align-items:center; justify-self:start; height:22px; padding:0 18px 0 8px; font-size:11px; line-height:1; font-weight:600; letter-spacing:.02em; white-space:nowrap; clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%);}
+.custom-product-card .offer-ribbon{position:relative; overflow:hidden;}
+.custom-product-card .offer-ribbon::after{content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%; background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 50%,rgba(255,255,255,0) 100%); transform:skewX(-20deg); animation:offer-ribbon-shine 2.5s ease-in-out infinite;}
+@keyframes offer-ribbon-shine{0%{left:-60%;} 60%,100%{left:130%;}}
 .custom-product-card .offer-ribbon--b2g1{background:#8f1d2c; color:#fff;}
 .custom-product-card .offer-ribbon--b3g2{background:#000; color:#fff;}
 .custom-product-card .offer-ribbons--rotate .offer-ribbon{animation:offer-ribbon-swap 6s infinite;}
 .custom-product-card .offer-ribbons--rotate .offer-ribbon--b3g2{animation-delay:-3s;}
 @keyframes offer-ribbon-swap{0%,45%{opacity:1; visibility:visible;} 50%,95%{opacity:0; visibility:hidden;} 100%{opacity:1; visibility:visible;}}
-@media (prefers-reduced-motion: reduce){.custom-product-card .offer-ribbons--rotate .offer-ribbon{animation-duration:12s;}}
+@media (prefers-reduced-motion: reduce){.custom-product-card .offer-ribbons--rotate .offer-ribbon{animation-duration:12s;} .custom-product-card .offer-ribbon::after{animation:none; display:none;}}
 @media (max-width:767px){.custom-product-card .offer-ribbons{top:6px;} .custom-product-card .offer-ribbon{height:20px; font-size:10px; padding:0 15px 0 6px;}}
