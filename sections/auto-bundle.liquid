@@ -461,6 +461,24 @@
         badge.hidden = false;
       }
 
+      async function tagCartSource(selected) {
+        var key = '_customers_also_bought';
+        var base = window.Shopify.routes.root;
+        var cart = await fetch(base + 'cart.js', { headers: { Accept: 'application/json' } }).then(function (r) { return r.json(); });
+        var existing = (cart.attributes && cart.attributes[key]) ? cart.attributes[key].split(' | ') : [];
+        selected.forEach(function (d) {
+          var label = (d.name || 'Item') + (d.sizeLabel ? ' (' + d.sizeLabel + ')' : '') + ' #' + d.variantId;
+          if (existing.indexOf(label) === -1) existing.push(label);
+        });
+        var attributes = {};
+        attributes[key] = existing.join(' | ');
+        await fetch(base + 'cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ attributes: attributes })
+        });
+      }
+
       async function addToCart(selected) {
         busy = true;
         submit.disabled = true;
@@ -472,14 +490,16 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify({
-              // _source is a hidden line-item property so orders from this section can be identified in admin.
-              items: selected.map(function (d) {
-                return { id: Number(d.variantId), quantity: 1, properties: { _source: 'Customers also bought' } };
-              })
+              items: selected.map(function (d) { return { id: Number(d.variantId), quantity: 1 }; })
             })
           });
           var data = await res.json().catch(function () { return {}; });
           if (!res.ok) throw new Error(data.description || data.message || 'Could not add the bundle to your cart.');
+
+          // Record bundle items as a hidden cart attribute (carried to the order) so sales from this
+          // section can be identified in admin. Line-item properties are avoided because the GoKwik
+          // cart drawer displays them, even underscore-prefixed ones.
+          tagCartSource(selected).catch(function (error) { console.warn('Auto bundle: could not tag cart', error); });
 
           var countHtml = data.sections && data.sections['cart-count'];
           var itemCount = 0;
