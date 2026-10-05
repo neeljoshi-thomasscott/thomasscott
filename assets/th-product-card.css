@@ -162,7 +162,7 @@ th-product-card .th-product-card__mobile-label,
   }
 }
 /* Offer ribbons (B2G1 / B3G2) — bottom-left of card image, level with the bag icon and above the mobile slider dots; rotate when a product has both */
-.custom-product-card .offer-ribbons{position:absolute; bottom:20px; left:0; z-index:12; pointer-events:none; display:grid;}
+.custom-product-card .offer-ribbons{position:absolute; bottom:10px; left:0; z-index:12; pointer-events:none; display:grid;}
 .custom-product-card .offer-ribbon{grid-area:1/1; display:inline-flex; align-items:center; justify-self:start; height:22px; padding:0 18px 0 8px; font-size:11px; line-height:1; font-weight:600; letter-spacing:.02em; white-space:nowrap; clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%);}
 .custom-product-card .offer-ribbon{position:relative; overflow:hidden;}
 .custom-product-card .offer-ribbon::after{content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%; background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 50%,rgba(255,255,255,0) 100%); transform:skewX(-20deg); animation:offer-ribbon-shine 2.5s ease-in-out infinite;}
