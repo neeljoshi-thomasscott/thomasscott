@@ -1370,7 +1370,7 @@ font-size:16px;
   .page_collection .section-wrapper{position:sticky !important; background:#fff; top:0; z-index:1;}
 .product-card .card-slider-btn{opacity:1;}
 .page_collection .custom-section-content{display:flex; align-items:center; justify-content:space-between;}
-.page_collection .custom-section-content .column-options-wrapper.mobile{order:2; display:block;}
+.page_collection .section-space .custom-section-content .column-options-wrapper.mobile{order:2; display:block;}
 .column-options__option .column-picker svg{width:17px; height:28px;}
 .watch-buy-slider{padding-left:20px;}
 .watch-buy-slider:not(.slick-initialized) .item {min-width: calc(100% / 1.1);}
@@ -2029,6 +2029,20 @@ z-index:0 !important;
     min-width: 200px;    border-style: solid;
     border-width: 1px;
     padding: 5px 10px;
+}
+
+/* Wide SEO tables scroll inside themselves instead of widening the page */
+.page_collection .custom-typography table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 749px) {
+  .page_collection td,
+  .page_collection th {
+    min-width: 120px;
+  }
 }
 
 
