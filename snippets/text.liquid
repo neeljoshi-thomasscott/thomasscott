@@ -217,4 +217,21 @@
   .custom-color > :is(h1, h2, h3, h4, h5, h6, p, *) {
     color: var(--color);
   }
+
+  /* Keep pasted tables (e.g. Google Docs colgroup widths) inside the viewport */
+  .text-block table {
+    /* stylelint-disable-next-line declaration-no-important */
+    width: 100% !important;
+    max-width: 100%;
+    border-collapse: collapse;
+  }
+
+  .text-block col {
+    /* stylelint-disable-next-line declaration-no-important */
+    width: auto !important;
+  }
+
+  .text-block :is(td, th) {
+    overflow-wrap: anywhere;
+  }
 {% endstylesheet %}
