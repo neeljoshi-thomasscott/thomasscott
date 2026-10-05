@@ -2031,14 +2031,14 @@ z-index:0 !important;
     padding: 5px 10px;
 }
 
-/* Wide SEO tables scroll inside themselves instead of widening the page */
-.page_collection .custom-typography table {
-  display: block;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
+/* Mobile: wide SEO tables scroll inside themselves instead of widening the page */
 @media screen and (max-width: 749px) {
+  .page_collection .custom-typography table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
   .page_collection td,
   .page_collection th {
     min-width: 120px;
