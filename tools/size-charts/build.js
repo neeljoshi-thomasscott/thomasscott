@@ -32,6 +32,7 @@ const DEFAULT_EXPORT = path.join(__dirname, 'size-chart-export.xlsx');
 /* Every block in the Excel must be listed here, so a renamed or new block fails loudly instead of vanishing. */
 const EXCEL_CHARTS = [
   { article: 'Shirts', fit: 'Regular Fit', key: 'shirts-regular', title: 'Regular Fit Shirts' },
+  { article: 'Plus Size Shirts', fit: 'Regular Fit', key: 'shirts-plus', title: 'Plus Size Shirts' },
   { article: 'Shirts', fit: 'Oversize Fit', key: 'shirts-oversized', title: 'Oversized Fit Shirts' },
   { article: 'T-Shirts', fit: 'Regular Fit', key: 'tshirts-regular', title: 'Regular Fit T-Shirts' },
   { article: 'Jeans', fit: 'Baggy', key: 'jeans-baggy', title: 'Baggy Fit Jeans' },
