@@ -49,6 +49,13 @@ const EXCEL_CHARTS = [
 const blockId = (article, fit) => `${article}|${fit}`.toLowerCase().replace(/\s+/g, ' ').trim();
 const EXCEL_BY_ID = Object.fromEntries(EXCEL_CHARTS.map((c) => [blockId(c.article, c.fit), c]));
 
+/*
+ * Charts that continue into another chart's sizes. Sizes the first chart already has are not repeated,
+ * and each product only sees the sizes it sells.
+ * Team, Oct 2026: plus size starts at 3XL, so a Regular Fit shirt's 3XL+ is "Plus Size Shirts / Regular Fit".
+ */
+const APPEND_ROWS = { 'shirts-regular': 'shirts-plus' };
+
 /* Measurement diagram shown under the table, by chart key prefix. */
 const IMAGES = {
   'shirts-': 'https://cdn.shopify.com/s/files/1/0821/2738/8922/files/20241202115216.webp?v=1777016886',
@@ -301,6 +308,18 @@ function build(xlsxPath, dryRun) {
   const problems = [];
   const charts = { ...JSON.parse(fs.readFileSync(LEGACY, 'utf8')), ...chartsFromExcel(xlsxPath, problems) };
 
+  for (const [key, extraKey] of Object.entries(APPEND_ROWS)) {
+    const chart = charts[key];
+    const extra = charts[extraKey];
+    if (!chart || !extra) continue;
+    if (chart.columns.join('|') !== extra.columns.join('|')) {
+      problems.push(`Cannot continue "${chart.title}" with "${extra.title}": columns differ ([${chart.columns.join(', ')}] vs [${extra.columns.join(', ')}]).`);
+      continue;
+    }
+    const have = new Set(chart.rows.map((r) => r[0]));
+    charts[key] = { ...chart, rows: [...chart.rows, ...extra.rows.filter((r) => !have.has(r[0]))], source: `${chart.source} + ${extra.title}` };
+  }
+
   for (const [key, chart] of Object.entries(charts)) {
     const text = [chart.title, ...chart.columns, ...chart.rows.flat()].join('');
     if (Object.values(SEP).some((d) => text.includes(d))) problems.push(`Chart "${key}" contains a reserved character (${Object.values(SEP).join(' ')})`);
@@ -413,6 +432,12 @@ function exportWorkbook(outPath) {
   }
   const sheets = {};
   const add = (sheet, rows) => (sheets[sheet] = (sheets[sheet] || []).concat(rows));
+  // Undo APPEND_ROWS so each block matches the Excel and re-importing doesn't duplicate rows.
+  for (const [key, extraKey] of Object.entries(APPEND_ROWS)) {
+    if (!charts[key] || !charts[extraKey]) continue;
+    const appended = new Set(charts[extraKey].rows.map((r) => r[0]));
+    charts[key] = { ...charts[key], rows: charts[key].rows.filter((r) => !appended.has(r[0])), source: charts[key].source.split(' + ')[0] };
+  }
   for (const [key, chart] of Object.entries(charts)) {
     const target = EXCEL_CHARTS.find((t) => t.key === key);
     if (target) add(chart.source.split('›').pop().trim() || 'Size charts', chartRows(chart, target.article, target.fit));
