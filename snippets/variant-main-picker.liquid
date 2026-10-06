@@ -82,8 +82,8 @@
               {% assign label = product_option.name | downcase %}
               {% if label contains 'size' %}
                  <span class="size-variant-label">{{ product_option.selected_value }}</span> 
-                {% render 'size-chart' %}
-                {% render 'size-chart-popup', product: product %}
+                {% render 'size-chart', product: product_resource %}
+                {% render 'size-chart-popup', product: product_resource %}
                 {% comment %} <div class="size-chart-btn">
                   <button class="size-guide" type="button">
                     <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">

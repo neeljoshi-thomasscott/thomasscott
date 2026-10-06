@@ -1,0 +1,178 @@
+{%- doc -%}
+  Outputs the size chart key for a product (see snippets/size-chart-data.liquid), or nothing when
+  no chart fits. Capture it: {% capture key %}{% render 'size-chart-key', product: product %}{% endcapture %}
+
+  Category comes from the Shopify product type (most reliable field), then the parent_category
+  metafield and the title. Fit comes from specs.fit, then the title, then defaults to regular.
+  A product whose fit has no chart gets no chart — showing another fit's measurements would mislead.
+
+  @param {object} product - The product
+{%- enddoc -%}
+{%- liquid
+  assign type = product.type | downcase | strip
+  assign parent_cat = product.metafields.custom.parent_category.value | downcase
+  assign fit = product.metafields.specs.fit.value | downcase | strip
+  assign title = product.title | downcase
+
+  assign is_plus = false
+  if parent_cat contains 'plus' or title contains 'plus size'
+    assign is_plus = true
+  endif
+
+  assign first_size = ''
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name contains 'size'
+      assign first_size = option.values.first | upcase | strip
+      break
+    endif
+  endfor
+  assign letter_sizes = 'XS,S,M,L,XL,XXL,2XL,3XL,4XL,5XL,6XL' | split: ','
+
+  # ---- Category ----
+  assign category = ''
+  case type
+    when 'shirts'
+      assign category = 'shirts'
+    when 'tshirts', 't-shirts'
+      assign category = 'tshirts'
+    when 'jeans'
+      assign category = 'jeans'
+    when 'trousers', 'chinos', 'corduroy trousers', 'cargo', 'cargos', 'bottom'
+      assign category = 'trousers'
+    when 'joggers', 'track pants', 'track pant'
+      if letter_sizes contains first_size
+        assign category = 'trackpants'
+      else
+        assign category = 'trousers'
+      endif
+    when 'shorts'
+      assign category = 'shorts'
+    when 'sweatshirts'
+      assign category = 'sweatshirts'
+    when 'sweaters'
+      assign category = 'sweaters'
+    when 'jackets'
+      assign category = 'jackets'
+    when 'blazers'
+      assign category = 'blazers'
+    when 'co-ord sets'
+      assign category = 'coords'
+  endcase
+
+  # Shackets, boxers and bags have no chart; anything else unrecognised falls back to the title
+  if category == '' and type != 'shackets' and type != 'boxers' and type != 'bags'
+    if title contains 'sweatshirt'
+      assign category = 'sweatshirts'
+    elsif title contains 'sweater'
+      assign category = 'sweaters'
+    elsif title contains 'jacket'
+      assign category = 'jackets'
+    elsif title contains 'blazer'
+      assign category = 'blazers'
+    elsif title contains 'co-ord'
+      assign category = 'coords'
+    elsif title contains 't-shirt' or title contains 'tshirt' or parent_cat contains 'tshirt'
+      assign category = 'tshirts'
+    elsif title contains 'jeans'
+      assign category = 'jeans'
+    elsif title contains 'shorts'
+      assign category = 'shorts'
+    elsif title contains 'trouser' or title contains 'chino' or title contains 'cargo'
+      assign category = 'trousers'
+    elsif title contains 'shirt'
+      assign category = 'shirts'
+    endif
+  endif
+
+  # ---- Fit: specs.fit, then title, then regular ----
+  assign fit_source = fit
+  if fit_source == blank
+    assign fit_source = title
+  endif
+  assign fit_key = 'regular'
+  if fit_source contains 'oversize'
+    assign fit_key = 'oversized'
+  elsif fit_source contains 'slim'
+    assign fit_key = 'slim'
+  elsif fit_source contains 'skinny'
+    assign fit_key = 'skinny'
+  elsif fit_source contains 'baggy'
+    assign fit_key = 'baggy'
+  elsif fit_source contains 'carrot'
+    assign fit_key = 'carrot'
+  elsif fit_source contains 'boot'
+    assign fit_key = 'bootcut'
+  elsif fit_source contains 'straight'
+    assign fit_key = 'straight'
+  elsif fit_source contains 'loose'
+    assign fit_key = 'loose'
+  elsif fit_source contains 'relaxed'
+    assign fit_key = 'relaxed'
+  elsif fit_source contains 'tapered'
+    assign fit_key = 'tapered'
+  elsif fit_source contains 'boxy'
+    assign fit_key = 'boxy'
+  elsif fit_source contains 'jogger'
+    assign fit_key = 'jogger'
+  endif
+
+  # ---- Chart ----
+  assign key = ''
+  case category
+    when 'shirts'
+      if is_plus
+        assign key = 'shirts-regular'
+      elsif fit_key == 'slim'
+        assign key = 'shirts-slim'
+      elsif fit_key == 'regular' or fit_key == 'relaxed'
+        assign key = 'shirts-regular'
+      elsif fit_key == 'oversized'
+        assign key = 'shirts-oversized'
+      endif
+    when 'tshirts'
+      if title contains 'polo'
+        assign key = 'tshirts-polo'
+      elsif fit_key == 'regular'
+        assign key = 'tshirts-regular'
+      elsif fit_key == 'oversized'
+        assign key = 'tshirts-oversized'
+      endif
+    when 'jeans'
+      if is_plus
+        assign key = 'jeans-plus'
+      else
+        case fit_key
+          when 'slim', 'baggy', 'carrot', 'straight', 'bootcut', 'skinny', 'relaxed', 'loose'
+            assign key = 'jeans-' | append: fit_key
+        endcase
+      endif
+    when 'trousers'
+      if is_plus
+        assign key = 'trousers-plus'
+      else
+        case fit_key
+          when 'regular', 'slim', 'relaxed', 'straight'
+            assign key = 'trousers-' | append: fit_key
+        endcase
+      endif
+    when 'trackpants'
+      case fit_key
+        when 'regular', 'relaxed', 'straight'
+          assign key = 'trackpants-' | append: fit_key
+      endcase
+    when 'shorts'
+      if is_plus
+        assign key = 'shorts-plus'
+      else
+        case fit_key
+          when 'regular', 'relaxed', 'slim', 'straight'
+            assign key = 'shorts-' | append: fit_key
+        endcase
+      endif
+    when 'sweatshirts', 'sweaters', 'jackets', 'blazers', 'coords'
+      assign key = category
+  endcase
+
+  echo key
+-%}

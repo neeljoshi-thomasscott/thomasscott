@@ -1,0 +1,70 @@
+{%- doc -%}
+  Outputs the size chart (title, table, diagram) for a product, or nothing when the product has no
+  chart or none of its sizes are in the chart. Only rows for sizes the product is sold in are shown.
+
+  @param {object} product - The product
+{%- enddoc -%}
+{%- capture chart_key -%}{%- render 'size-chart-key', product: product -%}{%- endcapture -%}
+{%- assign chart_key = chart_key | strip -%}
+
+{%- if chart_key != blank -%}
+  {%- capture chart_data -%}{%- render 'size-chart-data', chart: chart_key -%}{%- endcapture -%}
+  {%- assign parts = chart_data | strip | split: '^' -%}
+
+  {%- if parts.size >= 4 -%}
+    {%- liquid
+      assign chart_title = parts[0]
+      assign columns = parts[1] | split: '|'
+      assign chart_rows = parts[2] | split: '~'
+      assign size_column_count = parts[3] | plus: 0
+      assign chart_image = parts[4]
+
+      assign sizes = ''
+      for option in product.options_with_values
+        assign option_name = option.name | downcase
+        if option_name contains 'size'
+          assign sizes = option.values | join: '|' | upcase | split: '|'
+          break
+        endif
+      endfor
+    -%}
+
+    {%- capture body_rows -%}
+      {%- for row in chart_rows -%}
+        {%- assign cells = row | split: '|' -%}
+        {%- assign show_row = false -%}
+        {%- if sizes == '' -%}
+          {%- assign show_row = true -%}
+        {%- else -%}
+          {%- for i in (1..size_column_count) -%}
+            {%- assign cell_index = forloop.index0 -%}
+            {%- assign cell = cells[cell_index] | upcase -%}
+            {%- if sizes contains cell -%}
+              {%- assign show_row = true -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if show_row -%}
+          <tr>{%- for cell in cells -%}<td>{{ cell }}</td>{%- endfor -%}</tr>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    {%- if body_rows != blank -%}
+      <h2 class="size-guide-title">{{ chart_title }} — Size Guide</h2>
+      <div class="table-responsive">
+        <table class="size-table">
+          <thead>
+            <tr>{%- for column in columns -%}<th>{{ column }}</th>{%- endfor -%}</tr>
+          </thead>
+          <tbody>
+            {{- body_rows -}}
+          </tbody>
+        </table>
+        {%- if chart_image != blank -%}
+          <img src="{{ chart_image }}" alt="{{ chart_title }} measurement guide" loading="lazy" width="auto" height="auto">
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}
