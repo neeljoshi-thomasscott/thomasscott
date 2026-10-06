@@ -1,0 +1,247 @@
+{
+  "blazers": {
+    "title": "Blazers",
+    "columns": ["Size","Shoulder (IN)","Chest (IN)","Length (IN)"],
+    "rows": [
+      ["S","17.1","37.8","27.6"],
+      ["M","17.5","39.4","27.9"],
+      ["L","17.9","40.9","28.1"],
+      ["XL","18.3","42.5","28.4"],
+      ["2XL","18.9","44.9","28.5"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "coords": {
+    "title": "Co-Ord Sets",
+    "columns": ["Size","Across Shoulder (IN)","Chest (IN)","Front Length (IN)","Garment Waist (IN)","Rise (IN)","Waist (IN)"],
+    "rows": [
+      ["S","19","45","27.5","28","7","28"],
+      ["M","19.5","47","28","30","7.25","30"],
+      ["L","20","49","29","32","7.5","32"],
+      ["XL","21","51","30","34","7.75","34"],
+      ["2XL","22","53","31","36","8","36"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "trousers-relaxed": {
+    "title": "Relaxed Fit Trousers",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["XS","28","30","29","28"],
+      ["S","30","32","29","30"],
+      ["M","32","34","29","32"],
+      ["L","34","36","29","34"],
+      ["XL","36","38","29","36"],
+      ["2XL","38","40","29","38"],
+      ["3XL","40","42","29","40"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "trousers-slim": {
+    "title": "Slim Fit Trousers",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","30","30","29","30"],
+      ["M","32","32","29","32"],
+      ["L","34","34","29","34"],
+      ["XL","36","36","29","36"],
+      ["2XL","38","38","29","38"],
+      ["3XL","40","40","29","40"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "trousers-straight": {
+    "title": "Straight Fit Trousers",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","30","31","32","30"],
+      ["M","32","33","32","32"],
+      ["L","34","35","32","34"],
+      ["XL","36","37","32","36"],
+      ["2XL","38","39.5","32","38"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "shirts-slim": {
+    "title": "Slim Fit Shirts",
+    "columns": ["Standard","Size","Across Shoulder (IN)","Chest (IN)","Front Length (IN)"],
+    "rows": [
+      ["S","38","16","38.3","28.3"],
+      ["M","40","17","40.5","29"],
+      ["L","42","18","43.8","29.8"],
+      ["XL","44","19","46","30.5"],
+      ["2XL","46","20","49.3","31.3"],
+      ["3XL","48","21","51.5","31.8"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "sweaters": {
+    "title": "Sweaters",
+    "columns": ["Standard","Size","Across Shoulder (IN)","Chest (IN)","Front Length (IN)"],
+    "rows": [
+      ["S","28","16.88","38","27"],
+      ["M","30","17.5","40","27.75"],
+      ["L","32","18.13","42","28.5"],
+      ["XL","34","18.88","44.5","29.25"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "tshirts-oversized": {
+    "title": "Oversized T-Shirts",
+    "columns": ["Standard","Size","Across Shoulder (IN)","Chest (IN)","Front Length (IN)"],
+    "rows": [
+      ["S","30","21.3","44","29.5"],
+      ["M","32","22","46","30"],
+      ["L","34","22.8","48","30.5"],
+      ["XL","36","23.6","50.5","31"],
+      ["2XL","38","24.5","53.5","31.5"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "tshirts-polo": {
+    "title": "Polo Collar T-Shirts",
+    "columns": ["Standard","Size","Across Shoulder (IN)","Chest (IN)","Front Length (IN)"],
+    "rows": [
+      ["S","30","16.9","38","27"],
+      ["M","32","17.5","40","27.8"],
+      ["L","34","18.1","42","28.5"],
+      ["XL","36","18.9","44.5","29.3"],
+      ["2XL","38","19.6","47","30"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "shorts-regular": {
+    "title": "Regular Fit Shorts",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","Hip (IN)"],
+    "rows": [
+      ["S","30","30","8.5","42.5"],
+      ["M","32","32","8.5","45"],
+      ["L","34","34","8.5","48"],
+      ["XL","36","36","8.5","51"],
+      ["2XL","38","38","8.5","55"],
+      ["3XL","40","40","8.5","57.5"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "shorts-relaxed": {
+    "title": "Relaxed Fit Shorts",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","Hip (IN)"],
+    "rows": [
+      ["S","30","31","9","42"],
+      ["M","32","33","9","44"],
+      ["L","34","35","9","46"],
+      ["XL","36","37","9","48"],
+      ["2XL","38","39","9","50"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "shorts-slim": {
+    "title": "Slim Fit Shorts",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","Hip (IN)"],
+    "rows": [
+      ["S","30","31","9","40"],
+      ["M","32","33","9","42"],
+      ["L","34","35","9","44"],
+      ["XL","36","37","9","46"],
+      ["2XL","38","39.5","9","48.5"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "shorts-plus": {
+    "title": "Plus Size Shorts",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","Hip (IN)"],
+    "rows": [
+      ["3XL","40","43.25","9.8","50"],
+      ["4XL","42","45.25","9.8","52"],
+      ["5XL","44","47.25","9.8","54"],
+      ["6XL","46","49.25","9.8","56"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "shorts-straight": {
+    "title": "Straight Fit Shorts",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","Hip (IN)"],
+    "rows": [
+      ["S","30","31","9","40"],
+      ["M","32","33","9","42"],
+      ["L","34","35","9","44"],
+      ["XL","36","37","9","46"],
+      ["2XL","38","39.5","9","48.5"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "jeans-relaxed": {
+    "title": "Relaxed Fit Jeans",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","28","30","30","28"],
+      ["M","30","32","30","30"],
+      ["L","32","34","30","32"],
+      ["XL","34","36","30","34"],
+      ["2XL","36","38","30","36"],
+      ["3XL","38","40","30","38"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "jeans-loose": {
+    "title": "Loose Fit Jeans",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","28","30","31","28"],
+      ["M","30","32","31","30"],
+      ["L","32","34","31","32"],
+      ["XL","34","36","31","34"],
+      ["2XL","36","38","31","36"],
+      ["3XL","38","40","31","38"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "jeans-plus": {
+    "title": "Plus Size Jeans",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["3XL","40","42","29.5","40"],
+      ["4XL","42","44","29.5","42"],
+      ["5XL","44","46","29.5","44"],
+      ["6XL","46","48","29.5","46"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "trackpants-relaxed": {
+    "title": "Relaxed Fit Track Pants",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","28","28","29.3","28"],
+      ["M","30","30","29.3","30"],
+      ["L","32","32","29.3","32"],
+      ["XL","34","34","29.3","34"],
+      ["2XL","36","36","29.3","36"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "trackpants-straight": {
+    "title": "Straight Fit Track Pants",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","28","30","29","30"],
+      ["M","30","32","29","32"],
+      ["L","32","34","29","34"],
+      ["XL","34","36","29","36"],
+      ["2XL","36","38.5","29","38"],
+      ["3XL","38","41","29","40"]
+    ],
+    "source": "website (pre Oct 2026)"
+  },
+  "trackpants-regular": {
+    "title": "Regular Fit Track Pants",
+    "columns": ["Standard","Size","Garment Waist (IN)","Inseam Length (IN)","To Fit Waist (IN)"],
+    "rows": [
+      ["S","28","42","29.25","30"],
+      ["M","30","44","29.25","32"],
+      ["L","32","46","29.25","34"],
+      ["XL","34","48","29.25","36"],
+      ["2XL","36","50.5","29.25","38"]
+    ],
+    "source": "website (pre Oct 2026)"
+  }
+}

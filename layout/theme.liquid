@@ -423,14 +423,6 @@
       {{ content_for_layout }}
     </main>
 
-    {% if template contains 'collection' %}
-      {% for product in collection.products %}
-        {% render 'size-chart-popup', product: product %}
-      {% endfor %}
-    {% else %}
-      {% render 'size-chart-popup', product: product, collection: collection %}
-    {% endif %}
-
     <footer>
       {% sections 'footer-group' %}
     </footer>

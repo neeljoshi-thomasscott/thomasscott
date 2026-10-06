@@ -517,20 +517,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+/* Size guide: open from any [data-open-size] button, close on ×, backdrop click or Esc */
 document.addEventListener("click", function (e) {
 
   // OPEN MODAL
   const openBtn = e.target.closest("[data-open-size]");
 
   if (openBtn) {
-    const productId = openBtn.dataset.productId;
-    const modal = document.getElementById(`sizeChartModal-${productId}`);
+    const modal = document.getElementById(`sizeChartModal-${openBtn.dataset.productId}`);
 
-    if (modal) {
+    if (modal && !modal.open) {
+      e.preventDefault();
       modal.showModal();
-      modal.style.display = "block";
       document.body.classList.add("popup-overlay");
     }
+    return;
   }
 
   // CLOSE BUTTON
@@ -538,24 +539,23 @@ document.addEventListener("click", function (e) {
 
   if (closeBtn) {
     const modal = closeBtn.closest(".size-modal");
-
-    if (modal) {
-      modal.style.display = "none";
-      modal.close();
-      document.body.classList.remove("popup-overlay");
-    }
+    if (modal && modal.open) modal.close();
+    return;
   }
 
   // OUTSIDE CLICK
-  document.querySelectorAll(".size-modal").forEach((modal) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
-      modal.close();
-      document.body.classList.remove("popup-overlay");
-    }
-  });
+  if (e.target.matches(".size-modal[open]")) {
+    e.target.close();
+  }
 
 });
+
+// "close" doesn't bubble, so listen in the capture phase; covers ×, backdrop and Esc
+document.addEventListener("close", function (e) {
+  if (e.target.matches && e.target.matches(".size-modal")) {
+    document.body.classList.remove("popup-overlay");
+  }
+}, true);
 
 
 
