@@ -540,17 +540,19 @@ document.addEventListener("click", function (e) {
   if (closeBtn) {
     const modal = closeBtn.closest(".size-modal");
     if (modal && modal.open) modal.close();
+    document.body.classList.remove("popup-overlay");
     return;
   }
 
   // OUTSIDE CLICK
   if (e.target.matches(".size-modal[open]")) {
     e.target.close();
+    document.body.classList.remove("popup-overlay");
   }
 
 });
 
-// "close" doesn't bubble, so listen in the capture phase; covers ×, backdrop and Esc
+// Esc closes the dialog natively; "close" doesn't bubble, so listen in the capture phase
 document.addEventListener("close", function (e) {
   if (e.target.matches && e.target.matches(".size-modal")) {
     document.body.classList.remove("popup-overlay");
