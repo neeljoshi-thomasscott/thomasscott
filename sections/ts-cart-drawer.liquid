@@ -294,12 +294,11 @@
               </span>
             {%- endif -%}
 
-            {%- if section.settings.terms_url != blank -%}
-              <label class="ts-cd__terms">
-                <input type="checkbox" data-ts-cd-terms checked>
-                <span>Read <a href="{{ section.settings.terms_url }}" target="_blank" rel="noopener">Terms &amp; Conditions</a> here</span>
-              </label>
-            {%- endif -%}
+            {%- assign terms_url = section.settings.terms_url | default: shop.terms_of_service.url | default: "/policies/terms-of-service" -%}
+            <label class="ts-cd__terms">
+              <input type="checkbox" data-ts-cd-terms checked>
+              <span>Read <a href="{{ terms_url }}" target="_blank" rel="noopener">Terms &amp; Conditions</a> here</span>
+            </label>
 
             {%- comment -%}
               data-gokwik-processed stops snippets/gokwik.liquid from cloning and redecorating this
@@ -393,7 +392,7 @@
     { "type": "text", "id": "shipping_badge", "label": "Shipping badge", "default": "FREE shipping included" },
     { "type": "checkbox", "id": "show_prepaid_row", "label": "Show prepaid discount row", "default": true },
     { "type": "text", "id": "prepaid_tooltip", "label": "Prepaid discount note", "default": "Prepaid discount is applied at checkout when you pay online." },
-    { "type": "url", "id": "terms_url", "label": "Terms & Conditions link", "default": "/policies/terms-of-service" },
+    { "type": "url", "id": "terms_url", "label": "Terms & Conditions link", "info": "Defaults to the Terms of Service policy page." },
     { "type": "url", "id": "empty_link", "label": "Empty cart button link" },
     { "type": "header", "content": "Offers panel" },
     { "type": "text", "id": "offers_note", "label": "Note", "default": "Coupons apply on top of payment offers" }
