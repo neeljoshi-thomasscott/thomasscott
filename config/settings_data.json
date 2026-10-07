@@ -180,6 +180,11 @@
         "type": "shopify://apps/buffy-ai-chatbot-sales-agent/blocks/search-takeover/019ce6c1-a2b9-7cb4-9c77-450dc2529ffa",
         "disabled": true,
         "settings": {}
+      },
+      "1409715032340194113": {
+        "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
+        "disabled": true,
+        "settings": {}
       }
     },
     "color_schemes": {

@@ -1,0 +1,74 @@
+{%- comment -%}
+  "Suggested for you" cards for the cart drawer (sections/ts-cart-drawer.liquid).
+  Fetched by assets/ts-cart-drawer.js from
+    /recommendations/products?section_id=ts-cart-recs&product_id=…&limit=…   (related products)
+  or, when that is empty,
+    /collections/<fallback>?section_id=ts-cart-recs                          (fallback collection)
+  Products already in the cart and sold-out products are skipped.
+{%- endcomment -%}
+
+{%- liquid
+  assign cart_product_ids = cart.items | map: 'product_id'
+  if recommendations.performed and recommendations.products_count > 0
+    assign source = recommendations.products
+  elsif collection
+    assign source = collection.products
+  endif
+-%}
+
+<div class="ts-cd-recs-list">
+  {%- for product in source -%}
+    {%- if cart_product_ids contains product.id or product.available == false -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign variant = product.selected_or_first_available_variant
+      assign off = 0
+      if variant.compare_at_price > variant.price
+        assign save = variant.compare_at_price | minus: variant.price
+        assign off = save | times: 100.0 | divided_by: variant.compare_at_price | floor
+      endif
+      assign available_variants = product.variants | where: 'available'
+    -%}
+    <div class="ts-cd-rec" data-product-id="{{ product.id }}">
+      <a class="ts-cd-rec__media" href="{{ product.url }}">
+        {%- if product.featured_image -%}
+          {{ product.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: product.title, sizes: '88px' }}
+        {%- endif -%}
+      </a>
+      <div class="ts-cd-rec__info">
+        <a class="ts-cd-rec__title" href="{{ product.url }}">{{ product.title | escape }}</a>
+        {%- if variant.compare_at_price > variant.price -%}
+          <s>{{ variant.compare_at_price | money }}</s>
+        {%- endif -%}
+        <strong>{{ variant.price | money }}</strong>
+      </div>
+      {%- if off > 0 -%}
+        <span class="ts-cd-rec__badge">{{ off }}% off</span>
+      {%- else -%}
+        <span></span>
+      {%- endif -%}
+      {%- if product.has_only_default_variant or available_variants.size == 1 -%}
+        <button type="button" class="ts-cd-rec__add" data-ts-cd-action="rec-add" data-variant-id="{{ available_variants.first.id }}">+ Add</button>
+      {%- else -%}
+        <button type="button" class="ts-cd-rec__add" data-ts-cd-action="rec-pick" aria-expanded="false">+ Add</button>
+        <div class="ts-cd-rec__sizes" hidden>
+          <span class="ts-cd-rec__sizes-label">Select size</span>
+          <div class="ts-cd-rec__sizes-list">
+            {%- for v in available_variants -%}
+              <button type="button" data-ts-cd-action="rec-add" data-variant-id="{{ v.id }}">{{ v.title | escape }}</button>
+            {%- endfor -%}
+          </div>
+          <button type="button" class="ts-cd-rec__sizes-close" data-ts-cd-action="rec-pick-close" aria-label="Close size picker">
+            <svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2 2 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart drawer suggestions",
+  "settings": []
+}
+{% endschema %}

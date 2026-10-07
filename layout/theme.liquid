@@ -437,6 +437,11 @@
 
     {% render 'search-modal' %}
 
+    {%- comment -%} Own cart drawer (replaces the GoKwik side cart); the cart page keeps its own layout. {%- endcomment -%}
+    {%- unless template.name == 'cart' -%}
+      {% section 'ts-cart-drawer' %}
+    {%- endunless -%}
+
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
