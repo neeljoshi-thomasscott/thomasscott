@@ -1,0 +1,413 @@
+{%- comment -%}
+  Thomas Scott cart drawer (replaces the GoKwik side cart).
+  Rendered once from layout/theme.liquid via {% section 'ts-cart-drawer' %} and re-rendered
+  through the Section Rendering API after every cart change. Only the elements carrying
+  `data-hydration-key` are morphed, so the open dialog and UI state on the host survive.
+  Behaviour lives in assets/ts-cart-drawer.js.
+{%- endcomment -%}
+
+{%- liquid
+  assign mrp_total = 0
+  for item in cart.items
+    assign unit_mrp = item.original_price
+    if item.variant.compare_at_price > unit_mrp
+      assign unit_mrp = item.variant.compare_at_price
+    endif
+    assign line_mrp = unit_mrp | times: item.quantity
+    assign mrp_total = mrp_total | plus: line_mrp
+  endfor
+
+  assign cart_subtotal = cart.original_total_price
+  assign mrp_discount = mrp_total | minus: cart_subtotal
+  assign total_discount = cart.total_discount
+  assign total_savings = mrp_total | minus: cart.total_price
+  assign savings_pct = 0
+  if mrp_total > 0 and total_savings > 0
+    assign savings_pct = total_savings | times: 100.0 | divided_by: mrp_total | floor
+  endif
+
+  assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
+  for item in cart.items
+    assign line_codes = item.line_level_discount_allocations | map: 'discount_application' | where: 'type', 'discount_code' | map: 'title'
+    assign discount_codes = discount_codes | concat: line_codes
+  endfor
+  assign discount_codes = discount_codes | uniq
+
+  assign product_ids = cart.items | map: 'product_id' | uniq | join: ','
+  assign offer_blocks = section.blocks | where: 'type', 'offer'
+-%}
+
+{%- if section.settings.enable -%}
+  {{ 'ts-cart-drawer.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'ts-cart-drawer.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+  <ts-cart-drawer
+    class="ts-cd"
+    data-section-id="{{ section.id }}"
+    data-open-on-add="{{ section.settings.open_on_add }}"
+    data-recs-limit="{{ section.settings.recs_limit }}"
+    data-recs-fallback="{{ section.settings.recs_fallback_collection.handle }}"
+    data-login-url="{{ routes.account_login_url }}"
+    data-logout-url="{{ routes.account_logout_url }}"
+    {{ section.shopify_attributes }}
+  >
+    <dialog class="ts-cd__dialog" aria-label="Your cart" data-ts-cd-dialog>
+      <div class="ts-cd__panel">
+        {%- comment -%} ── HEADER ─────────────────────────────────────────── {%- endcomment -%}
+        <div class="ts-cd__header" data-hydration-key="ts-cd-header">
+          <div class="ts-cd__account">
+            {%- if customer -%}
+              <div class="ts-cd__account-row">
+                <button type="button" class="ts-cd__greeting" data-ts-cd-action="toggle-account" aria-expanded="false">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M6.2 18.4c1.3-2 3.4-3.1 5.8-3.1s4.5 1.1 5.8 3.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <span class="ts-cd__greeting-text">
+                    Hi{% if customer.first_name != blank %}, {{ customer.first_name | escape }}{% endif %}. You're logged in
+                  </span>
+                  <svg class="ts-cd__chev" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="ts-cd__account-menu" data-ts-cd-account-menu hidden>
+                  <a href="{{ routes.account_url }}">My account</a>
+                  <a href="{{ routes.account_url }}#orders">My orders</a>
+                  <button type="button" data-ts-cd-action="logout">Logout</button>
+                </div>
+              </div>
+              {%- assign address = customer.default_address -%}
+              {%- if address -%}
+                <a class="ts-cd__deliver" href="{{ routes.account_addresses_url }}">
+                  <span class="ts-cd__deliver-label">Deliver To:</span>
+                  <span class="ts-cd__deliver-address">
+                    {{- address.address1 | escape }}{% if address.address2 != blank %} {{ address.address2 | escape }}{% endif %}, {{ address.city | escape }} {{ address.zip | escape -}}
+                  </span>
+                  <svg class="ts-cd__chev" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              {%- endif -%}
+            {%- else -%}
+              <button type="button" class="ts-cd__login" data-ts-cd-action="login">
+                <span>{{ section.settings.login_text | escape }}</span>
+                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2.5 9.5 7 5 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            {%- endif -%}
+          </div>
+          <button type="button" class="ts-cd__close" data-ts-cd-action="close" aria-label="Close cart">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2 2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        {%- if section.settings.announcement != blank -%}
+          <div class="ts-cd__announcement">{{ section.settings.announcement | escape }}</div>
+        {%- endif -%}
+
+        <div class="ts-cd__toast" data-ts-cd-toast role="alert" hidden></div>
+
+        {%- comment -%} ── SCROLLING BODY ─────────────────────────────────── {%- endcomment -%}
+        <div class="ts-cd__body" data-ts-cd-body>
+          <div
+            class="ts-cd__content"
+            data-hydration-key="ts-cd-content"
+            data-item-count="{{ cart.item_count }}"
+            data-product-ids="{{ product_ids }}"
+            data-first-product-id="{{ cart.items.first.product_id }}"
+          >
+            {%- if cart.empty? -%}
+              <div class="ts-cd__card ts-cd__empty">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 9V6a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <p class="ts-cd__empty-title">Your cart is empty</p>
+                <a class="ts-cd__btn" href="{{ section.settings.empty_link | default: routes.all_products_collection_url }}">Continue shopping</a>
+              </div>
+            {%- else -%}
+              {%- comment -%} ── LINE ITEMS ───────────────────────────────── {%- endcomment -%}
+              <ul class="ts-cd__card ts-cd__items" role="list">
+                {%- for item in cart.items -%}
+                  {%- liquid
+                    assign unit_mrp = item.original_price
+                    if item.variant.compare_at_price > unit_mrp
+                      assign unit_mrp = item.variant.compare_at_price
+                    endif
+                    assign line_mrp = unit_mrp | times: item.quantity
+                    assign line_off = 0
+                    if line_mrp > item.final_line_price
+                      assign line_save = line_mrp | minus: item.final_line_price
+                      assign line_off = line_save | times: 100.0 | divided_by: line_mrp | floor
+                    endif
+                    assign can_update = item.instructions.can_update_quantity | default: true, allow_false: true
+                    assign can_remove = item.instructions.can_remove | default: true, allow_false: true
+                  -%}
+                  <li
+                    class="ts-cd__item"
+                    data-ts-cd-line
+                    data-key="{{ item.key }}"
+                    data-variant-id="{{ item.variant_id }}"
+                    data-quantity="{{ item.quantity }}"
+                    data-properties="{{ item.properties | json | escape }}"
+                  >
+                    <a class="ts-cd__item-media" href="{{ item.url }}">
+                      {%- if item.image -%}
+                        {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title, sizes: '80px' }}
+                      {%- endif -%}
+                    </a>
+                    <div class="ts-cd__item-info">
+                      <a class="ts-cd__item-title" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                      {%- if item.product.has_only_default_variant == false and item.item_components.size == 0 -%}
+                        <label class="visually-hidden" for="ts-cd-size-{{ forloop.index }}">Size</label>
+                        <span class="ts-cd__select">
+                          <select id="ts-cd-size-{{ forloop.index }}" data-ts-cd-variant {% unless can_update %}disabled{% endunless %}>
+                            {%- for variant in item.product.variants -%}
+                              {%- if variant.available or variant.id == item.variant_id -%}
+                                <option value="{{ variant.id }}" {% if variant.id == item.variant_id %}selected{% endif %}>{{ variant.title | escape }}</option>
+                              {%- endif -%}
+                            {%- endfor -%}
+                          </select>
+                        </span>
+                      {%- endif -%}
+                      {%- for property in item.properties -%}
+                        {%- assign first_char = property.first | slice: 0 -%}
+                        {%- if property.last != blank and first_char != '_' -%}
+                          <p class="ts-cd__item-prop">{{ property.first | escape }}: {{ property.last | escape }}</p>
+                        {%- endif -%}
+                      {%- endfor -%}
+                      {%- for allocation in item.line_level_discount_allocations -%}
+                        <p class="ts-cd__item-offer">{{ allocation.discount_application.title | escape }}</p>
+                      {%- endfor -%}
+                    </div>
+                    <div class="ts-cd__item-side">
+                      <div class="ts-cd__item-price">
+                        {%- if line_mrp > item.final_line_price -%}
+                          <s>{{ line_mrp | money }}</s>
+                        {%- endif -%}
+                        <strong>{% if item.final_line_price == 0 %}FREE{% else %}{{ item.final_line_price | money }}{% endif %}</strong>
+                      </div>
+                      {%- if line_off > 0 -%}
+                        <span class="ts-cd__item-off">({{ line_off }}% OFF)</span>
+                      {%- endif -%}
+                      <div class="ts-cd__item-actions">
+                        <div class="ts-cd__qty">
+                          <button type="button" data-ts-cd-action="decrease" aria-label="Decrease quantity of {{ item.product.title | escape }}" {% unless can_update %}disabled{% endunless %}>-</button>
+                          <span aria-live="polite">{{ item.quantity }}</span>
+                          <button type="button" data-ts-cd-action="increase" aria-label="Increase quantity of {{ item.product.title | escape }}" {% unless can_update %}disabled{% endunless %}>+</button>
+                        </div>
+                        {%- if can_remove -%}
+                          <button type="button" class="ts-cd__remove" data-ts-cd-action="remove" aria-label="Remove {{ item.product.title | escape }}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-3 6h12l-1 12H7L6 9Zm4 2v8h1.5v-8H10Zm3.5 0v8H15v-8h-1.5Z"/></svg>
+                          </button>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </li>
+                {%- endfor -%}
+              </ul>
+
+              {%- comment -%} ── COUPON ───────────────────────────────────── {%- endcomment -%}
+              <div class="ts-cd__card ts-cd__coupon">
+                <form class="ts-cd__coupon-form" data-ts-cd-coupon-form novalidate>
+                  <label class="ts-cd__coupon-label" for="ts-cd-coupon">Enter coupon code</label>
+                  <div class="ts-cd__coupon-row">
+                    <input id="ts-cd-coupon" type="text" name="discount" placeholder="Enter coupon code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+                    <button type="submit" class="ts-cd__apply" disabled>Apply</button>
+                  </div>
+                  <p class="ts-cd__coupon-error" data-ts-cd-coupon-error hidden></p>
+                </form>
+                {%- if discount_codes.size > 0 -%}
+                  <ul class="ts-cd__codes" role="list">
+                    {%- for code in discount_codes -%}
+                      <li class="ts-cd__code">
+                        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.4 11.6 12.4 2.6A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .6.2 1.1.6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8ZM6.5 8A1.5 1.5 0 1 1 6.5 5a1.5 1.5 0 0 1 0 3Z"/></svg>
+                        <span><strong>{{ code | escape }}</strong> applied</span>
+                        <button type="button" data-ts-cd-action="remove-code" data-code="{{ code | escape }}" aria-label="Remove coupon {{ code | escape }}">Remove</button>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+                <button type="button" class="ts-cd__offers-link" data-ts-cd-action="open-offers">
+                  <span class="ts-cd__offers-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="4" rx="1" stroke="currentColor" stroke-width="1.6"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3.5-5-1.2C7 8 9 8 12 8Zm0 0c1.5-3 5-3.5 5-1.2C17 8 15 8 12 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span>View all offers</span>
+                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2.5 9.5 7 5 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Filled by JS from the ts-cart-recs section; not morphed. {%- endcomment -%}
+          {%- if section.settings.show_recs -%}
+            <div class="ts-cd__card ts-cd__recs" data-ts-cd-recs hidden>
+              <p class="ts-cd__recs-title">{{ section.settings.recs_heading | escape }}</p>
+              <div class="ts-cd__recs-track" data-ts-cd-recs-track></div>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} ── FOOTER ─────────────────────────────────────────── {%- endcomment -%}
+        <div class="ts-cd__footer" data-hydration-key="ts-cd-footer">
+          {%- unless cart.empty? -%}
+            <div class="ts-cd__summary" data-ts-cd-summary hidden>
+              <div class="ts-cd__summary-head">
+                <span>Order Summary</span>
+                {%- if total_savings > 0 -%}
+                  <span class="ts-cd__chip">{{ total_savings | money }} saved so far</span>
+                {%- endif -%}
+              </div>
+              <dl class="ts-cd__rows">
+                <div><dt>MRP total</dt><dd>{{ mrp_total | money }}</dd></div>
+                <div><dt>Discount on MRP</dt><dd class="is-green">{{ mrp_discount | money }}</dd></div>
+                <div><dt>Cart Subtotal</dt><dd>{{ cart_subtotal | money }}</dd></div>
+                <div><dt>Total discount</dt><dd class="is-green">{{ total_discount | money }}</dd></div>
+                {%- if section.settings.show_prepaid_row -%}
+                  <div>
+                    <dt>Prepaid Discount</dt>
+                    <dd class="is-muted">
+                      To be calculated
+                      <button type="button" class="ts-cd__info" aria-label="About prepaid discount" data-tip="{{ section.settings.prepaid_tooltip | escape }}">i</button>
+                    </dd>
+                  </div>
+                {%- endif -%}
+                <div><dt>Shipping Charges</dt><dd class="is-green">{{ section.settings.shipping_text | escape }}</dd></div>
+                <div><dt>Total savings</dt><dd class="is-green">{{ total_savings | money }}</dd></div>
+              </dl>
+              <div class="ts-cd__summary-total">
+                <span>Estimated Total</span>
+                <span>{{ cart.total_price | money }}</span>
+              </div>
+            </div>
+
+            <div class="ts-cd__total">
+              <button type="button" class="ts-cd__total-toggle" data-ts-cd-action="toggle-summary" aria-expanded="false">
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 2h14v20l-2.3-1.6L14.3 22 12 20.4 9.7 22l-2.4-1.6L5 22V2Zm3 4v2h8V6H8Zm0 4v2h3.2c.6 0 1.1.2 1.4.6H8v1.7h4.6c-.3.6-.9.9-1.6.9H8v1.6l3.8 3.2h2.3l-3.2-2.7c1.5-.2 2.6-1.3 2.9-3h1.2v-1.7h-1.3c-.1-.4-.3-.7-.5-1H16v-1.6H8Z"/></svg>
+                <span class="ts-cd__total-label">Estimated Total</span>
+                <svg class="ts-cd__chev" width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="ts-cd__total-price">
+                <div>
+                  {%- if mrp_total > cart.total_price -%}<s>{{ mrp_total | money }}</s>{%- endif -%}
+                  <strong>{{ cart.total_price | money }}</strong>
+                </div>
+                {%- if savings_pct > 0 -%}
+                  <span class="ts-cd__item-off">({{ savings_pct }}% OFF)</span>
+                {%- endif -%}
+              </div>
+            </div>
+
+            {%- if section.settings.shipping_badge != blank -%}
+              <span class="ts-cd__ship-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 6h11v9H2zM13 9h4l3 3v3h-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6" cy="17" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="17" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg>
+                {{ section.settings.shipping_badge | escape }}
+              </span>
+            {%- endif -%}
+
+            {%- if section.settings.terms_url != blank -%}
+              <label class="ts-cd__terms">
+                <input type="checkbox" data-ts-cd-terms checked>
+                <span>Read <a href="{{ section.settings.terms_url }}" target="_blank" rel="noopener">Terms &amp; Conditions</a> here</span>
+              </label>
+            {%- endif -%}
+
+            {%- comment -%}
+              data-gokwik-processed stops snippets/gokwik.liquid from cloning and redecorating this
+              button; ts-cart-drawer.js opens GoKwik checkout itself.
+            {%- endcomment -%}
+            <button type="button" class="ts-cd__checkout" data-ts-cd-action="checkout" data-gokwik-processed="true">
+              <span>Checkout</span>
+              <img src="https://cdn.gokwik.co/v4/images/upi-icons.svg" alt="" width="64" height="22" loading="lazy">
+            </button>
+          {%- endunless -%}
+        </div>
+
+        {%- comment -%} ── ALL OFFERS PANEL ───────────────────────────────── {%- endcomment -%}
+        <div class="ts-cd__offers" data-ts-cd-offers hidden>
+          <div class="ts-cd__offers-head">
+            <span class="ts-cd__offers-badge" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="4" rx="1" stroke="currentColor" stroke-width="1.8"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3.5-5-1.2C7 8 9 8 12 8Zm0 0c1.5-3 5-3.5 5-1.2C17 8 15 8 12 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="ts-cd__offers-title">All Offers</span>
+            <button type="button" class="ts-cd__close" data-ts-cd-action="close-offers" aria-label="Close offers">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2 2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="ts-cd__offers-body">
+            <p class="ts-cd__note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              {{ section.settings.offers_note | escape }}
+            </p>
+            <span class="ts-cd__tab">Coupons</span>
+            <form class="ts-cd__coupon-form" data-ts-cd-coupon-form novalidate>
+              <label class="visually-hidden" for="ts-cd-coupon-offers">Enter coupon code</label>
+              <div class="ts-cd__coupon-row">
+                <input id="ts-cd-coupon-offers" type="text" name="discount" placeholder="Enter coupon code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+                <button type="submit" class="ts-cd__apply" disabled>Apply</button>
+              </div>
+              <p class="ts-cd__coupon-error" data-ts-cd-coupon-error hidden></p>
+            </form>
+            {%- if offer_blocks.size > 0 -%}
+              <ul class="ts-cd__offer-list" role="list" data-hydration-key="ts-cd-offer-list">
+                {%- for block in offer_blocks -%}
+                  {%- assign code = block.settings.code | strip | upcase -%}
+                  <li class="ts-cd__offer" {{ block.shopify_attributes }}>
+                    <div>
+                      <p class="ts-cd__offer-title">{{ block.settings.title | escape }}</p>
+                      {%- if block.settings.description != blank -%}
+                        <p class="ts-cd__offer-desc">{{ block.settings.description | escape }}</p>
+                      {%- endif -%}
+                      {%- if code != blank -%}<span class="ts-cd__offer-code">{{ code | escape }}</span>{%- endif -%}
+                    </div>
+                    {%- if code != blank -%}
+                      {%- assign code_down = code | downcase -%}
+                      {%- assign is_applied = false -%}
+                      {%- for applied in discount_codes -%}
+                        {%- assign applied_down = applied | downcase -%}
+                        {%- if applied_down == code_down -%}{%- assign is_applied = true -%}{%- endif -%}
+                      {%- endfor -%}
+                      {%- if is_applied -%}
+                        <span class="ts-cd__offer-applied">Applied</span>
+                      {%- else -%}
+                        <button type="button" class="ts-cd__offer-apply" data-ts-cd-action="apply-offer" data-code="{{ code | escape }}">Apply</button>
+                      {%- endif -%}
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </ts-cart-drawer>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "class": "ts-cart-drawer-section",
+  "settings": [
+    { "type": "checkbox", "id": "enable", "label": "Enable cart drawer", "default": true, "info": "When off, cart links go to the cart page." },
+    { "type": "checkbox", "id": "open_on_add", "label": "Open drawer after add to cart", "default": true },
+    { "type": "header", "content": "Header" },
+    { "type": "text", "id": "login_text", "label": "Login prompt", "default": "Login to unlock exclusive offers" },
+    { "type": "text", "id": "announcement", "label": "Announcement bar", "default": "Free shipping on prepaid orders" },
+    { "type": "header", "content": "Suggested products" },
+    { "type": "checkbox", "id": "show_recs", "label": "Show suggested products", "default": true },
+    { "type": "text", "id": "recs_heading", "label": "Heading", "default": "Suggested for you" },
+    { "type": "range", "id": "recs_limit", "label": "Products to show", "min": 2, "max": 10, "step": 1, "default": 8 },
+    { "type": "collection", "id": "recs_fallback_collection", "label": "Fallback collection", "info": "Used when Shopify has no recommendations for the cart." },
+    { "type": "header", "content": "Totals" },
+    { "type": "text", "id": "shipping_text", "label": "Shipping charges value", "default": "FREE" },
+    { "type": "text", "id": "shipping_badge", "label": "Shipping badge", "default": "FREE shipping included" },
+    { "type": "checkbox", "id": "show_prepaid_row", "label": "Show prepaid discount row", "default": true },
+    { "type": "text", "id": "prepaid_tooltip", "label": "Prepaid discount note", "default": "Prepaid discount is applied at checkout when you pay online." },
+    { "type": "url", "id": "terms_url", "label": "Terms & Conditions link", "default": "/policies/terms-of-service" },
+    { "type": "url", "id": "empty_link", "label": "Empty cart button link" },
+    { "type": "header", "content": "Offers panel" },
+    { "type": "text", "id": "offers_note", "label": "Note", "default": "Coupons apply on top of payment offers" }
+  ],
+  "blocks": [
+    {
+      "type": "offer",
+      "name": "Coupon offer",
+      "settings": [
+        { "type": "text", "id": "code", "label": "Coupon code" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Flat ₹200 off" },
+        { "type": "text", "id": "description", "label": "Description", "default": "On orders above ₹1,999" }
+      ]
+    }
+  ]
+}
+{% endschema %}
