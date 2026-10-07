@@ -370,6 +370,8 @@ class TsCartDrawer extends HTMLElement {
     try {
       properties = JSON.parse(row.dataset.properties || '{}') || {};
     } catch {}
+    // Liquid serialises an empty property set as [], which the cart API won't take as properties.
+    if (Array.isArray(properties)) properties = {};
 
     await this.#cartRequest(
       'add.js',
