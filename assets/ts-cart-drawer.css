@@ -631,16 +631,20 @@
   padding: 2px 0;
   border: 0;
   background: none;
+  color: #111 !important;
   font-size: 18px !important;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
+
+.ts-cd__total-label { font-weight: 600; }
 
 .ts-cd__total-price { display: flex; flex-direction: column; align-items: flex-end; }
 .ts-cd__total-price > div { display: flex; align-items: baseline; gap: 6px; }
 .ts-cd__total-price strong { font-size: 19px; font-weight: 700; }
 
 .ts-cd__ship-badge {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 6px;
   margin-top: 6px;
@@ -651,9 +655,38 @@
   font-size: 12px;
 }
 
-.ts-cd__terms { display: flex; align-items: center; gap: 8px; margin: 12px 0 10px; font-size: 14px; cursor: pointer; }
-.ts-cd__terms input { width: 16px; height: 16px; margin: 0; accent-color: #1d4ed8; }
-.ts-cd__terms a { color: #1d4ed8 !important; text-decoration: underline; }
+.ts-cd__terms {
+  display: flex !important;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 10px;
+  color: var(--ts-cd-text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* The theme restyles every checkbox; bring back the native one GoKwik shows. */
+.ts-cd__terms input[type='checkbox'] {
+  position: static;
+  flex: none;
+  width: 16px !important;
+  min-width: 16px;
+  height: 16px !important;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  appearance: auto !important;
+  -webkit-appearance: checkbox !important;
+  accent-color: #1a73e8;
+  cursor: pointer;
+}
+
+.ts-cd__terms input[type='checkbox']::before,
+.ts-cd__terms input[type='checkbox']::after { content: none !important; display: none !important; }
+.ts-cd__terms a { color: #1a0dab !important; text-decoration: underline; }
 
 .ts-cd__checkout {
   display: flex;
