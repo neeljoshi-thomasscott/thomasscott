@@ -43,6 +43,7 @@ class TsCartDrawer extends HTMLElement {
     this.addEventListener('change', this.#onChange);
     this.addEventListener('submit', this.#onSubmit);
     this.addEventListener('input', this.#onInput);
+    this.addEventListener('wheel', this.#onWheel, { passive: false });
     this.#dialog.addEventListener('cancel', this.#onCancel);
 
     document.addEventListener('click', this.#onDocumentClick, true);
@@ -165,6 +166,32 @@ class TsCartDrawer extends HTMLElement {
     if (index === -1) return;
     this.#stopBanners();
     this.#showBanner(index);
+  };
+
+  /**
+   * Mouse wheels only scroll vertically; over the suggested products row, turn each wheel
+   * notch into a one-card step sideways. At either end the wheel scrolls the drawer as usual.
+   * Trackpad (horizontal) gestures are left to the browser.
+   */
+  #wheelLockedUntil = 0;
+  #onWheel = (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const track = /** @type {HTMLElement | null} */ (target?.closest('[data-ts-cd-recs-track]'));
+    if (!track || event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+
+    const direction = Math.sign(event.deltaY);
+    const max = track.scrollWidth - track.clientWidth;
+    if (max <= 0) return;
+    if ((direction < 0 && track.scrollLeft <= 1) || (direction > 0 && track.scrollLeft >= max - 1)) return;
+
+    event.preventDefault();
+    if (event.timeStamp < this.#wheelLockedUntil) return;
+    this.#wheelLockedUntil = event.timeStamp + 350;
+
+    const card = track.firstElementChild;
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const step = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
+    track.scrollBy({ left: direction * step, behavior: 'smooth' });
   };
 
   #onPageShow = (event) => {

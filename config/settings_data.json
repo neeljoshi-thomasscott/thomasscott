@@ -89,6 +89,76 @@
     "fbpixel": "605451321690258",
     "checkoutEnableLogo": true,
     "buyNowEnableLogo": true,
+    "sections": {
+      "ts-cart-drawer": {
+        "type": "ts-cart-drawer",
+        "blocks": {
+          "ts-cart-drawer-0": {
+            "type": "banner",
+            "settings": {
+              "title": "EXTRA 10% OFF ON PREPAID",
+              "show_subtext": false,
+              "subtext": ""
+            }
+          },
+          "banner_G7LrbX": {
+            "type": "banner",
+            "settings": {
+              "title": "FREE shipping included",
+              "show_subtext": false,
+              "subtext": ""
+            }
+          },
+          "ts-cart-drawer-1": {
+            "type": "reward",
+            "settings": {
+              "goal": 2,
+              "reward_type": "custom",
+              "reward_text": "B1G1",
+              "suffix": "",
+              "before_text": "Add {{goal}} more items to unlock B1G1"
+            }
+          }
+        },
+        "block_order": [
+          "ts-cart-drawer-0",
+          "banner_G7LrbX",
+          "ts-cart-drawer-1"
+        ],
+        "settings": {
+          "enable": true,
+          "open_on_add": true,
+          "login_text": "Login to unlock exclusive offers",
+          "banner_enable": true,
+          "banner_bg": "#000000",
+          "banner_color": "#ffffff",
+          "banner_align": "center",
+          "banner_dynamic": true,
+          "banner_interval": 4,
+          "tier_enable": true,
+          "tier_condition": "quantity",
+          "tier_primary": "#000000",
+          "tier_secondary": "#808080",
+          "tier_confetti": true,
+          "tier_applies": "all",
+          "tier_collections": [],
+          "tier_products": [],
+          "tier_complete_text": "You have unlocked all rewards!",
+          "show_coupon": false,
+          "show_recs": true,
+          "recs_heading": "Suggested for you",
+          "recs_limit": 8,
+          "recs_fallback_collection": "",
+          "shipping_text": "FREE",
+          "shipping_badge": "FREE shipping included",
+          "show_prepaid_row": true,
+          "prepaid_tooltip": "Prepaid discount is applied at checkout when you pay online.",
+          "terms_url": "",
+          "empty_link": "",
+          "offers_note": "Coupons apply on top of payment offers"
+        }
+      }
+    },
     "content_for_index": [],
     "blocks": {
       "14060646107696862457": {
