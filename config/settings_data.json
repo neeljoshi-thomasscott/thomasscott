@@ -144,6 +144,7 @@
           "tier_collections": [],
           "tier_products": [],
           "tier_complete_text": "You have unlocked all rewards!",
+          "show_coupon": false,
           "show_recs": true,
           "recs_heading": "Suggested for you",
           "recs_limit": 8,

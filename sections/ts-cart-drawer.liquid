@@ -382,6 +382,7 @@
               </ul>
 
               {%- comment -%} ── COUPON ───────────────────────────────────── {%- endcomment -%}
+              {%- if section.settings.show_coupon -%}
               <div class="ts-cd__card ts-cd__coupon">
                 <form class="ts-cd__coupon-form" data-ts-cd-coupon-form novalidate>
                   <label class="ts-cd__coupon-label" for="ts-cd-coupon">Enter coupon code</label>
@@ -410,6 +411,7 @@
                   <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2.5 9.5 7 5 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
               </div>
+              {%- endif -%}
             {%- endif -%}
           </div>
 
@@ -626,7 +628,8 @@
     { "type": "text", "id": "prepaid_tooltip", "label": "Prepaid discount note", "default": "Prepaid discount is applied at checkout when you pay online." },
     { "type": "url", "id": "terms_url", "label": "Terms & Conditions link", "info": "Defaults to the Terms of Service policy page." },
     { "type": "url", "id": "empty_link", "label": "Empty cart button link" },
-    { "type": "header", "content": "Offers panel" },
+    { "type": "header", "content": "Coupon & offers" },
+    { "type": "checkbox", "id": "show_coupon", "label": "Show coupon code section", "default": true, "info": "Coupon field, applied codes and the \"View all offers\" link." },
     { "type": "text", "id": "offers_note", "label": "Note", "default": "Coupons apply on top of payment offers" }
   ],
   "blocks": [
