@@ -58,7 +58,7 @@
     "secondary_button_border_width": 1,
     "button_border_radius_secondary": 0,
     "pills_border_radius": 0,
-    "cart_type": "page",
+    "cart_type": "drawer",
     "cart_price_font": "secondary",
     "auto_open_cart_drawer": false,
     "show_cart_note": false,
@@ -89,6 +89,66 @@
     "fbpixel": "605451321690258",
     "checkoutEnableLogo": true,
     "buyNowEnableLogo": true,
+    "sections": {
+      "ts-cart-drawer": {
+        "type": "ts-cart-drawer",
+        "blocks": {
+          "ts-cart-drawer-0": {
+            "type": "banner",
+            "settings": {
+              "title": "EXTRA 10% OFF ON PREPAID",
+              "show_subtext": false,
+              "subtext": ""
+            }
+          },
+          "ts-cart-drawer-1": {
+            "type": "reward",
+            "settings": {
+              "goal": 4,
+              "reward_type": "custom",
+              "reward_text": "B2G2",
+              "suffix": "",
+              "before_text": "Add {{goal}} more items to unlock B2G2"
+            }
+          }
+        },
+        "block_order": [
+          "ts-cart-drawer-0",
+          "ts-cart-drawer-1"
+        ],
+        "settings": {
+          "enable": true,
+          "open_on_add": true,
+          "login_text": "Login to unlock exclusive offers",
+          "banner_enable": true,
+          "banner_bg": "#000000",
+          "banner_color": "#ffffff",
+          "banner_align": "center",
+          "banner_dynamic": true,
+          "banner_interval": 4,
+          "tier_enable": true,
+          "tier_condition": "quantity",
+          "tier_primary": "#000000",
+          "tier_secondary": "#808080",
+          "tier_confetti": true,
+          "tier_applies": "all",
+          "tier_collections": [],
+          "tier_products": [],
+          "tier_complete_text": "You have unlocked all rewards!",
+          "show_recs": true,
+          "recs_heading": "Suggested for you",
+          "recs_limit": 8,
+          "recs_fallback_collection": "",
+          "shipping_text": "FREE",
+          "shipping_badge": "FREE shipping included",
+          "show_prepaid_row": true,
+          "prepaid_tooltip": "Prepaid discount is applied at checkout when you pay online.",
+          "terms_url": "",
+          "empty_link": "",
+          "offers_note": "Coupons apply on top of payment offers"
+        }
+      }
+    },
     "content_for_index": [],
     "blocks": {
       "14060646107696862457": {
@@ -146,11 +206,6 @@
         "disabled": false,
         "settings": {}
       },
-      "16478503954904601939": {
-        "type": "shopify://apps/buffy-ai-chatbot-sales-agent/blocks/chat-embed/019ce6c1-a2b9-7cb4-9c77-450dc2529ffa",
-        "disabled": false,
-        "settings": {}
-      },
       "2200952712151285029": {
         "type": "shopify://apps/microsoft-clarity/blocks/brandAgents_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
         "disabled": true,
@@ -170,11 +225,6 @@
           "custom_checkout_selectors": "",
           "custom_checkout_paths": ""
         }
-      },
-      "1917235024560766291": {
-        "type": "shopify://apps/buffy-ai-chatbot-sales-agent/blocks/search-takeover/019ce6c1-a2b9-7cb4-9c77-450dc2529ffa",
-        "disabled": true,
-        "settings": {}
       },
       "1409715032340194113": {
         "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
