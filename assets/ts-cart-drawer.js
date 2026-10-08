@@ -5,6 +5,7 @@ import { CartUpdateEvent, ThemeEvents } from '@theme/events';
  * Thomas Scott cart drawer — markup in sections/ts-cart-drawer.liquid.
  *
  * - Opens from any link to /cart, the header cart trigger and `.js-open-cart`.
+ * - Opens on load after a direct visit to /cart was redirected back (see layout/theme.liquid).
  * - Opens after any add to cart made elsewhere on the page (fetch/XHR to /cart/add).
  * - Every cart change re-renders the section and morphs only the `data-hydration-key` nodes.
  * - Login goes through KwikPass (`handleKpAndShopifyLogin`); checkout through the GoKwik SDK.
@@ -13,6 +14,7 @@ import { CartUpdateEvent, ThemeEvents } from '@theme/events';
 const CART_MUTATION = /\/cart\/(add|change|update|clear)(?:\.js|\.json)?(?:[?#]|$)/;
 const RECS_SECTION = 'ts-cart-recs';
 const REOPEN_KEY = 'tsCartReopen';
+const OPEN_ON_LOAD_KEY = 'tsCartOpenOnLoad'; // set by the /cart redirect in layout/theme.liquid
 const ROOT = window.Shopify?.routes?.root || '/';
 
 class TsCartDrawer extends HTMLElement {
@@ -50,6 +52,7 @@ class TsCartDrawer extends HTMLElement {
     window.tsCartDrawer = this;
     watchCartRequests();
     this.#reopenAfterLogin();
+    this.#openAfterCartRedirect();
   }
 
   disconnectedCallback() {
@@ -521,6 +524,16 @@ class TsCartDrawer extends HTMLElement {
   #reopenAfterLogin() {
     const reopen = this.#consumeReopen();
     if (reopen && this.itemCount > 0) requestAnimationFrame(() => this.open());
+  }
+
+  /** /cart has no page of its own; the shopper was sent back here to see the drawer. */
+  #openAfterCartRedirect() {
+    try {
+      const at = Number(sessionStorage.getItem(OPEN_ON_LOAD_KEY));
+      if (!at) return;
+      sessionStorage.removeItem(OPEN_ON_LOAD_KEY);
+      if (Date.now() - at < 30 * 1000) requestAnimationFrame(() => this.open());
+    } catch {}
   }
 
   #consumeReopen() {
