@@ -35,6 +35,95 @@
 
   assign product_ids = cart.items | map: 'product_id' | uniq | join: ','
   assign offer_blocks = section.blocks | where: 'type', 'offer'
+  assign banner_blocks = section.blocks | where: 'type', 'banner'
+  assign tier_blocks = section.blocks | where: 'type', 'reward'
+
+  # Tiered rewards: progress towards each reward block's goal, measured on the eligible items only.
+  assign tier_mode = section.settings.tier_condition
+  assign tier_scope = section.settings.tier_applies
+  assign tier_unit = 100
+  if tier_mode == 'quantity'
+    assign tier_unit = 1
+  endif
+  assign tier_value = 0
+  assign tier_max = 0
+  assign tiers_achieved = 0
+  assign show_tiers = false
+
+  if section.settings.tier_enable and tier_blocks.size > 0 and cart.item_count > 0
+    if tier_scope == 'all'
+      case tier_mode
+        when 'quantity'
+          assign tier_value = cart.item_count
+        when 'subtotal'
+          assign tier_value = cart.original_total_price
+        else
+          assign tier_value = cart.total_price
+      endcase
+    else
+      assign tier_collection_ids = section.settings.tier_collections | map: 'id'
+      assign tier_product_ids = section.settings.tier_products | map: 'id'
+      for item in cart.items
+        assign eligible = false
+        if tier_scope == 'products'
+          if tier_product_ids contains item.product_id
+            assign eligible = true
+          endif
+        else
+          assign item_collection_ids = item.product.collections | map: 'id'
+          for collection_id in tier_collection_ids
+            if item_collection_ids contains collection_id
+              assign eligible = true
+              break
+            endif
+          endfor
+        endif
+        if eligible
+          case tier_mode
+            when 'quantity'
+              assign tier_value = tier_value | plus: item.quantity
+            when 'subtotal'
+              assign tier_value = tier_value | plus: item.original_line_price
+            else
+              assign tier_value = tier_value | plus: item.final_line_price
+          endcase
+        endif
+      endfor
+    endif
+
+    assign next_goal = -1
+    assign next_text = ''
+    for block in tier_blocks
+      assign goal = block.settings.goal | times: tier_unit
+      if goal > tier_max
+        assign tier_max = goal
+      endif
+      if tier_value >= goal
+        assign tiers_achieved = tiers_achieved | plus: 1
+      elsif next_goal == -1 or goal < next_goal
+        assign next_goal = goal
+        assign next_text = block.settings.before_text
+      endif
+    endfor
+
+    if tier_max > 0
+      assign show_tiers = true
+      assign tier_pct = tier_value | times: 100.0 | divided_by: tier_max
+      if tier_pct > 100
+        assign tier_pct = 100
+      endif
+
+      if next_goal == -1
+        assign tier_message = section.settings.tier_complete_text | escape
+      else
+        assign remaining = next_goal | minus: tier_value
+        if tier_mode != 'quantity'
+          assign remaining = remaining | money_without_trailing_zeros
+        endif
+        assign tier_message = next_text | escape | replace: '{{goal}}', remaining | replace: '{{ goal }}', remaining
+      endif
+    endif
+  endif
 -%}
 
 {%- if section.settings.enable -%}
@@ -93,9 +182,105 @@
           </button>
         </div>
 
-        {%- if section.settings.announcement != blank -%}
-          <div class="ts-cd__announcement">{{ section.settings.announcement | escape }}</div>
+        {%- comment -%} ── ANNOUNCEMENT BANNERS (rotated by JS; not morphed) ── {%- endcomment -%}
+        {%- if section.settings.banner_enable and banner_blocks.size > 0 -%}
+          {%- liquid
+            assign banner_rotate = false
+            if section.settings.banner_dynamic and banner_blocks.size > 1
+              assign banner_rotate = true
+            endif
+          -%}
+          <div
+            class="ts-cd__announcement"
+            style="--ts-cd-ann-bg: {{ section.settings.banner_bg }}; --ts-cd-ann-fg: {{ section.settings.banner_color }}; --ts-cd-ann-align: {{ section.settings.banner_align }};"
+            data-ts-cd-banners
+            {% if banner_rotate %}
+              data-interval="{{ section.settings.banner_interval | times: 1000 }}" aria-live="polite"
+            {% endif %}
+          >
+            {%- for block in banner_blocks -%}
+              {%- if banner_rotate or forloop.first -%}
+                <div
+                  class="ts-cd__banner{% if forloop.first %} is-active{% endif %}"
+                  data-ts-cd-banner
+                  {% unless forloop.first %}
+                    aria-hidden="true"
+                  {% endunless %}
+                  {{ block.shopify_attributes }}
+                >
+                  <p class="ts-cd__banner-title">{{ block.settings.title }}</p>
+                  {%- if block.settings.show_subtext and block.settings.subtext != blank -%}
+                    <p class="ts-cd__banner-sub">{{ block.settings.subtext }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
         {%- endif -%}
+
+        {%- comment -%} ── TIERED REWARDS ───────────────────────────────────── {%- endcomment -%}
+        <div
+          class="ts-cd__tiers-wrap"
+          data-hydration-key="ts-cd-tiers"
+          data-tiers-achieved="{{ tiers_achieved }}"
+          data-confetti="{{ section.settings.tier_confetti }}"
+        >
+          {%- if show_tiers -%}
+            <div
+              class="ts-cd__tiers"
+              style="--ts-cd-tier-primary: {{ section.settings.tier_primary }}; --ts-cd-tier-secondary: {{ section.settings.tier_secondary }};"
+            >
+              <p class="ts-cd__tiers-text">{{ tier_message }}</p>
+              <div
+                class="ts-cd__tiers-bar"
+                role="progressbar"
+                aria-label="Rewards progress"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="{{ tier_pct | round }}"
+              >
+                <span class="ts-cd__tiers-track"><span class="ts-cd__tiers-fill" style="width: {{ tier_pct }}%;"></span></span>
+                {%- for block in tier_blocks -%}
+                  {%- liquid
+                    assign goal = block.settings.goal | times: tier_unit
+                    assign goal_pos = goal | times: 100.0 | divided_by: tier_max
+                    if tier_mode == 'quantity'
+                      assign goal_label = block.settings.goal | append: ' Item'
+                      if block.settings.goal != 1
+                        assign goal_label = goal_label | append: 's'
+                      endif
+                    else
+                      assign goal_label = goal | money_without_trailing_zeros
+                    endif
+                    assign reward_label = block.settings.reward_text | append: ' ' | append: block.settings.suffix | strip
+                  -%}
+                  <div
+                    class="ts-cd__tier{% if tier_value >= goal %} is-done{% endif %}"
+                    style="--ts-cd-tier-pos: {{ goal_pos }}%;"
+                    {{ block.shopify_attributes }}
+                  >
+                    <span class="ts-cd__tier-goal">{{ goal_label }}</span>
+                    <span class="ts-cd__tier-dot" aria-hidden="true">
+                      {%- if tier_value >= goal -%}
+                        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.6l4.5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      {%- else -%}
+                        {%- case block.settings.reward_type -%}
+                          {%- when 'free_shipping' -%}
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M2 6h11v9H2zM13 9h4l3 3v3h-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6" cy="17" r="1.8" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="17" r="1.8" stroke="currentColor" stroke-width="2"/></svg>
+                          {%- when 'free_gift' -%}
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="4" rx="1" stroke="currentColor" stroke-width="2"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3.5-5-1.2C7 8 9 8 12 8Zm0 0c1.5-3 5-3.5 5-1.2C17 8 15 8 12 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+                          {%- else -%}
+                            <svg width="13" height="13" viewBox="0 0 24 24"><path fill="currentColor" d="M21.4 11.6 12.4 2.6A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .6.2 1.1.6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8ZM6.5 8A1.5 1.5 0 1 1 6.5 5a1.5 1.5 0 0 1 0 3Z"/></svg>
+                        {%- endcase -%}
+                      {%- endif -%}
+                    </span>
+                    <span class="ts-cd__tier-label">{{ reward_label | escape }}</span>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
 
         <div class="ts-cd__toast" data-ts-cd-toast role="alert" hidden></div>
 
@@ -381,7 +566,54 @@
     { "type": "checkbox", "id": "open_on_add", "label": "Open drawer after add to cart", "default": true },
     { "type": "header", "content": "Header" },
     { "type": "text", "id": "login_text", "label": "Login prompt", "default": "Login to unlock exclusive offers" },
-    { "type": "text", "id": "announcement", "label": "Announcement bar", "default": "Free shipping on prepaid orders" },
+    { "type": "header", "content": "Cart announcement banners", "info": "Add banners with the \"Banner\" block." },
+    { "type": "checkbox", "id": "banner_enable", "label": "Enable", "default": true },
+    { "type": "color", "id": "banner_bg", "label": "Background color", "default": "#000000" },
+    { "type": "color", "id": "banner_color", "label": "Text color", "default": "#FFFFFF" },
+    {
+      "type": "select",
+      "id": "banner_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    { "type": "checkbox", "id": "banner_dynamic", "label": "Dynamic banners", "default": true, "info": "Rotates through all banners. When off, only the first banner shows." },
+    { "type": "range", "id": "banner_interval", "label": "Auto change time", "min": 2, "max": 15, "step": 1, "unit": "s", "default": 4 },
+    { "type": "header", "content": "Tiered rewards", "info": "Add milestones with the \"Reward\" block." },
+    { "type": "checkbox", "id": "tier_enable", "label": "Enable", "default": true },
+    {
+      "type": "select",
+      "id": "tier_condition",
+      "label": "Reward condition",
+      "options": [
+        { "value": "subtotal", "label": "Cart subtotal based" },
+        { "value": "quantity", "label": "Cart quantity based" },
+        { "value": "discounted", "label": "Cart discount price" }
+      ],
+      "default": "quantity",
+      "info": "Subtotal is before discounts; discount price is after them. Goals are in ₹ for both."
+    },
+    { "type": "color", "id": "tier_primary", "label": "Primary color", "default": "#000000" },
+    { "type": "color", "id": "tier_secondary", "label": "Secondary color", "default": "#808080" },
+    { "type": "checkbox", "id": "tier_confetti", "label": "Show confetti on goal achievement", "default": true },
+    {
+      "type": "select",
+      "id": "tier_applies",
+      "label": "Applicable on",
+      "options": [
+        { "value": "all", "label": "All products" },
+        { "value": "collections", "label": "Specific collections" },
+        { "value": "products", "label": "Specific products" }
+      ],
+      "default": "all"
+    },
+    { "type": "collection_list", "id": "tier_collections", "label": "Collections", "limit": 25, "info": "Used with \"Specific collections\"." },
+    { "type": "product_list", "id": "tier_products", "label": "Products", "limit": 50, "info": "Used with \"Specific products\"." },
+    { "type": "text", "id": "tier_complete_text", "label": "Text after completing all milestones", "default": "You have unlocked all rewards!" },
     { "type": "header", "content": "Suggested products" },
     { "type": "checkbox", "id": "show_recs", "label": "Show suggested products", "default": true },
     { "type": "text", "id": "recs_heading", "label": "Heading", "default": "Suggested for you" },
@@ -399,6 +631,40 @@
   ],
   "blocks": [
     {
+      "type": "banner",
+      "name": "Banner",
+      "limit": 10,
+      "settings": [
+        { "type": "inline_richtext", "id": "title", "label": "Title text", "default": "EXTRA 10% OFF ON PREPAID" },
+        { "type": "checkbox", "id": "show_subtext", "label": "SubText", "default": false },
+        { "type": "inline_richtext", "id": "subtext", "label": "SubText text" }
+      ]
+    },
+    {
+      "type": "reward",
+      "name": "Reward",
+      "limit": 6,
+      "settings": [
+        { "type": "number", "id": "goal", "label": "Spend goal", "default": 4, "info": "Items for quantity based; ₹ for subtotal or discount price." },
+        {
+          "type": "select",
+          "id": "reward_type",
+          "label": "Reward type",
+          "options": [
+            { "value": "custom", "label": "Custom" },
+            { "value": "discount", "label": "Discount" },
+            { "value": "free_shipping", "label": "Free shipping" },
+            { "value": "free_gift", "label": "Free gift" }
+          ],
+          "default": "custom",
+          "info": "Sets the milestone icon. Create the actual discount in Shopify admin."
+        },
+        { "type": "text", "id": "reward_text", "label": "Reward text", "default": "B2G2", "info": "Up to 16 characters." },
+        { "type": "text", "id": "suffix", "label": "Suffix (optional)", "info": "Up to 14 characters." },
+        { "type": "text", "id": "before_text", "label": "Text before hitting the goal", "default": "Add {{goal}} more items to unlock B2G2", "info": "{{goal}} is replaced by what is still needed (items or ₹)." }
+      ]
+    },
+    {
       "type": "offer",
       "name": "Coupon offer",
       "settings": [
@@ -407,6 +673,12 @@
         { "type": "text", "id": "description", "label": "Description", "default": "On orders above ₹1,999" }
       ]
     }
-  ]
+  ],
+  "default": {
+    "blocks": [
+      { "type": "banner", "settings": { "title": "EXTRA 10% OFF ON PREPAID" } },
+      { "type": "reward", "settings": { "goal": 4, "reward_type": "custom", "reward_text": "B2G2", "before_text": "Add {{goal}} more items to unlock B2G2" } }
+    ]
+  }
 }
 {% endschema %}
