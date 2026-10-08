@@ -44,6 +44,7 @@ class TsCartDrawer extends HTMLElement {
     this.addEventListener('submit', this.#onSubmit);
     this.addEventListener('input', this.#onInput);
     this.addEventListener('wheel', this.#onWheel, { passive: false });
+    this.addEventListener('scroll', this.#onRecsScroll, true);
     this.#dialog.addEventListener('cancel', this.#onCancel);
 
     document.addEventListener('click', this.#onDocumentClick, true);
@@ -187,12 +188,36 @@ class TsCartDrawer extends HTMLElement {
     event.preventDefault();
     if (event.timeStamp < this.#wheelLockedUntil) return;
     this.#wheelLockedUntil = event.timeStamp + 350;
+    this.#scrollRecs(direction);
+  };
 
+  /**
+   * Moves the suggested products row by one card.
+   * @param {number} direction -1 for back, 1 for forward
+   */
+  #scrollRecs(direction) {
+    const track = this.querySelector('[data-ts-cd-recs-track]');
+    if (!track) return;
     const card = track.firstElementChild;
     const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
     const step = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
     track.scrollBy({ left: direction * step, behavior: 'smooth' });
+  }
+
+  #onRecsScroll = (event) => {
+    if (event.target instanceof Element && event.target.matches('[data-ts-cd-recs-track]')) this.#syncRecsNav();
   };
+
+  /** Disables (and hides) an arrow when the row cannot scroll further that way. */
+  #syncRecsNav() {
+    const track = this.querySelector('[data-ts-cd-recs-track]');
+    if (!track) return;
+    const max = track.scrollWidth - track.clientWidth;
+    const prev = /** @type {HTMLButtonElement | null} */ (this.querySelector('[data-ts-cd-action="recs-prev"]'));
+    const next = /** @type {HTMLButtonElement | null} */ (this.querySelector('[data-ts-cd-action="recs-next"]'));
+    if (prev) prev.disabled = track.scrollLeft <= 1;
+    if (next) next.disabled = track.scrollLeft >= max - 1;
+  }
 
   #onPageShow = (event) => {
     if (event.persisted) this.#stale = true;
@@ -404,6 +429,10 @@ class TsCartDrawer extends HTMLElement {
       case 'toggle-summary':
         this.#summaryOpen = !this.#summaryOpen;
         return this.#syncUiState();
+      case 'recs-prev':
+        return this.#scrollRecs(-1);
+      case 'recs-next':
+        return this.#scrollRecs(1);
       case 'open-offers':
         return this.#setOffersOpen(true);
       case 'close-offers':
@@ -709,6 +738,8 @@ class TsCartDrawer extends HTMLElement {
 
       track.replaceChildren(...cards.slice(0, limit));
       box.hidden = cards.length === 0;
+      track.scrollLeft = 0;
+      requestAnimationFrame(() => this.#syncRecsNav());
     } catch (error) {
       console.error('[ts-cart-drawer] recommendations failed', error);
       this.#recsKey = null;

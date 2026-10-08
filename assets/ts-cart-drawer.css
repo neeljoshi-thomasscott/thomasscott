@@ -545,6 +545,37 @@
 
 .ts-cd__recs-track::-webkit-scrollbar { display: none; }
 
+/* Arrow buttons: desktop (mouse) only; touch screens swipe the row. */
+.ts-cd__recs-viewport { position: relative; }
+.ts-cd__recs-nav { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .ts-cd__recs-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--ts-cd-line);
+    border-radius: 50%;
+    background: var(--ts-cd-card);
+    color: var(--ts-cd-text);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: opacity 0.2s ease;
+  }
+
+  .ts-cd__recs-nav--prev { left: -4px; }
+  .ts-cd__recs-nav--next { right: 8px; }
+  .ts-cd__recs-nav:hover { background: var(--ts-cd-bg); }
+  .ts-cd__recs-nav:focus-visible { outline: 2px solid var(--ts-cd-text); outline-offset: 2px; }
+  .ts-cd__recs-nav:disabled { opacity: 0; pointer-events: none; }
+}
+
 .ts-cd-rec {
   position: relative;
   display: grid;
