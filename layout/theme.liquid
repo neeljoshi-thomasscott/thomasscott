@@ -6,7 +6,23 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-
+    {%- comment -%} No cart page: send /cart back to the previous page (or home) and open the cart drawer there. {%- endcomment -%}
+    {%- if template.name == 'cart' and request.design_mode == false -%}
+      <style>html{visibility:hidden}</style>
+      <script>
+        (function () {
+          var target = {{ routes.root_url | json }};
+          try {
+            var ref = document.referrer ? new URL(document.referrer) : null;
+            if (ref && ref.origin === location.origin && !/\/(cart|checkouts?)(\/|$)/.test(ref.pathname)) {
+              target = ref.pathname + ref.search;
+            }
+            sessionStorage.setItem('tsCartOpenOnLoad', String(Date.now()));
+          } catch (e) {}
+          location.replace(target);
+        })();
+      </script>
+    {%- endif -%}
 
     <!-- Gokwik theme code start -->
     <link rel="dns-prefetch" href="https://pdp.gokwik.co/">
