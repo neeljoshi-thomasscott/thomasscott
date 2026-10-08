@@ -419,7 +419,15 @@
           {%- if section.settings.show_recs -%}
             <div class="ts-cd__card ts-cd__recs" data-ts-cd-recs hidden>
               <p class="ts-cd__recs-title">{{ section.settings.recs_heading | escape }}</p>
-              <div class="ts-cd__recs-track" data-ts-cd-recs-track></div>
+              <div class="ts-cd__recs-viewport">
+                <button type="button" class="ts-cd__recs-nav ts-cd__recs-nav--prev" data-ts-cd-action="recs-prev" aria-label="Previous products" disabled>
+                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M9 2.5 4.5 7 9 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="ts-cd__recs-track" data-ts-cd-recs-track></div>
+                <button type="button" class="ts-cd__recs-nav ts-cd__recs-nav--next" data-ts-cd-action="recs-next" aria-label="More products" disabled>
+                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2.5 9.5 7 5 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
             </div>
           {%- endif -%}
         </div>
