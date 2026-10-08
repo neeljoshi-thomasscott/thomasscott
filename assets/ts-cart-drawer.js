@@ -234,13 +234,24 @@ class TsCartDrawer extends HTMLElement {
   /** @param {number} index */
   #showBanner(index) {
     const banners = this.querySelectorAll('[data-ts-cd-banner]');
-    if (!banners.length) return;
-    this.#bannerIndex = index % banners.length;
-    banners.forEach((banner, i) => {
-      const active = i === this.#bannerIndex;
-      banner.classList.toggle('is-active', active);
-      banner.toggleAttribute('aria-hidden', !active);
+    const nextIndex = index % banners.length;
+    const current = banners[this.#bannerIndex];
+    const next = banners[nextIndex];
+    if (!next || next === current) return;
+    this.#bannerIndex = nextIndex;
+
+    // Park the incoming banner on the right without animating, so it always slides in from there.
+    next.style.transition = 'none';
+    next.classList.remove('is-leaving', 'is-active');
+    void next.offsetWidth;
+    next.style.transition = '';
+
+    banners.forEach((banner) => {
+      banner.classList.remove('is-leaving');
+      banner.toggleAttribute('aria-hidden', banner !== next);
     });
+    current?.classList.replace('is-active', 'is-leaving');
+    next.classList.add('is-active');
   }
 
   /* ── Tiered rewards ───────────────────────────────────────────────────── */
