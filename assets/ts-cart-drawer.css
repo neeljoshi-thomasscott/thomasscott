@@ -150,9 +150,13 @@
 
 .ts-cd__close:hover { background: rgb(0 0 0 / 0.06); }
 
-/* Banners are stacked in one grid cell so the bar keeps the height of the tallest one. */
+/*
+ * Banners are stacked in one grid cell so the bar keeps the height of the tallest one.
+ * Rotation slides right-to-left: idle banners wait off to the right, the outgoing one leaves left.
+ */
 .ts-cd__announcement {
   display: grid;
+  overflow: hidden;
   padding: 8px 16px;
   border-radius: 0 0 14px 14px;
   background: var(--ts-cd-ann-bg, #000);
@@ -164,17 +168,19 @@
 .ts-cd__banner {
   grid-area: 1 / 1;
   align-self: center;
-  opacity: 0;
   visibility: hidden;
-  transform: translateY(6px);
-  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+  transform: translateX(calc(100% + 16px));
+  transition: transform 0.45s ease, visibility 0s linear 0.45s;
+}
+
+.ts-cd__banner.is-leaving {
+  transform: translateX(calc(-100% - 16px));
 }
 
 .ts-cd__banner.is-active {
-  opacity: 1;
   visibility: visible;
   transform: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: transform 0.45s ease;
 }
 
 .ts-cd__banner p { margin: 0; }
