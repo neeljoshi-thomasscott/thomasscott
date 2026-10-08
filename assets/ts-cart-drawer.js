@@ -8,6 +8,7 @@ import { CartUpdateEvent, ThemeEvents } from '@theme/events';
  * - Opens on load after a direct visit to /cart was redirected back (see layout/theme.liquid).
  * - Opens after any add to cart made elsewhere on the page (fetch/XHR to /cart/add).
  * - Every cart change re-renders the section and morphs only the `data-hydration-key` nodes.
+ * - Rotates the announcement banners while open; confetti when a tiered reward is reached.
  * - Login goes through KwikPass (`handleKpAndShopifyLogin`); checkout through the GoKwik SDK.
  */
 
@@ -30,6 +31,10 @@ class TsCartDrawer extends HTMLElement {
   #toastTimer = 0;
   #kpPopupOpen = false;
   #loggedIn = false;
+  #bannerTimer = 0;
+  #bannerIndex = 0;
+  #tiersAchieved = -1;
+  #pendingConfetti = false;
 
   connectedCallback() {
     this.#dialog = this.querySelector('[data-ts-cd-dialog]');
@@ -45,12 +50,14 @@ class TsCartDrawer extends HTMLElement {
     document.addEventListener('ts-cart-drawer:open', this.#openFromEvent);
     document.addEventListener('shopify:section:select', this.#onEditorSelect);
     document.addEventListener('shopify:section:deselect', this.#onEditorDeselect);
+    document.addEventListener('shopify:block:select', this.#onEditorBlockSelect);
     window.addEventListener('pageshow', this.#onPageShow);
     window.addEventListener('user-loggedin', this.#onLoggedIn);
     window.addEventListener('kpPopup', this.#onKpPopup);
 
     window.tsCartDrawer = this;
     watchCartRequests();
+    this.#checkTiers();
     this.#reopenAfterLogin();
     this.#openAfterCartRedirect();
   }
@@ -61,10 +68,12 @@ class TsCartDrawer extends HTMLElement {
     document.removeEventListener('ts-cart-drawer:open', this.#openFromEvent);
     document.removeEventListener('shopify:section:select', this.#onEditorSelect);
     document.removeEventListener('shopify:section:deselect', this.#onEditorDeselect);
+    document.removeEventListener('shopify:block:select', this.#onEditorBlockSelect);
     window.removeEventListener('pageshow', this.#onPageShow);
     window.removeEventListener('user-loggedin', this.#onLoggedIn);
     window.removeEventListener('kpPopup', this.#onKpPopup);
     if (window.tsCartDrawer === this) window.tsCartDrawer = null;
+    this.#stopBanners();
     this.#unlockScroll();
   }
 
@@ -93,6 +102,11 @@ class TsCartDrawer extends HTMLElement {
     this.#dialog.classList.remove('is-closing');
     this.#dialog.showModal();
     this.#syncUiState();
+    this.#startBanners();
+    if (this.#pendingConfetti) {
+      this.#pendingConfetti = false;
+      setTimeout(() => burstConfetti(this.#dialog.querySelector('.ts-cd__panel')), 300);
+    }
 
     if (this.#stale) this.refresh();
     this.#loadRecs();
@@ -109,6 +123,7 @@ class TsCartDrawer extends HTMLElement {
     });
     this.#dialog.classList.remove('is-closing');
     this.#dialog.close();
+    this.#stopBanners();
     this.#unlockScroll();
     this.#setOffersOpen(false);
     this.#setAccountOpen(false);
@@ -138,6 +153,18 @@ class TsCartDrawer extends HTMLElement {
 
   #onEditorDeselect = (event) => {
     if (event.detail?.sectionId === this.sectionId) this.close();
+  };
+
+  /** Theme editor: selecting a banner or reward block opens the drawer on it. */
+  #onEditorBlockSelect = (event) => {
+    const block = event.target instanceof Element ? event.target : null;
+    if (!block || !this.contains(block)) return;
+    this.open();
+    const banners = [...this.querySelectorAll('[data-ts-cd-banner]')];
+    const index = banners.indexOf(/** @type {HTMLElement} */ (block));
+    if (index === -1) return;
+    this.#stopBanners();
+    this.#showBanner(index);
   };
 
   #onPageShow = (event) => {
@@ -186,7 +213,48 @@ class TsCartDrawer extends HTMLElement {
       console.error('[ts-cart-drawer] render failed', error);
     });
     this.#syncUiState();
+    this.#checkTiers();
     if (this.isOpen) this.#loadRecs();
+  }
+
+  /* ── Announcement banners ─────────────────────────────────────────────── */
+
+  #startBanners() {
+    const root = /** @type {HTMLElement | null} */ (this.querySelector('[data-ts-cd-banners][data-interval]'));
+    if (!root || this.#bannerTimer) return;
+    const interval = Math.max(Number(root.dataset.interval) || 4000, 1000);
+    this.#bannerTimer = window.setInterval(() => this.#showBanner(this.#bannerIndex + 1), interval);
+  }
+
+  #stopBanners() {
+    clearInterval(this.#bannerTimer);
+    this.#bannerTimer = 0;
+  }
+
+  /** @param {number} index */
+  #showBanner(index) {
+    const banners = this.querySelectorAll('[data-ts-cd-banner]');
+    if (!banners.length) return;
+    this.#bannerIndex = index % banners.length;
+    banners.forEach((banner, i) => {
+      const active = i === this.#bannerIndex;
+      banner.classList.toggle('is-active', active);
+      banner.toggleAttribute('aria-hidden', !active);
+    });
+  }
+
+  /* ── Tiered rewards ───────────────────────────────────────────────────── */
+
+  /** Celebrates when a cart change reaches a new reward milestone (not on page load). */
+  #checkTiers() {
+    const tiers = /** @type {HTMLElement | null} */ (this.querySelector('[data-hydration-key="ts-cd-tiers"]'));
+    const achieved = parseInt(tiers?.dataset.tiersAchieved || '0', 10);
+    const previous = this.#tiersAchieved;
+    this.#tiersAchieved = achieved;
+    if (previous < 0 || achieved <= previous || tiers?.dataset.confetti !== 'true') return;
+
+    if (this.isOpen) burstConfetti(this.#dialog.querySelector('.ts-cd__panel'));
+    else this.#pendingConfetti = true;
   }
 
   /** Re-applies client-side state that a morph resets back to the server markup. */
@@ -706,6 +774,61 @@ function waitForGoKwikSdk() {
     const timer = setTimeout(done, 3000);
     window.addEventListener('gokwikLoaded', done);
   });
+}
+
+/**
+ * Short confetti burst drawn on a canvas over the drawer panel.
+ * @param {Element | null} container
+ */
+function burstConfetti(container) {
+  if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.className = 'ts-cd__confetti';
+  container.append(canvas);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas.remove();
+
+  const dpr = window.devicePixelRatio || 1;
+  const { width, height } = canvas.getBoundingClientRect();
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const colors = ['#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#111827'];
+  const pieces = Array.from({ length: 140 }, () => ({
+    x: width / 2 + (Math.random() - 0.5) * 60,
+    y: height * 0.3,
+    vx: (Math.random() - 0.5) * 12,
+    vy: -Math.random() * 11 - 3,
+    size: Math.random() * 6 + 4,
+    angle: Math.random() * Math.PI,
+    spin: (Math.random() - 0.5) * 0.3,
+    color: colors[Math.floor(Math.random() * colors.length)],
+  }));
+
+  const start = performance.now();
+  const frame = (/** @type {number} */ now) => {
+    const t = now - start;
+    ctx.clearRect(0, 0, width, height);
+    ctx.globalAlpha = Math.max(0, 1 - Math.max(0, t - 1400) / 600);
+    for (const p of pieces) {
+      p.vy += 0.35;
+      p.vx *= 0.99;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    }
+    if (t < 2000) requestAnimationFrame(frame);
+    else canvas.remove();
+  };
+  requestAnimationFrame(frame);
 }
 
 /**
