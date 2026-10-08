@@ -101,6 +101,14 @@
               "subtext": ""
             }
           },
+          "banner_G7LrbX": {
+            "type": "banner",
+            "settings": {
+              "title": "FREE shipping included",
+              "show_subtext": false,
+              "subtext": ""
+            }
+          },
           "ts-cart-drawer-1": {
             "type": "reward",
             "settings": {
@@ -114,6 +122,7 @@
         },
         "block_order": [
           "ts-cart-drawer-0",
+          "banner_G7LrbX",
           "ts-cart-drawer-1"
         ],
         "settings": {
