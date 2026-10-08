@@ -104,11 +104,11 @@
           "ts-cart-drawer-1": {
             "type": "reward",
             "settings": {
-              "goal": 4,
+              "goal": 2,
               "reward_type": "custom",
-              "reward_text": "B2G2",
+              "reward_text": "B1G1",
               "suffix": "",
-              "before_text": "Add {{goal}} more items to unlock B2G2"
+              "before_text": "Add {{goal}} more items to unlock B1G1"
             }
           }
         },
