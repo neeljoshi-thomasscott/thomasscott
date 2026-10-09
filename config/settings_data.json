@@ -135,7 +135,7 @@
           "banner_align": "center",
           "banner_dynamic": true,
           "banner_interval": 4,
-          "tier_enable": true,
+          "tier_enable": false,
           "tier_condition": "quantity",
           "tier_primary": "#000000",
           "tier_secondary": "#808080",
@@ -144,7 +144,6 @@
           "tier_collections": [],
           "tier_products": [],
           "tier_complete_text": "You have unlocked all rewards!",
-          "show_coupon": false,
           "show_recs": true,
           "recs_heading": "Suggested for you",
           "recs_limit": 8,
@@ -155,6 +154,7 @@
           "prepaid_tooltip": "Prepaid discount is applied at checkout when you pay online.",
           "terms_url": "",
           "empty_link": "",
+          "show_coupon": false,
           "offers_note": "Coupons apply on top of payment offers"
         }
       }
@@ -213,16 +213,11 @@
       },
       "1409715032340194113": {
         "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "2567389343055140935": {
         "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
-        "disabled": false,
-        "settings": {}
-      },
-      "16478503954904601939": {
-        "type": "shopify://apps/buffy-ai-chatbot-sales-agent/blocks/chat-embed/019ce6c1-a2b9-7cb4-9c77-450dc2529ffa",
         "disabled": false,
         "settings": {}
       },
@@ -245,16 +240,6 @@
           "custom_checkout_selectors": "",
           "custom_checkout_paths": ""
         }
-      },
-      "1917235024560766291": {
-        "type": "shopify://apps/buffy-ai-chatbot-sales-agent/blocks/search-takeover/019ce6c1-a2b9-7cb4-9c77-450dc2529ffa",
-        "disabled": true,
-        "settings": {}
-      },
-      "1409715032340194113": {
-        "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
-        "disabled": true,
-        "settings": {}
       }
     },
     "color_schemes": {
