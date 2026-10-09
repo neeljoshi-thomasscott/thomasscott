@@ -318,6 +318,7 @@
                     assign can_remove = item.instructions.can_remove | default: true, allow_false: true
                   -%}
                   <li
+                    id="TsCartDrawerLine-{{ item.key }}"
                     class="ts-cd__item"
                     data-ts-cd-line
                     data-key="{{ item.key }}"

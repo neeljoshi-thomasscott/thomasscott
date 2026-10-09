@@ -417,13 +417,13 @@ class TsCartDrawer extends HTMLElement {
         return this.close();
       case 'increase':
       case 'decrease': {
-        if (!row) return;
+        if (!row || !row.dataset.key) return this.refresh();
         const step = button.dataset.tsCdAction === 'increase' ? 1 : -1;
         const quantity = Math.max(0, parseInt(row.dataset.quantity || '1', 10) + step);
         return this.#run(row, () => this.#cartRequest('change.js', { id: row.dataset.key, quantity }));
       }
       case 'remove':
-        if (!row) return;
+        if (!row || !row.dataset.key) return this.refresh();
         row.classList.add('is-removing');
         return this.#run(row, () => this.#cartRequest('change.js', { id: row.dataset.key, quantity: 0 }));
       case 'toggle-summary':
@@ -504,6 +504,11 @@ class TsCartDrawer extends HTMLElement {
    * @param {string} variantId
    */
   async #swapVariant(row, variantId) {
+    if (!row.dataset.key) {
+      this.refresh();
+      throw new Error('That item changed elsewhere — refreshed your cart, please try again.');
+    }
+
     let properties = {};
     try {
       properties = JSON.parse(row.dataset.properties || '{}') || {};
