@@ -148,6 +148,8 @@
           "recs_heading": "Suggested for you",
           "recs_limit": 8,
           "recs_fallback_collection": "",
+          "empty_cart_heading": "Best sellers",
+          "empty_cart_collection": "best-seller",
           "shipping_text": "FREE",
           "shipping_badge": "FREE shipping included",
           "show_prepaid_row": true,
