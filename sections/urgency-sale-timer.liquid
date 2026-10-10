@@ -23,7 +23,7 @@
   endcase
 %}
 
-<script src="{{ 'urgency-sale-timer.js' | asset_url }}" type="module"></script>
+<script src="{{ 'urgency-sale-timer.js' | asset_url }}" defer="defer"></script>
 
 <urgency-sale-timer-component
   class="urgency-sale-timer section-{{ section.id }}{% if section.settings.make_sticky %} urgency-sale-timer--sticky{% endif %}"
@@ -41,21 +41,21 @@
     {% endif %}
 
     {% if end_datetime != blank %}
-      <div class="urgency-sale-timer__display" ref="timerDisplay">
+      <div class="urgency-sale-timer__display" data-urgency-timer-display>
         <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" ref="days">00</span>
+          <span class="urgency-sale-timer__value" data-urgency-timer-days>00</span>
           <span class="urgency-sale-timer__label">{{ section.settings.days_label | default: 'Days' }}</span>
         </div>
         <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" ref="hours">00</span>
+          <span class="urgency-sale-timer__value" data-urgency-timer-hours>00</span>
           <span class="urgency-sale-timer__label">{{ section.settings.hours_label | default: 'Hours' }}</span>
         </div>
         <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" ref="minutes">00</span>
+          <span class="urgency-sale-timer__value" data-urgency-timer-minutes>00</span>
           <span class="urgency-sale-timer__label">{{ section.settings.minutes_label | default: 'Minutes' }}</span>
         </div>
         <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" ref="seconds">00</span>
+          <span class="urgency-sale-timer__value" data-urgency-timer-seconds>00</span>
           <span class="urgency-sale-timer__label">{{ section.settings.seconds_label | default: 'Seconds' }}</span>
         </div>
       </div>
@@ -63,7 +63,7 @@
       <p class="urgency-sale-timer__placeholder">Set a sale end date in the section settings to start the countdown.</p>
     {% endif %}
 
-    <p class="urgency-sale-timer__message" ref="expiredMessage" hidden>
+    <p class="urgency-sale-timer__message" data-urgency-timer-message hidden>
       {{ section.settings.expired_message | default: 'This sale has ended. Check back soon!' }}
     </p>
 
@@ -117,8 +117,7 @@
       "id": "expired_message",
       "label": "Expired message",
       "default": "This sale has ended. Check back soon!",
-      "info": "Shown only when the action above is set to \"Show an expired message\".",
-      "visible_if": "{{ section.settings.on_expire == 'message' }}"
+      "info": "Only used when the action above is set to \"Show an expired message\"."
     },
     {
       "type": "range",
@@ -128,7 +127,7 @@
       "max": 30,
       "step": 1,
       "default": 7,
-      "visible_if": "{{ section.settings.on_expire == 'restart' }}"
+      "info": "Only used when the action above is set to \"Restart automatically\"."
     },
     {
       "type": "select",
@@ -140,8 +139,7 @@
         { "value": "weeks", "label": "Weeks" }
       ],
       "default": "days",
-      "info": "After the end date/time passes, the countdown automatically jumps forward by this interval (repeatedly) until it's in the future again — useful for a recurring flash sale.",
-      "visible_if": "{{ section.settings.on_expire == 'restart' }}"
+      "info": "Only used when the action above is set to \"Restart automatically\". After the end date/time passes, the countdown jumps forward by this interval repeatedly until it's in the future again — useful for a recurring flash sale."
     },
     {
       "type": "header",

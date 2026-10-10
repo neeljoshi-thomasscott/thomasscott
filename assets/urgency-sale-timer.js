@@ -1,26 +1,14 @@
-import { Component } from '@theme/component';
-
 /**
  * Countdown timer for a sale/promotion. Reads its target end time (and what to do
  * once it's reached) from attributes set by the section's Liquid/schema settings.
- *
- * @typedef {object} Refs
- * @property {HTMLElement} [timerDisplay]
- * @property {HTMLElement} [expiredMessage]
- * @property {HTMLElement} [days]
- * @property {HTMLElement} [hours]
- * @property {HTMLElement} [minutes]
- * @property {HTMLElement} [seconds]
- *
- * @extends {Component<Refs>}
+ * Plain custom element with no external dependencies, so it can be dropped into
+ * any template/section group safely.
  */
-export class UrgencySaleTimer extends Component {
+class UrgencySaleTimer extends HTMLElement {
   /** @type {number|undefined} */
   #intervalId;
 
   connectedCallback() {
-    super.connectedCallback();
-
     if (this.endTime === null) return;
 
     this.#tick();
@@ -28,7 +16,6 @@ export class UrgencySaleTimer extends Component {
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     window.clearInterval(this.#intervalId);
   }
 
@@ -86,26 +73,26 @@ export class UrgencySaleTimer extends Component {
   #render(remainingMs) {
     const totalSeconds = Math.max(0, Math.floor(remainingMs / 1000));
 
-    this.#setText(this.refs.days, Math.floor(totalSeconds / 86400));
-    this.#setText(this.refs.hours, Math.floor((totalSeconds % 86400) / 3600));
-    this.#setText(this.refs.minutes, Math.floor((totalSeconds % 3600) / 60));
-    this.#setText(this.refs.seconds, totalSeconds % 60);
+    this.#setText('days', Math.floor(totalSeconds / 86400));
+    this.#setText('hours', Math.floor((totalSeconds % 86400) / 3600));
+    this.#setText('minutes', Math.floor((totalSeconds % 3600) / 60));
+    this.#setText('seconds', totalSeconds % 60);
   }
 
   /**
-   * @param {Element|Element[]|undefined} el
+   * @param {string} part
    * @param {number} value
    */
-  #setText(el, value) {
-    const target = Array.isArray(el) ? el[0] : el;
-    if (target) target.textContent = String(value).padStart(2, '0');
+  #setText(part, value) {
+    const el = this.querySelector(`[data-urgency-timer-${part}]`);
+    if (el) el.textContent = String(value).padStart(2, '0');
   }
 
   #showExpiredMessage() {
     window.clearInterval(this.#intervalId);
 
-    const display = this.refs.timerDisplay;
-    const message = this.refs.expiredMessage;
+    const display = this.querySelector('[data-urgency-timer-display]');
+    const message = this.querySelector('[data-urgency-timer-message]');
 
     if (display instanceof HTMLElement) display.hidden = true;
     if (message instanceof HTMLElement) message.hidden = false;
