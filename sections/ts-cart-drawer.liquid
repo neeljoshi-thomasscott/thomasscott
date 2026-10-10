@@ -136,6 +136,8 @@
     data-open-on-add="{{ section.settings.open_on_add }}"
     data-recs-limit="{{ section.settings.recs_limit }}"
     data-recs-fallback="{{ section.settings.recs_fallback_collection.handle }}"
+    data-empty-cart-collection="{{ section.settings.empty_cart_collection.handle }}"
+    data-empty-cart-heading="{{ section.settings.empty_cart_heading | escape }}"
     data-login-url="{{ routes.account_login_url }}"
     data-logout-url="{{ routes.account_logout_url }}"
     {{ section.shopify_attributes }}
@@ -419,7 +421,7 @@
           {%- comment -%} Filled by JS from the ts-cart-recs section; not morphed. {%- endcomment -%}
           {%- if section.settings.show_recs -%}
             <div class="ts-cd__card ts-cd__recs" data-ts-cd-recs hidden>
-              <p class="ts-cd__recs-title">{{ section.settings.recs_heading | escape }}</p>
+              <p class="ts-cd__recs-title" data-ts-cd-recs-title>{{ section.settings.recs_heading | escape }}</p>
               <div class="ts-cd__recs-viewport">
                 <button type="button" class="ts-cd__recs-nav ts-cd__recs-nav--prev" data-ts-cd-action="recs-prev" aria-label="Previous products" disabled>
                   <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M9 2.5 4.5 7 9 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -630,6 +632,8 @@
     { "type": "text", "id": "recs_heading", "label": "Heading", "default": "Suggested for you" },
     { "type": "range", "id": "recs_limit", "label": "Products to show", "min": 2, "max": 10, "step": 1, "default": 8 },
     { "type": "collection", "id": "recs_fallback_collection", "label": "Fallback collection", "info": "Used when Shopify has no recommendations for the cart." },
+    { "type": "text", "id": "empty_cart_heading", "label": "Heading when cart is empty", "default": "Best sellers" },
+    { "type": "collection", "id": "empty_cart_collection", "label": "Collection to show when cart is empty", "info": "Shown in place of suggested products while the cart has no items." },
     { "type": "header", "content": "Totals" },
     { "type": "text", "id": "shipping_text", "label": "Shipping charges value", "default": "FREE" },
     { "type": "text", "id": "shipping_badge", "label": "Shipping badge", "default": "FREE shipping included" },

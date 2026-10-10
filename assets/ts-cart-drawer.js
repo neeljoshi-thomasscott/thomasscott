@@ -26,6 +26,7 @@ class TsCartDrawer extends HTMLElement {
   #stale = false;
   #summaryOpen = false;
   #recsKey = null;
+  #defaultRecsHeading = null;
   #externalTimer = 0;
   #externalAdd = false;
   #toastTimer = 0;
@@ -717,21 +718,50 @@ class TsCartDrawer extends HTMLElement {
   async #loadRecs() {
     const box = /** @type {HTMLElement | null} */ (this.querySelector('[data-ts-cd-recs]'));
     const track = this.querySelector('[data-ts-cd-recs-track]');
+    const title = this.querySelector('[data-ts-cd-recs-title]');
     if (!box || !track) return;
 
     const content = this.#content;
     const productId = content?.dataset.firstProductId;
-    const key = content?.dataset.productIds || '';
+    const limit = parseInt(this.dataset.recsLimit || '8', 10);
 
     if (!productId) {
-      box.hidden = true;
+      const emptyCollection = this.dataset.emptyCartCollection;
+      const key = `empty:${emptyCollection || ''}`;
+      if (key === this.#recsKey) return;
       this.#recsKey = key;
+
+      if (!emptyCollection) {
+        box.hidden = true;
+        return;
+      }
+
+      try {
+        const cards = await fetchRecCards(
+          `${ROOT}collections/${emptyCollection}?section_id=${RECS_SECTION}&sort_by=best-selling`
+        );
+        if (key !== this.#recsKey) return;
+
+        if (title) {
+          this.#defaultRecsHeading ??= title.textContent;
+          title.textContent = this.dataset.emptyCartHeading || this.#defaultRecsHeading;
+        }
+        track.replaceChildren(...cards.slice(0, limit));
+        box.hidden = cards.length === 0;
+        track.scrollLeft = 0;
+        requestAnimationFrame(() => this.#syncRecsNav());
+      } catch (error) {
+        console.error('[ts-cart-drawer] empty-cart recommendations failed', error);
+        box.hidden = true;
+        this.#recsKey = null;
+      }
       return;
     }
+
+    const key = content?.dataset.productIds || '';
     if (key === this.#recsKey) return;
     this.#recsKey = key;
 
-    const limit = parseInt(this.dataset.recsLimit || '8', 10);
     try {
       let cards = await fetchRecCards(
         `${ROOT}recommendations/products?section_id=${RECS_SECTION}&product_id=${productId}&limit=${limit + 4}&intent=related`
@@ -741,6 +771,7 @@ class TsCartDrawer extends HTMLElement {
       }
       if (key !== this.#recsKey) return;
 
+      if (title && this.#defaultRecsHeading != null) title.textContent = this.#defaultRecsHeading;
       track.replaceChildren(...cards.slice(0, limit));
       box.hidden = cards.length === 0;
       track.scrollLeft = 0;
