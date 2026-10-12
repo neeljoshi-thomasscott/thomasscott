@@ -174,24 +174,6 @@
       "name": "Home Banner",
       "settings": {}
     },
-    "urgency_sale_timer_kiPdeL": {
-      "type": "urgency-sale-timer",
-      "name": "Urgency Sale Timer",
-      "settings": {
-        "heading": "Hurry! Sale ends in:",
-        "subheading": "",
-        "button_label": "Shop the sale",
-        "button_link": "",
-        "alignment": "center",
-        "make_sticky": false,
-        "background_color": "#000000",
-        "text_color": "#ffffff",
-        "accent_background_color": "#ffffff",
-        "accent_text_color": "#000000",
-        "button_background_color": "#ffffff",
-        "button_text_color": "#000000"
-      }
-    },
     "collection_grid_EK4GyH": {
       "type": "collection-grid",
       "blocks": {
@@ -900,7 +882,6 @@
   },
   "order": [
     "th_home_page_banner_UyyE9D",
-    "urgency_sale_timer_kiPdeL",
     "collection_grid_EK4GyH",
     "th_banner_1_YYgQrX",
     "th_banner_1_pzBt7w",
