@@ -19,7 +19,11 @@
             "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/plus-size"
+            "button_link": "shopify://collections/plus-size",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_nkYm46": {
@@ -30,62 +34,11 @@
             "mobile_image": "shopify://shop_images/Archieve_sale-02.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/archive-sale"
-          }
-        },
-        "slide_GCfPQQ": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Exte-17.webp",
-            "mobile_image": "shopify://shop_images/Exte-18.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/daily-essentials"
-          }
-        },
-        "slide_VhFdqW": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/TSS-01_d27f1ebf-1d3e-4cb8-9d11-930b4c7bba05.webp",
-            "mobile_image": "shopify://shop_images/TSS-02.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/plus-size"
-          }
-        },
-        "slide_ETHCRG": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Liberty-19_26402271-d74b-4231-ba4e-b4b49b0efcb9.webp",
-            "mobile_image": "shopify://shop_images/Liberty-20_f971cecf-1c72-4be8-815d-f8d75ba26171.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/flat-70-80-off"
-          }
-        },
-        "slide_4Q4hVR": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Artboard_1.png",
-            "mobile_image": "shopify://shop_images/Artboard_2.png",
-            "heading": "",
-            "button_text": "",
-            "button_link": ""
-          }
-        },
-        "slide_AQRLTF": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Shopify_banners-01.webp",
-            "mobile_image": "shopify://shop_images/Shopify_banners-02.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/archive-sale"
+            "button_link": "shopify://collections/archive-sale",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_EPjXxj": {
@@ -96,91 +49,18 @@
             "mobile_image": "shopify://shop_images/Shopify_banners_New-18.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/new-arrivals"
-          }
-        },
-        "slide_nNAnMi": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Ending_soon.png",
-            "mobile_image": "shopify://shop_images/Ending_soon_2.png",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/daily-essentials"
-          }
-        },
-        "slide_AWYhNx": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/1_129496c0-ca0a-4cb7-9e7e-93cd374c902d.jpg",
-            "mobile_image": "shopify://shop_images/1M_134dae7c-46ea-4d7f-9d74-d215e00f465e.jpg",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/new-arrivals"
-          }
-        },
-        "slide_dJfGQ8": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/2_ac94e787-7638-453d-98a9-329aae7490d0.jpg",
-            "mobile_image": "shopify://shop_images/2M_9b658eb3-e065-45da-a48b-709c5fb4b461.jpg",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/all"
-          }
-        },
-        "slide_KDQ9tX": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/3_7d28d02f-415b-404b-8bf0-5e7bb381c842.jpg",
-            "mobile_image": "shopify://shop_images/3M_40a050f7-ca87-4609-9334-93cdf48fcbf0.jpg",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/daily-essentials"
-          }
-        },
-        "slide_6dMwVX": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Main_banner_1.webp",
-            "mobile_image": "shopify://shop_images/Main_banner_1_Mobile.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/business-exclusives"
-          }
-        },
-        "slide_ibDN7K": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "desktop_image": "shopify://shop_images/Main_banner_3.webp",
-            "mobile_image": "shopify://shop_images/Main_banner_3_Mobile.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/performance"
+            "button_link": "shopify://collections/new-arrivals",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         }
       },
       "block_order": [
         "slide_9LjfQX",
         "slide_nkYm46",
-        "slide_GCfPQQ",
-        "slide_VhFdqW",
-        "slide_ETHCRG",
-        "slide_4Q4hVR",
-        "slide_AQRLTF",
-        "slide_EPjXxj",
-        "slide_nNAnMi",
-        "slide_AWYhNx",
-        "slide_dJfGQ8",
-        "slide_KDQ9tX",
-        "slide_6dMwVX",
-        "slide_ibDN7K"
+        "slide_EPjXxj"
       ],
       "name": "Home Banner",
       "settings": {}
