@@ -22,6 +22,30 @@
         {%- endif -%}
         {% render 'urgency-timer', hide_closest: '.announcement-marquee__timer' %}
       </div>
+      {%- comment -%}
+        The home header group floats over the first section (style.css .home-header), so push the
+        page content down by the timer row's height to keep the banner where it was without it.
+        When the bar is hidden on scroll the row measures 0 — keep the last height so nothing jumps.
+      {%- endcomment -%}
+      <style>
+        .content-for-layout {
+          margin-top: var(--announcement-timer-height, 0px);
+        }
+      </style>
+      <script>
+        (function () {
+          var row = document.querySelector('#AnnouncementMarquee-{{ section.id }} .announcement-marquee__timer');
+          if (!row || !('ResizeObserver' in window)) return;
+          var update = function () {
+            var height = row.hidden ? 0 : row.offsetHeight;
+            if (!row.hidden && height === 0) return;
+            document.body.style.setProperty('--announcement-timer-height', height + 'px');
+          };
+          update();
+          new ResizeObserver(update).observe(row);
+          new MutationObserver(update).observe(row, { attributes: true, attributeFilter: ['hidden'] });
+        })();
+      </script>
     {%- endif -%}
     <div class="announcement-marquee__container">
       <div class="announcement-marquee__viewport">
