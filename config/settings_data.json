@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "sale_timer_enable": true,
+    "sale_timer_enable": false,
     "sale_timer_end_date": "2026-10-12",
     "sale_timer_end_time": "14:40",
     "sale_timer_on_expire": "restart",
