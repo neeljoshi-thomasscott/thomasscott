@@ -10,11 +10,11 @@
 {
   "current": {
     "sale_timer_end_date": "2026-10-12",
-    "sale_timer_end_time": "11:23",
+    "sale_timer_end_time": "14:45",
     "sale_timer_on_expire": "restart",
     "sale_timer_expired_message": "This sale has ended. Check back soon!",
-    "sale_timer_restart_value": 1,
-    "sale_timer_restart_unit": "days",
+    "sale_timer_restart_value": 18,
+    "sale_timer_restart_unit": "hours",
     "logo": "shopify://shop_images/thomas-logo.svg",
     "logo_height": 36,
     "logo_height_mobile": 28,
@@ -141,6 +141,12 @@
           "banner_align": "center",
           "banner_dynamic": true,
           "banner_interval": 4,
+          "timer_enable": true,
+          "timer_text": "Hurry! Sale ends in",
+          "timer_bg": "#ffffff",
+          "timer_color": "#000000",
+          "timer_box_bg": "#000000",
+          "timer_box_color": "#ffffff",
           "tier_enable": true,
           "tier_condition": "quantity",
           "tier_primary": "#000000",
@@ -150,7 +156,6 @@
           "tier_collections": [],
           "tier_products": [],
           "tier_complete_text": "You have unlocked all rewards!",
-          "show_coupon": false,
           "show_recs": true,
           "recs_heading": "Suggested for you",
           "recs_limit": 8,
@@ -163,6 +168,7 @@
           "prepaid_tooltip": "Prepaid discount is applied at checkout when you pay online.",
           "terms_url": "",
           "empty_link": "",
+          "show_coupon": false,
           "offers_note": "Coupons apply on top of payment offers"
         }
       }
