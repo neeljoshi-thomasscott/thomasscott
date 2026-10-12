@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "sale_timer_enable": false,
     "logo": "shopify://shop_images/thomas-logo.svg",
     "logo_height": 36,
     "logo_height_mobile": 28,
@@ -135,6 +136,12 @@
           "banner_align": "center",
           "banner_dynamic": true,
           "banner_interval": 4,
+          "timer_enable": true,
+          "timer_text": "Hurry! Sale ends in",
+          "timer_bg": "#ffffff",
+          "timer_color": "#000000",
+          "timer_box_bg": "#000000",
+          "timer_box_color": "#ffffff",
           "tier_enable": false,
           "tier_condition": "quantity",
           "tier_primary": "#000000",
