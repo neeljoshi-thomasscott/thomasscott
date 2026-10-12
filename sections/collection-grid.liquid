@@ -10,6 +10,33 @@
     max-height:146px;
     width: auto;
   }
+  .categroy-card{
+    position: relative;
+  }
+  .categroy-card .categroy-tag{
+    position: absolute;
+    top: 10px;
+    left: 0;
+    z-index: 1;
+    padding: 4px 18px 4px 10px;
+    background: linear-gradient(90deg, var(--categroy-tag-from), var(--categroy-tag-to));
+    color: var(--categroy-tag-color);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 9px) 50%, 100% 100%, 0 100%);
+  }
+  @media (max-width: 749px){
+    .categroy-card .categroy-tag{
+      top: 6px;
+      padding: 3px 14px 3px 7px;
+      font-size: 9px;
+    }
+  }
 </style>
 <section class="categroy-sec" id="shop-by-category-{{ section.id }}">
   <div class="container">
@@ -38,6 +65,15 @@
         <div class="item">
 
           <div class="categroy-card" {{ block.shopify_attributes }}>
+            {%- if block.settings.tag_text != blank -%}
+              <span
+                class="categroy-tag"
+                style="--categroy-tag-from: {{ block.settings.tag_bg_start }}; --categroy-tag-to: {{ block.settings.tag_bg_end }}; --categroy-tag-color: {{ block.settings.tag_color }};"
+                {% render 'schedule', s: block.settings %}
+              >
+                {{- block.settings.tag_text | escape -}}
+              </span>
+            {%- endif -%}
             <a href="{{ block_collection.url }}">
 
               <div class="categroy-thumb">
@@ -103,6 +139,15 @@
         <div class="item">
 
           <div class="categroy-card" {{ block.shopify_attributes }}>
+            {%- if block.settings.tag_text != blank -%}
+              <span
+                class="categroy-tag"
+                style="--categroy-tag-from: {{ block.settings.tag_bg_start }}; --categroy-tag-to: {{ block.settings.tag_bg_end }}; --categroy-tag-color: {{ block.settings.tag_color }};"
+                {% render 'schedule', s: block.settings %}
+              >
+                {{- block.settings.tag_text | escape -}}
+              </span>
+            {%- endif -%}
             <a href="{{ block_collection.url }}">
 
               <div class="categroy-thumb">
@@ -318,6 +363,8 @@
     </div> {% endcomment %}
   </div>
 </section>
+{%- assign grid_id = 'shop-by-category-' | append: section.id -%}
+{% render 'schedule-filter', root: grid_id %}
 
 {% schema %}
 {
@@ -353,6 +400,63 @@
           "type": "text",
           "id": "custom_title",
           "label": "Custom title"
+        },
+        {
+          "type": "header",
+          "content": "Tag"
+        },
+        {
+          "type": "text",
+          "id": "tag_text",
+          "label": "Tag text",
+          "info": "e.g. FESTIVE PICK. Leave empty for no tag."
+        },
+        {
+          "type": "color",
+          "id": "tag_bg_start",
+          "label": "Tag background (left)",
+          "default": "#5a0f24"
+        },
+        {
+          "type": "color",
+          "id": "tag_bg_end",
+          "label": "Tag background (right)",
+          "default": "#a8264f"
+        },
+        {
+          "type": "color",
+          "id": "tag_color",
+          "label": "Tag text color",
+          "default": "#f3d27a"
+        },
+        {
+          "type": "header",
+          "content": "Tag schedule",
+          "info": "Optional. Store time zone. Leave empty to always show the tag. The theme editor always shows it; check in Preview."
+        },
+        {
+          "type": "text",
+          "id": "start_date",
+          "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)",
+          "placeholder": "YYYY-MM-DD"
+        },
+        {
+          "type": "text",
+          "id": "start_time",
+          "label": "Show from time (HH:MM 24-hour, e.g. 00:00)",
+          "placeholder": "HH:MM"
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "Hide after date (YYYY-MM-DD, e.g. 2026-10-31)",
+          "placeholder": "YYYY-MM-DD"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)",
+          "placeholder": "HH:MM"
         }
       ]
     }
