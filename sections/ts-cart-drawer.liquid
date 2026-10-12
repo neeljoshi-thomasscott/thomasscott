@@ -221,7 +221,7 @@
         {%- endif -%}
 
         {%- comment -%} ── SALE TIMER (shared schedule in Theme settings; not morphed) ── {%- endcomment -%}
-        {%- if section.settings.timer_enable and settings.sale_timer_end_date != blank -%}
+        {%- if section.settings.timer_enable and settings.sale_timer_enable and settings.sale_timer_end_date != blank -%}
           <div
             class="ts-cd__timer"
             style="--ts-cd-timer-bg: {{ section.settings.timer_bg }}; --ts-cd-timer-fg: {{ section.settings.timer_color }}; --ts-cd-timer-box-bg: {{ section.settings.timer_box_bg }}; --ts-cd-timer-box-fg: {{ section.settings.timer_box_color }};"

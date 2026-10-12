@@ -12,7 +12,7 @@
       --announcement-container-width: {{ section.settings.container_width }}px;
     "
   >
-    {%- if section.settings.show_timer and settings.sale_timer_end_date != blank -%}
+    {%- if section.settings.show_timer and settings.sale_timer_enable and settings.sale_timer_end_date != blank -%}
       <div
         class="announcement-marquee__timer"
         style="--announcement-timer-bg: {{ section.settings.timer_bg }}; --announcement-timer-color: {{ section.settings.timer_color }}; --announcement-timer-box-bg: {{ section.settings.timer_box_bg }}; --announcement-timer-box-color: {{ section.settings.timer_box_color }};"

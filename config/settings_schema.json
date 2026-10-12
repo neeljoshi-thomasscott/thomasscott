@@ -26,6 +26,13 @@
         "content": "One schedule shared by the Urgency Sale Timer section, the announcement bar and the cart drawer."
       },
       {
+        "type": "checkbox",
+        "id": "sale_timer_enable",
+        "label": "Enable sale timer",
+        "default": true,
+        "info": "Turns the timer on or off everywhere at once."
+      },
+      {
         "type": "text",
         "id": "sale_timer_end_date",
         "label": "Sale end date",

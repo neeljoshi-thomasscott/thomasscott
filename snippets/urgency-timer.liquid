@@ -19,7 +19,7 @@
   endif
 
   assign end_datetime = ''
-  if end_date != blank
+  if settings.sale_timer_enable and end_date != blank
     assign end_datetime = end_date | append: 'T' | append: end_time | append: ':00'
   endif
 
