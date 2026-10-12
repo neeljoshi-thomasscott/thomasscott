@@ -10,7 +10,7 @@
 {
   "current": {
     "sale_timer_end_date": "2026-10-12",
-    "sale_timer_end_time": "14:45",
+    "sale_timer_end_time": "14:40",
     "sale_timer_on_expire": "restart",
     "sale_timer_expired_message": "This sale has ended. Check back soon!",
     "sale_timer_restart_value": 18,
