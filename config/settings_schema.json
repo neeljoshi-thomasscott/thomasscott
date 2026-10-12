@@ -19,6 +19,91 @@
     ]
   },
   {
+    "name": "Urgency sale timer",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "One schedule shared by the Urgency Sale Timer section, the announcement bar and the cart drawer."
+      },
+      {
+        "type": "checkbox",
+        "id": "sale_timer_enable",
+        "label": "Enable sale timer",
+        "default": true,
+        "info": "Turns the timer on or off everywhere at once."
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_end_date",
+        "label": "Sale end date",
+        "placeholder": "YYYY-MM-DD",
+        "info": "Example: 2026-10-31. Leave empty to hide the timer everywhere. Uses each visitor's local browser time."
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_end_time",
+        "label": "Sale end time (24-hour)",
+        "placeholder": "HH:MM",
+        "default": "23:59"
+      },
+      {
+        "type": "select",
+        "id": "sale_timer_on_expire",
+        "label": "When the timer reaches zero",
+        "options": [
+          { "value": "hide", "label": "Hide the timer" },
+          { "value": "message", "label": "Show an expired message" },
+          { "value": "restart", "label": "Restart automatically (recurring sale)" }
+        ],
+        "default": "hide"
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_expired_message",
+        "label": "Expired message",
+        "default": "This sale has ended. Check back soon!"
+      },
+      {
+        "type": "range",
+        "id": "sale_timer_restart_value",
+        "label": "Restart every",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "select",
+        "id": "sale_timer_restart_unit",
+        "label": "Restart interval unit",
+        "options": [
+          { "value": "hours", "label": "Hours" },
+          { "value": "days", "label": "Days" },
+          { "value": "weeks", "label": "Weeks" }
+        ],
+        "default": "days"
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_hours_label",
+        "label": "Hours label",
+        "default": "Hours"
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_minutes_label",
+        "label": "Minutes label",
+        "default": "Minutes"
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_seconds_label",
+        "label": "Seconds label",
+        "default": "Seconds"
+      }
+    ]
+  },
+  {
     "name": "t:names.logo_and_favicon",
     "settings": [
       {

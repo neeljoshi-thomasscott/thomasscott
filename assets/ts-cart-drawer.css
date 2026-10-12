@@ -188,6 +188,51 @@
 .ts-cd__banner-title { font-weight: 700; line-height: 1.35; }
 .ts-cd__banner-sub { font-size: 12px; line-height: 1.35; opacity: 0.9; }
 
+/* ── Sale timer ──────────────────────────────────────────────────────── */
+
+.ts-cd__timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 8px 16px;
+  background: var(--ts-cd-timer-bg, #fff);
+  color: var(--ts-cd-timer-fg, #000);
+  text-align: center;
+}
+
+.ts-cd__timer[hidden] { display: none; }
+.ts-cd__timer-text { margin: 0; font-size: 13px; font-weight: 600; }
+.ts-cd__timer .urgency-timer__display { display: flex; gap: 6px; }
+
+.ts-cd__timer .urgency-timer__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--ts-cd-timer-box-bg, #000);
+  color: var(--ts-cd-timer-box-fg, #fff);
+}
+
+.ts-cd__timer .urgency-timer__value {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ts-cd__timer .urgency-timer__label {
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.ts-cd__timer .urgency-timer__message { margin: 0; font-size: 13px; font-weight: 600; }
+
 /* ── Tiered rewards ──────────────────────────────────────────────────── */
 
 .ts-cd__tiers {
