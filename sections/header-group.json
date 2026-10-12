@@ -77,7 +77,8 @@
         "text_color": "#ffffff",
         "show_timer": true,
         "timer_text": "Sale ends in",
-        "timer_position": "left",
+        "timer_bg": "#000000",
+        "timer_color": "#ffffff",
         "timer_box_bg": "#ffffff",
         "timer_box_color": "#000000"
       }

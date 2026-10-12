@@ -12,18 +12,18 @@
       --announcement-container-width: {{ section.settings.container_width }}px;
     "
   >
+    {%- if section.settings.show_timer and settings.sale_timer_end_date != blank -%}
+      <div
+        class="announcement-marquee__timer"
+        style="--announcement-timer-bg: {{ section.settings.timer_bg }}; --announcement-timer-color: {{ section.settings.timer_color }}; --announcement-timer-box-bg: {{ section.settings.timer_box_bg }}; --announcement-timer-box-color: {{ section.settings.timer_box_color }};"
+      >
+        {%- if section.settings.timer_text != blank -%}
+          <span class="announcement-marquee__timer-text">{{ section.settings.timer_text }}</span>
+        {%- endif -%}
+        {% render 'urgency-timer', hide_closest: '.announcement-marquee__timer', show_labels: false %}
+      </div>
+    {%- endif -%}
     <div class="announcement-marquee__container">
-      {%- if section.settings.show_timer and settings.sale_timer_end_date != blank -%}
-        <div
-          class="announcement-marquee__timer announcement-marquee__timer--{{ section.settings.timer_position }}"
-          style="--announcement-timer-box-bg: {{ section.settings.timer_box_bg }}; --announcement-timer-box-color: {{ section.settings.timer_box_color }};"
-        >
-          {%- if section.settings.timer_text != blank -%}
-            <span class="announcement-marquee__timer-text">{{ section.settings.timer_text }}</span>
-          {%- endif -%}
-          {% render 'urgency-timer', hide_closest: '.announcement-marquee__timer', show_labels: false %}
-        </div>
-      {%- endif -%}
       <div class="announcement-marquee__viewport">
         <div class="announcement-marquee__track">
 
@@ -84,9 +84,6 @@
 
   #AnnouncementMarquee-{{ section.id }}
   .announcement-marquee__container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     position: relative;
     width: calc(100% - 30px);
     max-width: var(--announcement-container-width);
@@ -97,8 +94,6 @@
   #AnnouncementMarquee-{{ section.id }}
   .announcement-marquee__viewport {
     position: relative;
-    flex: 1 1 auto;
-    min-width: 0;
     width: 100%;
     overflow: hidden;
 
@@ -180,17 +175,16 @@
   #AnnouncementMarquee-{{ section.id }}
   .announcement-marquee__timer {
     display: flex;
-    flex-shrink: 0;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    padding: 6px 15px;
+    background: var(--announcement-timer-bg);
+    color: var(--announcement-timer-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     font-size: {{ section.settings.font_size }}px;
     font-weight: {{ section.settings.font_weight }};
     white-space: nowrap;
-  }
-
-  #AnnouncementMarquee-{{ section.id }}
-  .announcement-marquee__timer--right {
-    order: 1;
   }
 
   #AnnouncementMarquee-{{ section.id }}
@@ -278,13 +272,9 @@
     }
 
     #AnnouncementMarquee-{{ section.id }}
-    .announcement-marquee__container {
-      gap: 8px;
-    }
-
-    #AnnouncementMarquee-{{ section.id }}
     .announcement-marquee__timer {
-      gap: 5px;
+      gap: 6px;
+      padding: 5px 10px;
       font-size: {{ section.settings.mobile_font_size }}px;
     }
 
@@ -497,14 +487,16 @@
       "default": "Sale ends in"
     },
     {
-      "type": "select",
-      "id": "timer_position",
-      "label": "Timer position",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "left"
+      "type": "color",
+      "id": "timer_bg",
+      "label": "Timer row background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "timer_color",
+      "label": "Timer row text color",
+      "default": "#ffffff"
     },
     {
       "type": "color",
