@@ -1,0 +1,26 @@
+{%- comment -%}
+  Removes elements whose data-show-from / data-show-until window (see the schedule snippet)
+  doesn't include the visitor's current moment. Render it right after the markup it filters,
+  so it runs before deferred sliders/components pick the elements up. Skipped in the theme
+  editor so every block stays visible and editable.
+
+  Accepts:
+  - root {string} - id of the element to filter inside
+
+  Usage:
+  {% render 'schedule-filter', root: 'HomeBanner-123' %}
+{%- endcomment -%}
+{%- unless request.design_mode -%}
+  <script>
+    (function () {
+      var root = document.getElementById({{ root | json }});
+      if (!root) return;
+      var now = Date.now();
+      root.querySelectorAll('[data-show-from], [data-show-until]').forEach(function (el) {
+        var from = Date.parse(el.getAttribute('data-show-from') || '');
+        var until = Date.parse(el.getAttribute('data-show-until') || '');
+        if ((!isNaN(from) && now < from) || (!isNaN(until) && now >= until)) el.remove();
+      });
+    })();
+  </script>
+{%- endunless -%}

@@ -1,0 +1,63 @@
+{%- comment -%}
+  Show from / hide after schedule for a block, in the store's time zone.
+  Expects the block to have start_date, start_time, end_date, end_time settings
+  (dates YYYY-MM-DD, times HH:MM; empty date = no limit on that side).
+
+  Accepts:
+  - s {object} - the block's settings
+  - mode {string} - 'attrs' (default): prints data-show-from / data-show-until for the
+    schedule-filter script; 'active': prints true/false for the time of rendering
+    (always true in the theme editor)
+
+  Usage:
+  <div {% render 'schedule', s: block.settings %}>
+  {% capture active %}{% render 'schedule', s: block.settings, mode: 'active' %}{% endcapture %}
+{%- endcomment -%}
+{%- liquid
+  assign tz = 'now' | date: '%z'
+  assign tz_hours = tz | slice: 0, 3
+  assign tz_minutes = tz | slice: 3, 2
+  assign tz_offset = tz_hours | append: ':' | append: tz_minutes
+
+  assign from = ''
+  assign from_date = s.start_date | strip
+  if from_date != blank
+    assign from_time = s.start_time | strip | default: '00:00'
+    assign from = from_date | append: 'T' | append: from_time | append: ':00' | append: tz_offset
+  endif
+
+  assign until = ''
+  assign until_date = s.end_date | strip
+  if until_date != blank
+    assign until_time = s.end_time | strip | default: '23:59'
+    assign until = until_date | append: 'T' | append: until_time | append: ':00' | append: tz_offset
+  endif
+
+  if mode == 'active' and request.design_mode
+    # The theme editor shows every block so it stays editable, matching schedule-filter.
+    echo true
+  elsif mode == 'active'
+    assign active = true
+    assign now_s = 'now' | date: '%s' | plus: 0
+    if from != blank
+      assign from_s = from | date: '%s' | plus: 0
+      if from_s > 0 and now_s < from_s
+        assign active = false
+      endif
+    endif
+    if until != blank
+      assign until_s = until | date: '%s' | plus: 0
+      if until_s > 0 and now_s >= until_s
+        assign active = false
+      endif
+    endif
+    echo active
+  else
+    if from != blank
+      echo 'data-show-from="' | append: from | append: '"'
+    endif
+    if until != blank
+      echo ' data-show-until="' | append: until | append: '"'
+    endif
+  endif
+-%}

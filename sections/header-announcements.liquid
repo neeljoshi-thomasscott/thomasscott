@@ -55,6 +55,7 @@
             {% for block in section.blocks %}
               <div
                 class="announcement-marquee__item"
+                {% render 'schedule', s: block.settings %}
                 {{ block.shopify_attributes }}
               >
                 {% if block.settings.link != blank %}
@@ -66,7 +67,7 @@
                 {% endif %}
               </div>
 
-              <span class="announcement-marquee__separator">
+              <span class="announcement-marquee__separator" {% render 'schedule', s: block.settings %}>
                 {{ section.settings.separator }}
               </span>
             {% endfor %}
@@ -77,7 +78,7 @@
             aria-hidden="true"
           >
             {% for block in section.blocks %}
-              <div class="announcement-marquee__item">
+              <div class="announcement-marquee__item" {% render 'schedule', s: block.settings %}>
                 {% if block.settings.link != blank %}
                   <a href="{{ block.settings.link }}" tabindex="-1">
                     {{ block.settings.text }}
@@ -87,7 +88,7 @@
                 {% endif %}
               </div>
 
-              <span class="announcement-marquee__separator">
+              <span class="announcement-marquee__separator" {% render 'schedule', s: block.settings %}>
                 {{ section.settings.separator }}
               </span>
             {% endfor %}
@@ -97,6 +98,18 @@
       </div>
     </div>
   </div>
+  {%- comment -%} Drop out-of-schedule lines (and their separators) before the marquee is painted. {%- endcomment -%}
+  {%- assign marquee_id = 'AnnouncementMarquee-' | append: section.id -%}
+  {% render 'schedule-filter', root: marquee_id %}
+  {%- unless request.design_mode -%}
+    <script>
+      (function () {
+        var marquee = document.getElementById({{ marquee_id | json }});
+        var container = marquee && marquee.querySelector('.announcement-marquee__container');
+        if (container && !container.querySelector('.announcement-marquee__item')) container.hidden = true;
+      })();
+    </script>
+  {%- endunless -%}
 {% endif %}
 
 <style>
@@ -568,6 +581,35 @@
           "type": "url",
           "id": "link",
           "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Schedule",
+          "info": "Optional. Store time zone. Leave empty to always show. The theme editor shows every line; check in Preview."
+        },
+        {
+          "type": "text",
+          "id": "start_date",
+          "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)",
+          "placeholder": "YYYY-MM-DD"
+        },
+        {
+          "type": "text",
+          "id": "start_time",
+          "label": "Show from time (HH:MM 24-hour, e.g. 00:00)",
+          "placeholder": "HH:MM"
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "Hide after date (YYYY-MM-DD, e.g. 2026-10-31)",
+          "placeholder": "YYYY-MM-DD"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)",
+          "placeholder": "HH:MM"
         }
       ]
     }
