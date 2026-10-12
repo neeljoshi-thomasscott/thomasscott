@@ -20,7 +20,26 @@
             "mobile_image": "shopify://shop_images/Archieve_sale-02.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/archive-sale"
+            "button_link": "shopify://collections/archive-sale",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
+          }
+        },
+        "slide_VXt7W4": {
+          "type": "slide",
+          "name": "Archive Sale",
+          "settings": {
+            "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
+            "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
+            "heading": "",
+            "button_text": "",
+            "button_link": "shopify://collections/plus-size-casual-shirt",
+            "start_date": "2026-10-12",
+            "start_time": "15:40",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_GCfPQQ": {
@@ -31,7 +50,11 @@
             "mobile_image": "shopify://shop_images/Exte-18.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/daily-essentials"
+            "button_link": "shopify://collections/daily-essentials",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_VhFdqW": {
@@ -42,7 +65,11 @@
             "mobile_image": "shopify://shop_images/TSS-02.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/plus-size"
+            "button_link": "shopify://collections/plus-size",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_ETHCRG": {
@@ -53,7 +80,11 @@
             "mobile_image": "shopify://shop_images/Liberty-20_f971cecf-1c72-4be8-815d-f8d75ba26171.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/flat-70-80-off"
+            "button_link": "shopify://collections/flat-70-80-off",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_4Q4hVR": {
@@ -64,7 +95,11 @@
             "mobile_image": "shopify://shop_images/Artboard_2.png",
             "heading": "",
             "button_text": "",
-            "button_link": ""
+            "button_link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_AQRLTF": {
@@ -75,7 +110,11 @@
             "mobile_image": "shopify://shop_images/Shopify_banners-02.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/archive-sale"
+            "button_link": "shopify://collections/archive-sale",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_EPjXxj": {
@@ -86,7 +125,11 @@
             "mobile_image": "shopify://shop_images/Shopify_banners_New-18.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/new-arrivals"
+            "button_link": "shopify://collections/new-arrivals",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_nNAnMi": {
@@ -97,7 +140,11 @@
             "mobile_image": "shopify://shop_images/Ending_soon_2.png",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/daily-essentials"
+            "button_link": "shopify://collections/daily-essentials",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_AWYhNx": {
@@ -108,7 +155,11 @@
             "mobile_image": "shopify://shop_images/1M_134dae7c-46ea-4d7f-9d74-d215e00f465e.jpg",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/new-arrivals"
+            "button_link": "shopify://collections/new-arrivals",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_dJfGQ8": {
@@ -119,7 +170,11 @@
             "mobile_image": "shopify://shop_images/2M_9b658eb3-e065-45da-a48b-709c5fb4b461.jpg",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/all"
+            "button_link": "shopify://collections/all",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_KDQ9tX": {
@@ -130,7 +185,11 @@
             "mobile_image": "shopify://shop_images/3M_40a050f7-ca87-4609-9334-93cdf48fcbf0.jpg",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/daily-essentials"
+            "button_link": "shopify://collections/daily-essentials",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_6dMwVX": {
@@ -141,7 +200,11 @@
             "mobile_image": "shopify://shop_images/Main_banner_1_Mobile.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/business-exclusives"
+            "button_link": "shopify://collections/business-exclusives",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_ibDN7K": {
@@ -152,12 +215,17 @@
             "mobile_image": "shopify://shop_images/Main_banner_3_Mobile.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/performance"
+            "button_link": "shopify://collections/performance",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         }
       },
       "block_order": [
         "slide_nkYm46",
+        "slide_VXt7W4",
         "slide_GCfPQQ",
         "slide_VhFdqW",
         "slide_ETHCRG",
