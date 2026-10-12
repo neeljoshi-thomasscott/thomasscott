@@ -45,8 +45,31 @@
   {% endfor %}
 </section> {% endcomment %}
 
-<section class="home-banner">
+{%- liquid
+  # Store time zone as +05:30, so schedules follow store time rather than each visitor's clock.
+  assign tz = 'now' | date: '%z'
+  assign tz_hours = tz | slice: 0, 3
+  assign tz_minutes = tz | slice: 3, 2
+  assign tz_offset = tz_hours | append: ':' | append: tz_minutes
+-%}
+
+<section class="home-banner" id="HomeBanner-{{ section.id }}">
   {% for block in section.blocks %}
+    {%- liquid
+      assign slide_start = ''
+      assign start_date = block.settings.start_date | strip
+      if start_date != blank
+        assign start_time = block.settings.start_time | strip | default: '00:00'
+        assign slide_start = start_date | append: 'T' | append: start_time | append: ':00' | append: tz_offset
+      endif
+
+      assign slide_end = ''
+      assign end_date = block.settings.end_date | strip
+      if end_date != blank
+        assign end_time = block.settings.end_time | strip | default: '23:59'
+        assign slide_end = end_date | append: 'T' | append: end_time | append: ':00' | append: tz_offset
+      endif
+    -%}
     {% assign desktop_image = block.settings.desktop_image %}
     {% assign mobile_image = block.settings.mobile_image %}
     {% assign fallback_image = desktop_image | default: mobile_image %}
@@ -54,6 +77,8 @@
     {% if fallback_image != blank %}
       <div
         class="item home-thumb relative{% if block.settings.heading != blank %} overlay-banner{% endif %}"
+        {% if slide_start != blank %}data-show-from="{{ slide_start }}"{% endif %}
+        {% if slide_end != blank %}data-show-until="{{ slide_end }}"{% endif %}
         {{ block.shopify_attributes }}
       >
         {% if block.settings.button_link != blank %}
@@ -124,6 +149,25 @@
   {% endfor %}
 </section>
 
+{%- unless request.design_mode -%}
+  {%- comment -%}
+    Drop slides outside their schedule before custom.js starts the slick slider (it runs on
+    DOM ready, after this inline script). The theme editor keeps every slide so they stay editable.
+  {%- endcomment -%}
+  <script>
+    (function () {
+      var banner = document.getElementById('HomeBanner-{{ section.id }}');
+      if (!banner) return;
+      var now = Date.now();
+      banner.querySelectorAll('[data-show-from], [data-show-until]').forEach(function (slide) {
+        var from = Date.parse(slide.getAttribute('data-show-from') || '');
+        var until = Date.parse(slide.getAttribute('data-show-until') || '');
+        if ((!isNaN(from) && now < from) || (!isNaN(until) && now >= until)) slide.remove();
+      });
+      if (!banner.children.length) banner.hidden = true;
+    })();
+  </script>
+{%- endunless -%}
 
 {% schema %}
 {
@@ -160,6 +204,37 @@
           "type": "url",
           "id": "button_link",
           "label": "Button Link"
+        },
+        {
+          "type": "header",
+          "content": "Schedule",
+          "info": "Optional. Uses the store's time zone. Leave empty to always show. The theme editor always shows every slide; check the result in Preview."
+        },
+        {
+          "type": "text",
+          "id": "start_date",
+          "label": "Show from date",
+          "placeholder": "YYYY-MM-DD"
+        },
+        {
+          "type": "text",
+          "id": "start_time",
+          "label": "Show from time (24-hour)",
+          "placeholder": "HH:MM",
+          "info": "Defaults to 00:00."
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "Hide after date",
+          "placeholder": "YYYY-MM-DD"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "Hide after time (24-hour)",
+          "placeholder": "HH:MM",
+          "info": "Defaults to 23:59."
         }
       ]
     }
