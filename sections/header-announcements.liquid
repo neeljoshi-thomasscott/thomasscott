@@ -13,6 +13,17 @@
     "
   >
     <div class="announcement-marquee__container">
+      {%- if section.settings.show_timer and settings.sale_timer_end_date != blank -%}
+        <div
+          class="announcement-marquee__timer announcement-marquee__timer--{{ section.settings.timer_position }}"
+          style="--announcement-timer-box-bg: {{ section.settings.timer_box_bg }}; --announcement-timer-box-color: {{ section.settings.timer_box_color }};"
+        >
+          {%- if section.settings.timer_text != blank -%}
+            <span class="announcement-marquee__timer-text">{{ section.settings.timer_text }}</span>
+          {%- endif -%}
+          {% render 'urgency-timer', hide_closest: '.announcement-marquee__timer', show_labels: false %}
+        </div>
+      {%- endif -%}
       <div class="announcement-marquee__viewport">
         <div class="announcement-marquee__track">
 
@@ -73,6 +84,9 @@
 
   #AnnouncementMarquee-{{ section.id }}
   .announcement-marquee__container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     position: relative;
     width: calc(100% - 30px);
     max-width: var(--announcement-container-width);
@@ -83,6 +97,8 @@
   #AnnouncementMarquee-{{ section.id }}
   .announcement-marquee__viewport {
     position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
     width: 100%;
     overflow: hidden;
 
@@ -161,6 +177,64 @@
     opacity: 0.7;
   }
 
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__timer {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+    white-space: nowrap;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__timer--right {
+    order: 1;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .announcement-marquee__timer[hidden] {
+    display: none;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .urgency-timer__display {
+    display: flex;
+    align-items: center;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .urgency-timer__unit {
+    display: flex;
+    align-items: center;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .urgency-timer__unit + .urgency-timer__unit::before {
+    content: ":";
+    padding: 0 3px;
+    font-weight: 700;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .urgency-timer__value {
+    min-width: 2ch;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: var(--announcement-timer-box-bg);
+    color: var(--announcement-timer-box-color);
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #AnnouncementMarquee-{{ section.id }}
+  .urgency-timer__message {
+    margin: 0;
+  }
+
   {% if section.settings.pause_on_hover %}
     #AnnouncementMarquee-{{ section.id }}:hover
     .announcement-marquee__track {
@@ -201,6 +275,22 @@
         black 88%,
         transparent 100%
       );
+    }
+
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__container {
+      gap: 8px;
+    }
+
+    #AnnouncementMarquee-{{ section.id }}
+    .announcement-marquee__timer {
+      gap: 5px;
+      font-size: {{ section.settings.mobile_font_size }}px;
+    }
+
+    #AnnouncementMarquee-{{ section.id }}
+    .urgency-timer__value {
+      padding: 1px 3px;
     }
 
     #AnnouncementMarquee-{{ section.id }}
@@ -388,6 +478,45 @@
       "id": "text_color",
       "label": "Text color",
       "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Sale timer",
+      "info": "End time and expiry action are set in Theme settings → Urgency sale timer."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timer",
+      "label": "Show sale timer",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "timer_text",
+      "label": "Timer text",
+      "default": "Sale ends in"
+    },
+    {
+      "type": "select",
+      "id": "timer_position",
+      "label": "Timer position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "timer_box_bg",
+      "label": "Timer box background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "timer_box_color",
+      "label": "Timer box text color",
+      "default": "#000000"
     }
   ],
   "blocks": [

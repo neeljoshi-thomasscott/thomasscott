@@ -1,0 +1,84 @@
+{%- comment -%}
+  Shared sale countdown (hours / minutes / seconds). Schedule and labels come from
+  Theme settings → Urgency sale timer, so every placement counts down to the same time.
+
+  Accepts:
+  - class {string} - extra classes for the element
+  - hide_closest {string} - selector of the ancestor hidden when the timer expires with "hide"
+    (defaults to the timer itself)
+  - show_labels {boolean} - render unit labels under the values (default: true)
+
+  Usage:
+  {% render 'urgency-timer', class: 'my-timer', hide_closest: '.shopify-section' %}
+{%- endcomment -%}
+{%- liquid
+  assign end_date = settings.sale_timer_end_date | strip
+  assign end_time = settings.sale_timer_end_time | strip
+  if end_time == blank
+    assign end_time = '23:59'
+  endif
+
+  assign end_datetime = ''
+  if end_date != blank
+    assign end_datetime = end_date | append: 'T' | append: end_time | append: ':00'
+  endif
+
+  assign restart_value = settings.sale_timer_restart_value | default: 1
+  case settings.sale_timer_restart_unit
+    when 'hours'
+      assign restart_ms = restart_value | times: 3600000
+    when 'weeks'
+      assign restart_ms = restart_value | times: 604800000
+    else
+      assign restart_ms = restart_value | times: 86400000
+  endcase
+
+  assign labels = true
+  if show_labels == false
+    assign labels = false
+  endif
+-%}
+{%- if end_datetime != blank -%}
+  <script src="{{ 'urgency-sale-timer.js' | asset_url }}" defer="defer"></script>
+  <urgency-sale-timer-component
+    class="urgency-timer {{ class }}"
+    end-datetime="{{ end_datetime }}"
+    on-expire="{{ settings.sale_timer_on_expire }}"
+    restart-ms="{{ restart_ms }}"
+    {% if hide_closest != blank %}
+      hide-closest="{{ hide_closest }}"
+    {% endif %}
+  >
+    <div class="urgency-timer__display" data-urgency-timer-display>
+      <div class="urgency-timer__unit">
+        <span class="urgency-timer__value" data-urgency-timer-hours>00</span>
+        {%- if labels -%}
+          <span class="urgency-timer__label">{{ settings.sale_timer_hours_label | default: 'Hours' }}</span>
+        {%- endif -%}
+      </div>
+      <div class="urgency-timer__unit">
+        <span class="urgency-timer__value" data-urgency-timer-minutes>00</span>
+        {%- if labels -%}
+          <span class="urgency-timer__label">{{ settings.sale_timer_minutes_label | default: 'Minutes' }}</span>
+        {%- endif -%}
+      </div>
+      <div class="urgency-timer__unit">
+        <span class="urgency-timer__value" data-urgency-timer-seconds>00</span>
+        {%- if labels -%}
+          <span class="urgency-timer__label">{{ settings.sale_timer_seconds_label | default: 'Seconds' }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+    <p class="urgency-timer__message" data-urgency-timer-message hidden>
+      {{ settings.sale_timer_expired_message | default: 'This sale has ended. Check back soon!' }}
+    </p>
+  </urgency-sale-timer-component>
+{%- endif -%}
+{%- if end_datetime != blank -%}
+  <style>
+    urgency-sale-timer-component[hidden],
+    urgency-sale-timer-component [hidden] {
+      display: none !important;
+    }
+  </style>
+{%- endif -%}

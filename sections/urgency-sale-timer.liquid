@@ -1,36 +1,4 @@
-{% liquid
-  assign end_date = section.settings.sale_end_date
-  assign end_time = section.settings.sale_end_time | default: '23:59'
-  if end_time == blank
-    assign end_time = '23:59'
-  endif
-
-  assign end_datetime = ''
-  if end_date != blank
-    assign end_datetime = end_date | append: 'T' | append: end_time | append: ':00'
-  endif
-
-  assign restart_value = section.settings.restart_value | default: 1
-  assign restart_unit = section.settings.restart_unit | default: 'days'
-  assign restart_ms = 0
-  case restart_unit
-    when 'hours'
-      assign restart_ms = restart_value | times: 3600000
-    when 'weeks'
-      assign restart_ms = restart_value | times: 604800000
-    else
-      assign restart_ms = restart_value | times: 86400000
-  endcase
-%}
-
-<script src="{{ 'urgency-sale-timer.js' | asset_url }}" defer="defer"></script>
-
-<urgency-sale-timer-component
-  class="urgency-sale-timer section-{{ section.id }}{% if section.settings.make_sticky %} urgency-sale-timer--sticky{% endif %}"
-  end-datetime="{{ end_datetime }}"
-  on-expire="{{ section.settings.on_expire }}"
-  restart-ms="{{ restart_ms }}"
->
+<div class="urgency-sale-timer section-{{ section.id }}{% if section.settings.make_sticky %} urgency-sale-timer--sticky{% endif %}">
   <div class="urgency-sale-timer__inner">
     {% if section.settings.heading != blank %}
       <p class="urgency-sale-timer__heading">{{ section.settings.heading }}</p>
@@ -40,32 +8,11 @@
       <p class="urgency-sale-timer__subheading">{{ section.settings.subheading }}</p>
     {% endif %}
 
-    {% if end_datetime != blank %}
-      <div class="urgency-sale-timer__display" data-urgency-timer-display>
-        <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" data-urgency-timer-days>00</span>
-          <span class="urgency-sale-timer__label">{{ section.settings.days_label | default: 'Days' }}</span>
-        </div>
-        <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" data-urgency-timer-hours>00</span>
-          <span class="urgency-sale-timer__label">{{ section.settings.hours_label | default: 'Hours' }}</span>
-        </div>
-        <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" data-urgency-timer-minutes>00</span>
-          <span class="urgency-sale-timer__label">{{ section.settings.minutes_label | default: 'Minutes' }}</span>
-        </div>
-        <div class="urgency-sale-timer__unit">
-          <span class="urgency-sale-timer__value" data-urgency-timer-seconds>00</span>
-          <span class="urgency-sale-timer__label">{{ section.settings.seconds_label | default: 'Seconds' }}</span>
-        </div>
-      </div>
+    {% if settings.sale_timer_end_date != blank %}
+      {% render 'urgency-timer', hide_closest: '.shopify-section' %}
     {% else %}
-      <p class="urgency-sale-timer__placeholder">Set a sale end date in the section settings to start the countdown.</p>
+      <p class="urgency-sale-timer__placeholder">Set a sale end date in Theme settings → Urgency sale timer to start the countdown.</p>
     {% endif %}
-
-    <p class="urgency-sale-timer__message" data-urgency-timer-message hidden>
-      {{ section.settings.expired_message | default: 'This sale has ended. Check back soon!' }}
-    </p>
 
     {% if section.settings.button_label != blank and section.settings.button_link != blank %}
       <a href="{{ section.settings.button_link }}" class="urgency-sale-timer__button">
@@ -73,73 +20,15 @@
       </a>
     {% endif %}
   </div>
-</urgency-sale-timer-component>
+</div>
 
 {% schema %}
 {
   "name": "Urgency Sale Timer",
   "settings": [
     {
-      "type": "header",
-      "content": "Sale schedule"
-    },
-    {
-      "type": "text",
-      "id": "sale_end_date",
-      "label": "Sale end date",
-      "placeholder": "YYYY-MM-DD",
-      "info": "Example: 2026-10-31. The countdown is calculated using each visitor's local browser time."
-    },
-    {
-      "type": "text",
-      "id": "sale_end_time",
-      "label": "Sale end time (24-hour)",
-      "placeholder": "HH:MM",
-      "default": "23:59"
-    },
-    {
-      "type": "header",
-      "content": "When the timer reaches zero"
-    },
-    {
-      "type": "select",
-      "id": "on_expire",
-      "label": "Action",
-      "options": [
-        { "value": "hide", "label": "Hide this section" },
-        { "value": "message", "label": "Show an expired message" },
-        { "value": "restart", "label": "Restart automatically (recurring sale)" }
-      ],
-      "default": "hide"
-    },
-    {
-      "type": "text",
-      "id": "expired_message",
-      "label": "Expired message",
-      "default": "This sale has ended. Check back soon!",
-      "info": "Only used when the action above is set to \"Show an expired message\"."
-    },
-    {
-      "type": "range",
-      "id": "restart_value",
-      "label": "Restart every",
-      "min": 1,
-      "max": 30,
-      "step": 1,
-      "default": 7,
-      "info": "Only used when the action above is set to \"Restart automatically\"."
-    },
-    {
-      "type": "select",
-      "id": "restart_unit",
-      "label": "Restart interval unit",
-      "options": [
-        { "value": "hours", "label": "Hours" },
-        { "value": "days", "label": "Days" },
-        { "value": "weeks", "label": "Weeks" }
-      ],
-      "default": "days",
-      "info": "Only used when the action above is set to \"Restart automatically\". After the end date/time passes, the countdown jumps forward by this interval repeatedly until it's in the future again — useful for a recurring flash sale."
+      "type": "paragraph",
+      "content": "The sale end time, expiry action and unit labels are shared with the announcement bar and cart drawer. Edit them in Theme settings → Urgency sale timer."
     },
     {
       "type": "header",
@@ -166,34 +55,6 @@
       "type": "url",
       "id": "button_link",
       "label": "Button link"
-    },
-    {
-      "type": "header",
-      "content": "Timer unit labels"
-    },
-    {
-      "type": "text",
-      "id": "days_label",
-      "label": "Days label",
-      "default": "Days"
-    },
-    {
-      "type": "text",
-      "id": "hours_label",
-      "label": "Hours label",
-      "default": "Hours"
-    },
-    {
-      "type": "text",
-      "id": "minutes_label",
-      "label": "Minutes label",
-      "default": "Minutes"
-    },
-    {
-      "type": "text",
-      "id": "seconds_label",
-      "label": "Seconds label",
-      "default": "Seconds"
     },
     {
       "type": "header",
@@ -315,12 +176,12 @@
   font-style: italic;
 }
 
-.section-{{ section.id }} .urgency-sale-timer__display {
+.section-{{ section.id }} .urgency-timer__display {
   display: flex;
   gap: 10px;
 }
 
-.section-{{ section.id }} .urgency-sale-timer__unit {
+.section-{{ section.id }} .urgency-timer__unit {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -331,21 +192,21 @@
   padding: 6px 8px;
 }
 
-.section-{{ section.id }} .urgency-sale-timer__value {
+.section-{{ section.id }} .urgency-timer__value {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 
-.section-{{ section.id }} .urgency-sale-timer__label {
+.section-{{ section.id }} .urgency-timer__label {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0.7;
 }
 
-.section-{{ section.id }} .urgency-sale-timer__message {
+.section-{{ section.id }} .urgency-timer__message {
   font-size: 15px;
   font-weight: 600;
   margin: 0;
@@ -370,11 +231,11 @@
     text-align: center;
   }
 
-  .section-{{ section.id }} .urgency-sale-timer__unit {
+  .section-{{ section.id }} .urgency-timer__unit {
     min-width: 48px;
   }
 
-  .section-{{ section.id }} .urgency-sale-timer__value {
+  .section-{{ section.id }} .urgency-timer__value {
     font-size: 18px;
   }
 }

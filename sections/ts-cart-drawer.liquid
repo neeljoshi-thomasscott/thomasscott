@@ -220,6 +220,19 @@
           </div>
         {%- endif -%}
 
+        {%- comment -%} ── SALE TIMER (shared schedule in Theme settings; not morphed) ── {%- endcomment -%}
+        {%- if section.settings.timer_enable and settings.sale_timer_end_date != blank -%}
+          <div
+            class="ts-cd__timer"
+            style="--ts-cd-timer-bg: {{ section.settings.timer_bg }}; --ts-cd-timer-fg: {{ section.settings.timer_color }}; --ts-cd-timer-box-bg: {{ section.settings.timer_box_bg }}; --ts-cd-timer-box-fg: {{ section.settings.timer_box_color }};"
+          >
+            {%- if section.settings.timer_text != blank -%}
+              <p class="ts-cd__timer-text">{{ section.settings.timer_text | escape }}</p>
+            {%- endif -%}
+            {% render 'urgency-timer', hide_closest: '.ts-cd__timer' %}
+          </div>
+        {%- endif -%}
+
         {%- comment -%} ── TIERED REWARDS ───────────────────────────────────── {%- endcomment -%}
         <div
           class="ts-cd__tiers-wrap"
@@ -596,6 +609,13 @@
     },
     { "type": "checkbox", "id": "banner_dynamic", "label": "Dynamic banners", "default": true, "info": "Rotates through all banners. When off, only the first banner shows." },
     { "type": "range", "id": "banner_interval", "label": "Auto change time", "min": 2, "max": 15, "step": 1, "unit": "s", "default": 4 },
+    { "type": "header", "content": "Sale timer", "info": "End time and expiry action are set in Theme settings → Urgency sale timer." },
+    { "type": "checkbox", "id": "timer_enable", "label": "Enable", "default": true },
+    { "type": "text", "id": "timer_text", "label": "Timer text", "default": "Hurry! Sale ends in" },
+    { "type": "color", "id": "timer_bg", "label": "Background color", "default": "#FFFFFF" },
+    { "type": "color", "id": "timer_color", "label": "Text color", "default": "#000000" },
+    { "type": "color", "id": "timer_box_bg", "label": "Timer box background", "default": "#000000" },
+    { "type": "color", "id": "timer_box_color", "label": "Timer box text color", "default": "#FFFFFF" },
     { "type": "header", "content": "Tiered rewards", "info": "Add milestones with the \"Reward\" block." },
     { "type": "checkbox", "id": "tier_enable", "label": "Enable", "default": true },
     {

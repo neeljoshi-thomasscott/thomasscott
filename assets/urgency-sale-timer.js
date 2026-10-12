@@ -1,6 +1,7 @@
 /**
  * Countdown timer for a sale/promotion. Reads its target end time (and what to do
- * once it's reached) from attributes set by the section's Liquid/schema settings.
+ * once it's reached) from attributes set by the `urgency-timer` snippet, which reads
+ * them from the shared theme settings.
  * Plain custom element with no external dependencies, so it can be dropped into
  * any template/section group safely.
  */
@@ -73,8 +74,8 @@ class UrgencySaleTimer extends HTMLElement {
   #render(remainingMs) {
     const totalSeconds = Math.max(0, Math.floor(remainingMs / 1000));
 
-    this.#setText('days', Math.floor(totalSeconds / 86400));
-    this.#setText('hours', Math.floor((totalSeconds % 86400) / 3600));
+    // No days unit: hours keep counting past 24 so the display stays H:M:S.
+    this.#setText('hours', Math.floor(totalSeconds / 3600));
     this.#setText('minutes', Math.floor((totalSeconds % 3600) / 60));
     this.#setText('seconds', totalSeconds % 60);
   }
@@ -101,9 +102,10 @@ class UrgencySaleTimer extends HTMLElement {
   #hideSection() {
     window.clearInterval(this.#intervalId);
 
-    const section = this.closest('.shopify-section');
-    if (section instanceof HTMLElement) {
-      section.hidden = true;
+    const selector = this.getAttribute('hide-closest');
+    const target = selector ? this.closest(selector) : null;
+    if (target instanceof HTMLElement) {
+      target.hidden = true;
     } else {
       this.hidden = true;
     }
