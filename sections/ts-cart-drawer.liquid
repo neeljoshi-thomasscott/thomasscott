@@ -94,6 +94,12 @@
     assign next_goal = -1
     assign next_text = ''
     for block in tier_blocks
+      capture scheduled
+        render 'schedule', s: block.settings, mode: 'active'
+      endcapture
+      if scheduled == 'false'
+        continue
+      endif
       assign goal = block.settings.goal | times: tier_unit
       if goal > tier_max
         assign tier_max = goal
@@ -193,6 +199,7 @@
             endif
           -%}
           <div
+            id="TsCdBanners"
             class="ts-cd__announcement"
             style="--ts-cd-ann-bg: {{ section.settings.banner_bg }}; --ts-cd-ann-fg: {{ section.settings.banner_color }}; --ts-cd-ann-align: {{ section.settings.banner_align }};"
             data-ts-cd-banners
@@ -200,24 +207,45 @@
               data-interval="{{ section.settings.banner_interval | times: 1000 }}" aria-live="polite"
             {% endif %}
           >
+            {%- comment -%}
+              Every banner is rendered so scheduling can pick the first one that's live;
+              without rotation the script below keeps only that one.
+            {%- endcomment -%}
             {%- for block in banner_blocks -%}
-              {%- if banner_rotate or forloop.first -%}
-                <div
-                  class="ts-cd__banner{% if forloop.first %} is-active{% endif %}"
-                  data-ts-cd-banner
-                  {% unless forloop.first %}
-                    aria-hidden="true"
-                  {% endunless %}
-                  {{ block.shopify_attributes }}
-                >
-                  <p class="ts-cd__banner-title">{{ block.settings.title }}</p>
-                  {%- if block.settings.show_subtext and block.settings.subtext != blank -%}
-                    <p class="ts-cd__banner-sub">{{ block.settings.subtext }}</p>
-                  {%- endif -%}
-                </div>
-              {%- endif -%}
+              <div
+                class="ts-cd__banner{% if forloop.first %} is-active{% endif %}"
+                data-ts-cd-banner
+                {% render 'schedule', s: block.settings %}
+                {% unless forloop.first %}
+                  aria-hidden="true"
+                {% endunless %}
+                {{ block.shopify_attributes }}
+              >
+                <p class="ts-cd__banner-title">{{ block.settings.title }}</p>
+                {%- if block.settings.show_subtext and block.settings.subtext != blank -%}
+                  <p class="ts-cd__banner-sub">{{ block.settings.subtext }}</p>
+                {%- endif -%}
+              </div>
             {%- endfor -%}
           </div>
+          {% render 'schedule-filter', root: 'TsCdBanners' %}
+          {%- unless request.design_mode -%}
+            <script>
+              (function () {
+                var root = document.getElementById('TsCdBanners');
+                if (!root) return;
+                var banners = root.querySelectorAll('[data-ts-cd-banner]');
+                if (!banners.length) return root.remove();
+                {%- unless banner_rotate %}
+                  for (var i = 1; i < banners.length; i++) banners[i].remove();
+                {%- endunless %}
+                if (!root.querySelector('.is-active')) {
+                  banners[0].classList.add('is-active');
+                  banners[0].removeAttribute('aria-hidden');
+                }
+              })();
+            </script>
+          {%- endunless -%}
         {%- endif -%}
 
         {%- comment -%} ── SALE TIMER (shared schedule in Theme settings; not morphed) ── {%- endcomment -%}
@@ -256,6 +284,8 @@
               >
                 <span class="ts-cd__tiers-track"><span class="ts-cd__tiers-fill" style="width: {{ tier_pct }}%;"></span></span>
                 {%- for block in tier_blocks -%}
+                  {%- capture scheduled -%}{% render 'schedule', s: block.settings, mode: 'active' %}{%- endcapture -%}
+                  {%- if scheduled == 'false' -%}{%- continue -%}{%- endif -%}
                   {%- liquid
                     assign goal = block.settings.goal | times: tier_unit
                     assign goal_pos = goal | times: 100.0 | divided_by: tier_max
@@ -550,6 +580,8 @@
             {%- if offer_blocks.size > 0 -%}
               <ul class="ts-cd__offer-list" role="list" data-hydration-key="ts-cd-offer-list">
                 {%- for block in offer_blocks -%}
+                  {%- capture scheduled -%}{% render 'schedule', s: block.settings, mode: 'active' %}{%- endcapture -%}
+                  {%- if scheduled == 'false' -%}{%- continue -%}{%- endif -%}
                   {%- assign code = block.settings.code | strip | upcase -%}
                   <li class="ts-cd__offer" {{ block.shopify_attributes }}>
                     <div>
@@ -673,7 +705,12 @@
       "settings": [
         { "type": "inline_richtext", "id": "title", "label": "Title text", "default": "EXTRA 10% OFF ON PREPAID" },
         { "type": "checkbox", "id": "show_subtext", "label": "SubText", "default": false },
-        { "type": "inline_richtext", "id": "subtext", "label": "SubText text" }
+        { "type": "inline_richtext", "id": "subtext", "label": "SubText text" },
+        { "type": "header", "content": "Schedule", "info": "Optional. Store time zone. Leave empty to always show. The theme editor shows everything; check in Preview." },
+        { "type": "text", "id": "start_date", "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)", "placeholder": "YYYY-MM-DD" },
+        { "type": "text", "id": "start_time", "label": "Show from time (HH:MM 24-hour, e.g. 00:00)", "placeholder": "HH:MM" },
+        { "type": "text", "id": "end_date", "label": "Hide after date (YYYY-MM-DD, e.g. 2026-10-31)", "placeholder": "YYYY-MM-DD" },
+        { "type": "text", "id": "end_time", "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)", "placeholder": "HH:MM" }
       ]
     },
     {
@@ -697,7 +734,12 @@
         },
         { "type": "text", "id": "reward_text", "label": "Reward text", "default": "B2G2", "info": "Up to 16 characters." },
         { "type": "text", "id": "suffix", "label": "Suffix (optional)", "info": "Up to 14 characters." },
-        { "type": "text", "id": "before_text", "label": "Text before hitting the goal", "default": "Add {{goal}} more items to unlock B2G2", "info": "{{goal}} is replaced by what is still needed (items or ₹)." }
+        { "type": "text", "id": "before_text", "label": "Text before hitting the goal", "default": "Add {{goal}} more items to unlock B2G2", "info": "{{goal}} is replaced by what is still needed (items or ₹)." },
+        { "type": "header", "content": "Schedule", "info": "Optional. Store time zone. Leave empty to always show. The theme editor shows everything; check in Preview." },
+        { "type": "text", "id": "start_date", "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)", "placeholder": "YYYY-MM-DD" },
+        { "type": "text", "id": "start_time", "label": "Show from time (HH:MM 24-hour, e.g. 00:00)", "placeholder": "HH:MM" },
+        { "type": "text", "id": "end_date", "label": "Hide after date (YYYY-MM-DD, e.g. 2026-10-31)", "placeholder": "YYYY-MM-DD" },
+        { "type": "text", "id": "end_time", "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)", "placeholder": "HH:MM" }
       ]
     },
     {
@@ -706,7 +748,12 @@
       "settings": [
         { "type": "text", "id": "code", "label": "Coupon code" },
         { "type": "text", "id": "title", "label": "Title", "default": "Flat ₹200 off" },
-        { "type": "text", "id": "description", "label": "Description", "default": "On orders above ₹1,999" }
+        { "type": "text", "id": "description", "label": "Description", "default": "On orders above ₹1,999" },
+        { "type": "header", "content": "Schedule", "info": "Optional. Store time zone. Leave empty to always show. The theme editor shows everything; check in Preview." },
+        { "type": "text", "id": "start_date", "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)", "placeholder": "YYYY-MM-DD" },
+        { "type": "text", "id": "start_time", "label": "Show from time (HH:MM 24-hour, e.g. 00:00)", "placeholder": "HH:MM" },
+        { "type": "text", "id": "end_date", "label": "Hide after date (YYYY-MM-DD, e.g. 2026-10-31)", "placeholder": "YYYY-MM-DD" },
+        { "type": "text", "id": "end_time", "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)", "placeholder": "HH:MM" }
       ]
     }
   ],

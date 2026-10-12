@@ -34,15 +34,28 @@
       },
       {
         "type": "text",
-        "id": "sale_timer_end_date",
-        "label": "Sale end date",
+        "id": "sale_timer_start_date",
+        "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)",
         "placeholder": "YYYY-MM-DD",
-        "info": "Example: 2026-10-31. Leave empty to hide the timer everywhere. Uses each visitor's local browser time."
+        "info": "Optional. The timer stays hidden until then. Leave empty to show straight away."
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_start_time",
+        "label": "Show from time (HH:MM 24-hour, e.g. 00:00)",
+        "placeholder": "HH:MM"
+      },
+      {
+        "type": "text",
+        "id": "sale_timer_end_date",
+        "label": "Sale end date (YYYY-MM-DD, e.g. 2026-10-31)",
+        "placeholder": "YYYY-MM-DD",
+        "info": "Leave empty to hide the timer everywhere. Dates and times use the store's time zone."
       },
       {
         "type": "text",
         "id": "sale_timer_end_time",
-        "label": "Sale end time (24-hour)",
+        "label": "Sale end time (HH:MM 24-hour, e.g. 23:59)",
         "placeholder": "HH:MM",
         "default": "23:59"
       },

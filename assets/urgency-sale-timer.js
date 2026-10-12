@@ -9,8 +9,14 @@ class UrgencySaleTimer extends HTMLElement {
   /** @type {number|undefined} */
   #intervalId;
 
+  /** Whether the timer is hidden because the sale hasn't started yet. */
+  #waitingForStart = false;
+
   connectedCallback() {
     if (this.endTime === null) return;
+
+    // The snippet's inline script may already have hidden it before this script loaded.
+    this.#waitingForStart = this.hasAttribute('waiting-for-start');
 
     this.#tick();
     this.#intervalId = window.setInterval(() => this.#tick(), 1000);
@@ -18,6 +24,15 @@ class UrgencySaleTimer extends HTMLElement {
 
   disconnectedCallback() {
     window.clearInterval(this.#intervalId);
+  }
+
+  /** @returns {number|null} Start time in ms since epoch, or null if it shows straight away. */
+  get startTime() {
+    const value = this.getAttribute('start-datetime');
+    if (!value) return null;
+
+    const time = new Date(value).getTime();
+    return Number.isNaN(time) ? null : time;
   }
 
   /** @returns {number|null} End time in ms since epoch, or null if not configured/invalid. */
@@ -51,6 +66,18 @@ class UrgencySaleTimer extends HTMLElement {
     if (end === null) return;
 
     const now = Date.now();
+
+    const start = this.startTime;
+    if (start !== null && now < start) {
+      this.#waitingForStart = true;
+      this.#hideTarget().hidden = true;
+      return;
+    }
+    if (this.#waitingForStart) {
+      this.#waitingForStart = false;
+      this.removeAttribute('waiting-for-start');
+      this.#hideTarget().hidden = false;
+    }
 
     if (now >= end) {
       const restartMs = this.restartMs;
@@ -101,14 +128,14 @@ class UrgencySaleTimer extends HTMLElement {
 
   #hideSection() {
     window.clearInterval(this.#intervalId);
+    this.#hideTarget().hidden = true;
+  }
 
+  /** @returns {HTMLElement} The element to hide: the `hide-closest` ancestor, or the timer itself. */
+  #hideTarget() {
     const selector = this.getAttribute('hide-closest');
     const target = selector ? this.closest(selector) : null;
-    if (target instanceof HTMLElement) {
-      target.hidden = true;
-    } else {
-      this.hidden = true;
-    }
+    return target instanceof HTMLElement ? target : this;
   }
 }
 

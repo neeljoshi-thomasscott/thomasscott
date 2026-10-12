@@ -12,6 +12,19 @@
   {% render 'urgency-timer', class: 'my-timer', hide_closest: '.shopify-section' %}
 {%- endcomment -%}
 {%- liquid
+  # Store time zone as +05:30, so start/end follow store time rather than each visitor's clock.
+  assign tz = 'now' | date: '%z'
+  assign tz_hours = tz | slice: 0, 3
+  assign tz_minutes = tz | slice: 3, 2
+  assign tz_offset = tz_hours | append: ':' | append: tz_minutes
+
+  assign start_datetime = ''
+  assign start_date = settings.sale_timer_start_date | strip
+  if start_date != blank
+    assign start_time = settings.sale_timer_start_time | strip | default: '00:00'
+    assign start_datetime = start_date | append: 'T' | append: start_time | append: ':00' | append: tz_offset
+  endif
+
   assign end_date = settings.sale_timer_end_date | strip
   assign end_time = settings.sale_timer_end_time | strip
   if end_time == blank
@@ -20,7 +33,7 @@
 
   assign end_datetime = ''
   if settings.sale_timer_enable and end_date != blank
-    assign end_datetime = end_date | append: 'T' | append: end_time | append: ':00'
+    assign end_datetime = end_date | append: 'T' | append: end_time | append: ':00' | append: tz_offset
   endif
 
   assign restart_value = settings.sale_timer_restart_value | default: 1
@@ -42,6 +55,9 @@
   <script src="{{ 'urgency-sale-timer.js' | asset_url }}" defer="defer"></script>
   <urgency-sale-timer-component
     class="urgency-timer {{ class }}"
+    {% if start_datetime != blank %}
+      start-datetime="{{ start_datetime }}"
+    {% endif %}
     end-datetime="{{ end_datetime }}"
     on-expire="{{ settings.sale_timer_on_expire }}"
     restart-ms="{{ restart_ms }}"
@@ -73,6 +89,20 @@
       {{ settings.sale_timer_expired_message | default: 'This sale has ended. Check back soon!' }}
     </p>
   </urgency-sale-timer-component>
+  {%- if start_datetime != blank -%}
+    {%- comment -%} Hide straight away before the start, without waiting for the deferred script. {%- endcomment -%}
+    <script>
+      (function () {
+        var timers = document.querySelectorAll('urgency-sale-timer-component');
+        var timer = timers[timers.length - 1];
+        if (!timer || Date.now() >= Date.parse(timer.getAttribute('start-datetime'))) return;
+        var selector = timer.getAttribute('hide-closest');
+        var target = (selector && timer.closest(selector)) || timer;
+        target.hidden = true;
+        timer.setAttribute('waiting-for-start', '');
+      })();
+    </script>
+  {%- endif -%}
 {%- endif -%}
 {%- if end_datetime != blank -%}
   <style>
