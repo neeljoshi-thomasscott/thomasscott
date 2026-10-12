@@ -249,6 +249,7 @@
           "type": "collection_card",
           "settings": {
             "collection": "new-arrivals",
+            "tag_text": "FESTIVE PICK",
             "custom_image": "shopify://shop_images/fcc8e10d03473dcd2915124df2555c64a03e7590.png",
             "custom_title": ""
           }
