@@ -74,7 +74,13 @@
         "separator_size": 11,
         "pause_on_hover": true,
         "background_color": "#000000",
-        "text_color": "#ffffff"
+        "text_color": "#ffffff",
+        "show_timer": true,
+        "timer_text": "Sale ends in",
+        "timer_bg": "#ffffff",
+        "timer_color": "#000000",
+        "timer_box_bg": "#000000",
+        "timer_box_color": "#ffffff"
       }
     },
     "header_section": {

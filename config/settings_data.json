@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "sale_timer_enable": false,
+    "sale_timer_enable": true,
     "logo": "shopify://shop_images/thomas-logo.svg",
     "logo_height": 36,
     "logo_height_mobile": 28,
@@ -94,12 +94,28 @@
       "ts-cart-drawer": {
         "type": "ts-cart-drawer",
         "blocks": {
+          "banner_rWgR9K": {
+            "type": "banner",
+            "settings": {
+              "title": "FESTIVE SALE IS LIVE!",
+              "show_subtext": false,
+              "subtext": "",
+              "start_date": "2026-10-14",
+              "start_time": "00:00",
+              "end_date": "",
+              "end_time": ""
+            }
+          },
           "ts-cart-drawer-0": {
             "type": "banner",
             "settings": {
               "title": "EXTRA 10% OFF ON PREPAID",
               "show_subtext": false,
-              "subtext": ""
+              "subtext": "",
+              "start_date": "",
+              "start_time": "",
+              "end_date": "",
+              "end_time": ""
             }
           },
           "banner_G7LrbX": {
@@ -107,24 +123,48 @@
             "settings": {
               "title": "FREE shipping included",
               "show_subtext": false,
-              "subtext": ""
+              "subtext": "",
+              "start_date": "",
+              "start_time": "",
+              "end_date": "",
+              "end_time": ""
             }
           },
           "ts-cart-drawer-1": {
             "type": "reward",
             "settings": {
               "goal": 2,
-              "reward_type": "custom",
-              "reward_text": "B1G1",
+              "reward_type": "free_gift",
+              "reward_text": "B2G1",
               "suffix": "",
-              "before_text": "Add {{goal}} more items to unlock B1G1"
+              "before_text": "Add {{goal}} more items to unlock B2G1",
+              "start_date": "2026-10-14",
+              "start_time": "00:00",
+              "end_date": "",
+              "end_time": ""
+            }
+          },
+          "reward_wLhT4D": {
+            "type": "reward",
+            "settings": {
+              "goal": 3,
+              "reward_type": "free_gift",
+              "reward_text": "B3G2",
+              "suffix": "",
+              "before_text": "Add {{goal}} more items to unlock B3G2",
+              "start_date": "2026-10-14",
+              "start_time": "00:00",
+              "end_date": "",
+              "end_time": ""
             }
           }
         },
         "block_order": [
+          "banner_rWgR9K",
           "ts-cart-drawer-0",
           "banner_G7LrbX",
-          "ts-cart-drawer-1"
+          "ts-cart-drawer-1",
+          "reward_wLhT4D"
         ],
         "settings": {
           "enable": true,
@@ -142,7 +182,7 @@
           "timer_color": "#000000",
           "timer_box_bg": "#000000",
           "timer_box_color": "#ffffff",
-          "tier_enable": false,
+          "tier_enable": true,
           "tier_condition": "quantity",
           "tier_primary": "#000000",
           "tier_secondary": "#808080",
@@ -564,7 +604,15 @@
           "selected_variant_hover_border_color": "#1a1a1a"
         }
       }
-    }
+    },
+    "sale_timer_start_date": "2026-10-14",
+    "sale_timer_start_time": "00:00",
+    "sale_timer_end_date": "2026-10-15",
+    "sale_timer_end_time": "00:00",
+    "sale_timer_on_expire": "restart",
+    "sale_timer_expired_message": "This sale has ended. Check back soon!",
+    "sale_timer_restart_value": 18,
+    "sale_timer_restart_unit": "hours"
   },
   "presets": {
     "Horizon": {
