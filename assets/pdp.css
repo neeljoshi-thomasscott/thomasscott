@@ -19,7 +19,7 @@
 .product-information-wrapper .product-details .product-price .group{order:1;}
 .product-information-wrapper .product-details .product-price .price{font-size:28px; font-weight:700; color:var(--primary-color); line-height:38px; margin-right:7px;}
 .product-information-wrapper .product-details .product-price .discount{font-size:14px; font-weight:500; color:#6F6F6F; margin-right:8px; opacity:1; order:2;}
-.product-information-wrapper .product-details .product-price .price-discount{font-size:14px; font-weight:500; color:#292929; line-height:19px; order:3;}
+.product-information-wrapper .product-details .product-price .price-discount{font-size:14px; font-weight:500; color:#1e8e3e; line-height:19px; order:3;}
 .product-information-wrapper .product-details .product-price .inclusive{width: 100%;font-size:12px; font-weight:500; color:#6F6F6F; line-height:16px;order: 4;}
 .product-information-wrapper .product-details .pdp-share-wishlist-icon{width:112px; min-width:112px; display: flex;align-items: center; justify-content:space-between; gap:0px;}
 .product-information-wrapper .product-details .group-block-content .pdp-share-sec{display:flex;}
@@ -117,7 +117,7 @@
 .sticky-add-to-cart__bar .sticky-rating .reviews-count{color:rgba(30, 30, 30, 0.7); font-weight:400;}
 .sticky-add-to-cart__bar .sticky-add-to-cart__price .product-price .regular-price{font-size:18px; font-weight:700; color:var(--primary-color); line-height:25px; letter-spacing:1%;}
 .sticky-add-to-cart__price .product-price .inclusive, .sticky-add-to-cart__price .product-price .discount{font-size:12px; color:#6F6F6F; font-weight:500; line-height:16px; opacity:1;}
-.sticky-add-to-cart__price .product-price .price-discount{font-size:12px; color:#292929; font-weight:500; line-height:16px;}
+.sticky-add-to-cart__price .product-price .price-discount{font-size:12px; color:#1e8e3e; font-weight:500; line-height:16px;}
 .sticky-add-to-cart__bar .sticky-add-button{display:flex; gap:16px;}
 .sticky-add-to-cart__bar .sticky-add-button .add-to-cart-button{width:227px; font-size:14px; color:var(--white-color); font-weight:600; line-height:19px; letter-spacing:8%; text-transform:uppercase; background:var(--primary-color); border:1px solid var(--primary-color); padding:14px 20px;}
 .sticky-add-to-cart__bar .sticky-add-button .add-cart-btn{color:var(--primary-color); background:transparent;}
