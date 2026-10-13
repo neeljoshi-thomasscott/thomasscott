@@ -603,9 +603,9 @@
       "type": "th_banner_1",
       "name": "Season Banner",
       "settings": {
-        "desktop_image": "shopify://shop_images/Shopify_banners_799.webp",
+        "desktop_image": "shopify://shop_images/Shopify_banners-11.webp",
         "custom_class": "",
-        "mobile_image": "shopify://shop_images/Shopify_banners_799_M.webp",
+        "mobile_image": "shopify://shop_images/Shopify_banners-14.webp",
         "heading": "",
         "button_text": "",
         "button_link": "shopify://collections/under-799"
@@ -617,7 +617,7 @@
         "card_kQJRrF": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/Under_699.webp",
+            "image": "shopify://shop_images/Shopify_banners-15.webp",
             "title": "",
             "link": "shopify://collections/under-699",
             "button_label": ""
@@ -626,7 +626,7 @@
         "card_TrQT6g": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/Under_999.webp",
+            "image": "shopify://shop_images/Shopify_banners-16.webp",
             "title": "",
             "link": "shopify://collections/under-999",
             "button_label": ""
