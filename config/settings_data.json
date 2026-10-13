@@ -106,8 +106,8 @@
               "title": "FESTIVE SALE IS LIVE!",
               "show_subtext": false,
               "subtext": "",
-              "start_date": "2026-10-13",
-              "start_time": "17:30",
+              "start_date": "2026-10-14",
+              "start_time": "00:00",
               "end_date": "",
               "end_time": ""
             }
@@ -144,8 +144,8 @@
               "reward_text": "B2G1",
               "suffix": "",
               "before_text": "Add {{goal}} more items to unlock B2G1",
-              "start_date": "2026-10-13",
-              "start_time": "17:30",
+              "start_date": "2026-10-14",
+              "start_time": "00:00",
               "end_date": "",
               "end_time": ""
             }
@@ -158,8 +158,8 @@
               "reward_text": "B3G2",
               "suffix": "",
               "before_text": "Add {{goal}} more items to unlock B3G2",
-              "start_date": "2026-10-13",
-              "start_time": "17:30",
+              "start_date": "2026-10-14",
+              "start_time": "00:00",
               "end_date": "",
               "end_time": ""
             }
