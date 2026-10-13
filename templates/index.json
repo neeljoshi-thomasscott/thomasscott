@@ -12,6 +12,20 @@
     "th_home_page_banner_UyyE9D": {
       "type": "th_home_page_banner",
       "blocks": {
+        "slide_kwmVBJ": {
+          "type": "slide",
+          "settings": {
+            "desktop_image": "shopify://shop_images/b2g1-b3g2-desktop-home-banner.webp",
+            "mobile_image": "shopify://shop_images/b2g1-b3g2-desktop-mobile-banner.webp",
+            "heading": "",
+            "button_text": "",
+            "button_link": "shopify://collections/new-arrivals",
+            "start_date": "2026-10-14",
+            "start_time": "00:00",
+            "end_date": "",
+            "end_time": ""
+          }
+        },
         "slide_nkYm46": {
           "type": "slide",
           "name": "Archive Sale",
@@ -29,7 +43,8 @@
         },
         "slide_VXt7W4": {
           "type": "slide",
-          "name": "Archive Sale",
+          "name": "Plus Size",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
             "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
@@ -224,6 +239,7 @@
         }
       },
       "block_order": [
+        "slide_kwmVBJ",
         "slide_nkYm46",
         "slide_VXt7W4",
         "slide_GCfPQQ",
@@ -249,9 +265,16 @@
           "type": "collection_card",
           "settings": {
             "collection": "new-arrivals",
-            "tag_text": "FESTIVE PICK",
             "custom_image": "shopify://shop_images/fcc8e10d03473dcd2915124df2555c64a03e7590.png",
-            "custom_title": ""
+            "custom_title": "",
+            "tag_text": "FESTIVE PICK",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_W4ndxQ": {
@@ -259,7 +282,15 @@
           "settings": {
             "collection": "shirts-view-all",
             "custom_image": "shopify://shop_images/Shirt.png",
-            "custom_title": "Shirts"
+            "custom_title": "Shirts",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_HjcyGH": {
@@ -267,7 +298,15 @@
           "settings": {
             "collection": "jeans",
             "custom_image": "shopify://shop_images/Jeans_df56c6e2-3763-4b99-9d23-aaddf29d81c6.png",
-            "custom_title": "Jeans"
+            "custom_title": "Jeans",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_hdpxEg": {
@@ -275,7 +314,15 @@
           "settings": {
             "collection": "bags",
             "custom_image": "shopify://shop_images/Bag.png",
-            "custom_title": "Bags"
+            "custom_title": "Bags",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_t7RRxm": {
@@ -283,7 +330,15 @@
           "settings": {
             "collection": "tshirts",
             "custom_image": "shopify://shop_images/Tshirt.png",
-            "custom_title": "T-Shirts"
+            "custom_title": "T-Shirts",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_xDakNb": {
@@ -291,7 +346,15 @@
           "settings": {
             "collection": "plus-size",
             "custom_image": "shopify://shop_images/Plus_size_c0cc0ca7-8a8f-4a38-b37f-254a58663dae.png",
-            "custom_title": "Plus Size"
+            "custom_title": "Plus Size",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_CVT7fW": {
@@ -299,7 +362,15 @@
           "settings": {
             "collection": "blazers",
             "custom_image": "shopify://shop_images/collection_blazers.png",
-            "custom_title": "Blazers"
+            "custom_title": "Blazers",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "collection_card_phqFWF": {
@@ -307,7 +378,15 @@
           "settings": {
             "collection": "bottoms",
             "custom_image": "shopify://shop_images/Bottom.png",
-            "custom_title": "Bottoms"
+            "custom_title": "Bottoms",
+            "tag_text": "",
+            "tag_bg_start": "#5a0f24",
+            "tag_bg_end": "#a8264f",
+            "tag_color": "#f3d27a",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         }
       },
