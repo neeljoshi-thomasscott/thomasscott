@@ -1,0 +1,42 @@
+{%- comment -%}
+  Buy 2 Get 1 / Buy 3 Get 2 ribbons for a product: from its tags ("offer-b2g1", "offer-b3g2"),
+  or both on every product while the site-wide offer is on (Theme settings → Offer ribbons).
+  They take turns when a product has both.
+
+  Accepts:
+  - product {object} - the product
+  - sitewide {string} - optional 'true'/'false' from offer-sitewide-active, to skip recomputing it
+  - class {string} - extra classes, e.g. 'offer-ribbons--pdp'
+
+  Usage:
+  {% render 'offer-ribbons', product: product, class: 'offer-ribbons--pdp' %}
+{%- endcomment -%}
+{%- liquid
+  if sitewide == blank
+    capture sitewide
+      render 'offer-sitewide-active'
+    endcapture
+  endif
+
+  assign has_b2g1 = false
+  assign has_b3g2 = false
+  if sitewide == 'true'
+    assign has_b2g1 = true
+    assign has_b3g2 = true
+  else
+    for tag in product.tags
+      assign normalized_tag = tag | strip | downcase
+      if normalized_tag == 'offer-b2g1'
+        assign has_b2g1 = true
+      elsif normalized_tag == 'offer-b3g2'
+        assign has_b3g2 = true
+      endif
+    endfor
+  endif
+-%}
+{%- if has_b2g1 or has_b3g2 -%}
+  <div class="offer-ribbons{% if has_b2g1 and has_b3g2 %} offer-ribbons--rotate{% endif %} {{ class }}">
+    {%- if has_b2g1 -%}<span class="offer-ribbon offer-ribbon--b2g1">Buy 2 Get 1 Free</span>{%- endif -%}
+    {%- if has_b3g2 -%}<span class="offer-ribbon offer-ribbon--b3g2">Buy 3 Get 2 Free</span>{%- endif -%}
+  </div>
+{%- endif -%}

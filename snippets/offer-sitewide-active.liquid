@@ -1,0 +1,38 @@
+{%- comment -%}
+  Prints true/false: whether the site-wide offer ribbons (Theme settings → Offer ribbons)
+  are on right now, in the store's time zone.
+
+  Usage:
+  {% capture sitewide_offer %}{% render 'offer-sitewide-active' %}{% endcapture %}
+  {% if sitewide_offer == 'true' %}...{% endif %}
+{%- endcomment -%}
+{%- liquid
+  assign active = false
+  if settings.offer_ribbons_all_products
+    assign active = true
+    assign tz = 'now' | date: '%z'
+    assign tz_offset = tz | slice: 0, 3 | append: ':'
+    assign tz_minutes = tz | slice: 3, 2
+    assign tz_offset = tz_offset | append: tz_minutes
+    assign now_s = 'now' | date: '%s' | plus: 0
+
+    assign from_date = settings.offer_ribbons_start_date | strip
+    if from_date != blank
+      assign from_time = settings.offer_ribbons_start_time | strip | default: '00:00'
+      assign from_s = from_date | append: 'T' | append: from_time | append: ':00' | append: tz_offset | date: '%s' | plus: 0
+      if from_s > 0 and now_s < from_s
+        assign active = false
+      endif
+    endif
+
+    assign until_date = settings.offer_ribbons_end_date | strip
+    if until_date != blank
+      assign until_time = settings.offer_ribbons_end_time | strip | default: '23:59'
+      assign until_s = until_date | append: 'T' | append: until_time | append: ':00' | append: tz_offset | date: '%s' | plus: 0
+      if until_s > 0 and now_s >= until_s
+        assign active = false
+      endif
+    endif
+  endif
+  echo active
+-%}
