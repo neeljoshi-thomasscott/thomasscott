@@ -52,6 +52,42 @@
     {% assign has_b3g2 = true %}
   {% endif %}
 {% endfor %}
+
+{%- comment -%} Site-wide sale: both ribbons on every product within the Theme settings → Offer ribbons window (store time zone). {%- endcomment -%}
+{%- liquid
+  assign sitewide_offer = false
+  if settings.offer_ribbons_all_products
+    assign sitewide_offer = true
+    assign tz = 'now' | date: '%z'
+    assign tz_offset = tz | slice: 0, 3 | append: ':'
+    assign tz_minutes = tz | slice: 3, 2
+    assign tz_offset = tz_offset | append: tz_minutes
+    assign now_s = 'now' | date: '%s' | plus: 0
+
+    assign offer_from_date = settings.offer_ribbons_start_date | strip
+    if offer_from_date != blank
+      assign offer_from_time = settings.offer_ribbons_start_time | strip | default: '00:00'
+      assign offer_from_s = offer_from_date | append: 'T' | append: offer_from_time | append: ':00' | append: tz_offset | date: '%s' | plus: 0
+      if offer_from_s > 0 and now_s < offer_from_s
+        assign sitewide_offer = false
+      endif
+    endif
+
+    assign offer_until_date = settings.offer_ribbons_end_date | strip
+    if offer_until_date != blank
+      assign offer_until_time = settings.offer_ribbons_end_time | strip | default: '23:59'
+      assign offer_until_s = offer_until_date | append: 'T' | append: offer_until_time | append: ':00' | append: tz_offset | date: '%s' | plus: 0
+      if offer_until_s > 0 and now_s >= offer_until_s
+        assign sitewide_offer = false
+      endif
+    endif
+  endif
+
+  if sitewide_offer
+    assign has_b2g1 = true
+    assign has_b3g2 = true
+  endif
+-%}
 {% capture card_attr %}
     data-variant-title="{{ option_label | escape }}"
     data-quick-add-cart="true"
@@ -81,7 +117,7 @@
     <div class="card-image-wrapper">
      {% if is_sold_out %}
           <div class="sold-out-badge sale-badge">Sold Out</div>
-          {% elsif collection.handle == 'archive-sale' or template.suffix == 'archive-sale' %}
+          {% elsif sitewide_offer == false and collection.handle == 'archive-sale' or sitewide_offer == false and template.suffix == 'archive-sale' %}
           <div class="flat-price-badge sale-badge">Flat Price</div>
            {% elsif is_new_product %}
           <div class="new-badge sale-badge">New Arrivals</div>

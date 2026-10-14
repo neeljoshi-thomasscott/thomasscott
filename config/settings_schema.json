@@ -118,6 +118,50 @@
     ]
   },
   {
+    "name": "Offer ribbons",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Buy 2 Get 1 / Buy 3 Get 2 ribbons on product cards. Outside the site-wide window, products still show the ribbons from their tags (offer-b2g1, offer-b3g2)."
+      },
+      {
+        "type": "checkbox",
+        "id": "offer_ribbons_all_products",
+        "label": "Show both ribbons on all products (site-wide sale)",
+        "default": false,
+        "info": "Also hides the Flat Price badge on Archive Sale cards while active."
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbons_start_date",
+        "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)",
+        "placeholder": "YYYY-MM-DD",
+        "info": "Optional. Leave empty to start straight away."
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbons_start_time",
+        "label": "Show from time (HH:MM 24-hour, e.g. 00:00)",
+        "placeholder": "HH:MM",
+        "info": "Defaults to 00:00."
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbons_end_date",
+        "label": "Hide after date (YYYY-MM-DD, e.g. 2026-11-12)",
+        "placeholder": "YYYY-MM-DD",
+        "info": "Optional. Leave empty to keep it on."
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbons_end_time",
+        "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)",
+        "placeholder": "HH:MM",
+        "info": "Defaults to 23:59. Dates and times use the store's time zone."
+      }
+    ]
+  },
+  {
     "name": "t:names.logo_and_favicon",
     "settings": [
       {
