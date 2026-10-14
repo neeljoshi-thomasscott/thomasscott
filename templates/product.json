@@ -9,11 +9,6 @@
  */
 {
   "sections": {
-    "breadcrumb_48pYTf": {
-      "type": "breadcrumb",
-      "name": "Breadcrumb",
-      "settings": {}
-    },
     "offer_banner_pdp": {
       "type": "offer-banner",
       "name": "Offer Banner",
@@ -28,6 +23,11 @@
         "end_date": "2026-11-12",
         "end_time": "23:59"
       }
+    },
+    "breadcrumb_48pYTf": {
+      "type": "breadcrumb",
+      "name": "Breadcrumb",
+      "settings": {}
     },
     "main": {
       "type": "product-information",
@@ -1082,8 +1082,8 @@
     }
   },
   "order": [
-    "breadcrumb_48pYTf",
     "offer_banner_pdp",
+    "breadcrumb_48pYTf",
     "main",
     "custom_liquid_hkNad4",
     "auto_bundle_GXgyTE",
