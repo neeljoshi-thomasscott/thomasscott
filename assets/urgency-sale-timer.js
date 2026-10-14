@@ -62,7 +62,7 @@ class UrgencySaleTimer extends HTMLElement {
   }
 
   #tick() {
-    let end = this.endTime;
+    const end = this.endTime;
     if (end === null) return;
 
     const now = Date.now();
@@ -79,13 +79,24 @@ class UrgencySaleTimer extends HTMLElement {
       this.#hideTarget().hidden = false;
     }
 
-    if (now >= end) {
-      const restartMs = this.restartMs;
+    const restartMs = this.restartMs;
 
-      if (this.onExpire === 'restart' && restartMs) {
-        while (end <= now) end += restartMs;
-        this.endTime = end;
-      } else if (this.onExpire === 'message') {
+    // Recurring: count down in restart-length cycles (from the start time, or backwards
+    // from the sale end) and treat the end date as the end of the whole sale.
+    if (this.onExpire === 'restart' && restartMs) {
+      if (now >= end) {
+        this.#hideSection();
+        return;
+      }
+
+      const anchor = start ?? end;
+      const cycleEnd = now - (((now - anchor) % restartMs) + restartMs) % restartMs + restartMs;
+      this.#render(Math.min(cycleEnd, end) - now);
+      return;
+    }
+
+    if (now >= end) {
+      if (this.onExpire === 'message') {
         this.#showExpiredMessage();
         return;
       } else {
