@@ -1,0 +1,158 @@
+{%- liquid
+  assign desktop_image = section.settings.desktop_image
+  assign mobile_image = section.settings.mobile_image | default: desktop_image
+  assign fallback_image = desktop_image | default: mobile_image
+  assign alt = section.settings.alt | default: fallback_image.alt | escape
+-%}
+{%- if fallback_image != blank -%}
+  <div
+    id="OfferBanner-{{ section.id }}"
+    class="offer-banner section-{{ section.id }}"
+  >
+    <div
+      class="offer-banner__inner"
+      {% render 'schedule', s: section.settings %}
+    >
+      {%- if section.settings.link != blank -%}
+        <a class="offer-banner__link" href="{{ section.settings.link }}" aria-label="{{ alt }}">
+      {%- endif -%}
+      <picture class="offer-banner__picture">
+        {%- if mobile_image != blank -%}
+          <source
+            media="(max-width: 767px)"
+            srcset="
+              {{ mobile_image | image_url: width: 375 }} 375w,
+              {{ mobile_image | image_url: width: 750 }} 750w,
+              {{ mobile_image | image_url: width: 1100 }} 1100w
+            "
+            sizes="100vw"
+            width="{{ mobile_image.width }}"
+            height="{{ mobile_image.height }}"
+          >
+        {%- endif -%}
+        <img
+          class="offer-banner__image"
+          src="{{ fallback_image | image_url: width: 1600 }}"
+          srcset="
+            {{ fallback_image | image_url: width: 800 }} 800w,
+            {{ fallback_image | image_url: width: 1200 }} 1200w,
+            {{ fallback_image | image_url: width: 1600 }} 1600w,
+            {{ fallback_image | image_url: width: 2400 }} 2400w
+          "
+          sizes="100vw"
+          width="{{ fallback_image.width }}"
+          height="{{ fallback_image.height }}"
+          alt="{{ alt }}"
+          loading="{{ section.settings.loading }}"
+        >
+      </picture>
+      {%- if section.settings.link != blank -%}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+  {% render 'schedule-filter', root: 'OfferBanner-' | append: section.id %}
+
+  <style>
+    .section-offer-banner,
+    .offer-banner {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .offer-banner:not(:has(.offer-banner__inner)) {
+      display: none;
+    }
+    .offer-banner__link,
+    .offer-banner__picture,
+    .offer-banner__image {
+      display: block;
+      width: 100%;
+    }
+    .offer-banner__image {
+      height: auto;
+    }
+  </style>
+{%- elsif request.design_mode -%}
+  <div class="container" style="padding: 16px 0; text-align: center; opacity: 0.6;">
+    Offer Banner: add a desktop and mobile image.
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Offer Banner",
+  "class": "section-offer-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop image",
+      "info": "Wide strip, e.g. 1600 × 71 px."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image",
+      "info": "Shown up to 767px wide, e.g. 750 × 125 px. Falls back to the desktop image."
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Redirect link (optional)",
+      "info": "Pick a product, collection, page, or paste any URL. The whole banner becomes clickable."
+    },
+    {
+      "type": "text",
+      "id": "alt",
+      "label": "Alt text",
+      "default": "Festive Sale offer"
+    },
+    {
+      "type": "select",
+      "id": "loading",
+      "label": "Image loading",
+      "options": [
+        { "value": "lazy", "label": "Lazy (below the fold)" },
+        { "value": "eager", "label": "Eager (top of page)" }
+      ],
+      "default": "eager"
+    },
+    {
+      "type": "header",
+      "content": "Schedule"
+    },
+    {
+      "type": "text",
+      "id": "start_date",
+      "label": "Show from date (YYYY-MM-DD, e.g. 2026-10-14)",
+      "placeholder": "YYYY-MM-DD"
+    },
+    {
+      "type": "text",
+      "id": "start_time",
+      "label": "Show from time (HH:MM 24-hour, e.g. 00:00)",
+      "placeholder": "HH:MM",
+      "info": "Defaults to 00:00."
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "Hide after date (YYYY-MM-DD, e.g. 2026-11-12)",
+      "placeholder": "YYYY-MM-DD"
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)",
+      "placeholder": "HH:MM",
+      "info": "Defaults to 23:59. Dates and times use the store's time zone."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Offer Banner"
+    }
+  ]
+}
+{% endschema %}
