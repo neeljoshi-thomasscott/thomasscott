@@ -8,10 +8,9 @@
   <div
     id="OfferBanner-{{ section.id }}"
     class="offer-banner section-{{ section.id }}"
-    style="--offer-banner-pt: {{ section.settings.padding_top }}px; --offer-banner-pb: {{ section.settings.padding_bottom }}px; --offer-banner-pt-mobile: {{ section.settings.padding_top_mobile }}px; --offer-banner-pb-mobile: {{ section.settings.padding_bottom_mobile }}px;"
   >
     <div
-      class="offer-banner__inner{% if section.settings.full_width == false %} container{% endif %}"
+      class="offer-banner__inner"
       {% render 'schedule', s: section.settings %}
     >
       {%- if section.settings.link != blank -%}
@@ -55,9 +54,11 @@
   {% render 'schedule-filter', root: 'OfferBanner-' | append: section.id %}
 
   <style>
+    .section-offer-banner,
     .offer-banner {
-      padding-top: var(--offer-banner-pt-mobile);
-      padding-bottom: var(--offer-banner-pb-mobile);
+      width: 100%;
+      padding: 0;
+      margin: 0;
     }
     .offer-banner:not(:has(.offer-banner__inner)) {
       display: none;
@@ -70,12 +71,6 @@
     }
     .offer-banner__image {
       height: auto;
-    }
-    @media screen and (min-width: 768px) {
-      .offer-banner {
-        padding-top: var(--offer-banner-pt);
-        padding-bottom: var(--offer-banner-pb);
-      }
     }
   </style>
 {%- elsif request.design_mode -%}
@@ -114,13 +109,6 @@
       "default": "Festive Sale offer"
     },
     {
-      "type": "checkbox",
-      "id": "full_width",
-      "label": "Full width",
-      "default": false,
-      "info": "Off: aligns with the page content width."
-    },
-    {
       "type": "select",
       "id": "loading",
       "label": "Image loading",
@@ -129,50 +117,6 @@
         { "value": "eager", "label": "Eager (top of page)" }
       ],
       "default": "eager"
-    },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding (desktop)",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "default": 10
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding (desktop)",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "default": 10
-    },
-    {
-      "type": "range",
-      "id": "padding_top_mobile",
-      "label": "Top padding (mobile)",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_mobile",
-      "label": "Bottom padding (mobile)",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "default": 8
     },
     {
       "type": "header",
