@@ -10,8 +10,6 @@
 {% assign btn_id = btn_id | append: '_' | append: ts %}
 {% assign has_sale_tag = false %}
 {% assign is_bestseller = false %}
-{% assign has_b2g1 = false %}
-{% assign has_b3g2 = false %}
 {% assign current_time = 'now' | date: '%s' %}
 {% assign product_created_time = product.created_at | date: '%s' %}
 {% assign fifteen_days_seconds = 15 | times: 24 | times: 60 | times: 60 %}
@@ -45,49 +43,10 @@
     {% assign is_bestseller = true %}
   {% endif %}
 
-  {% comment %} Offer ribbons: tag products "offer-b2g1" and/or "offer-b3g2" {% endcomment %}
-  {% if normalized_tag == 'offer-b2g1' %}
-    {% assign has_b2g1 = true %}
-  {% elsif normalized_tag == 'offer-b3g2' %}
-    {% assign has_b3g2 = true %}
-  {% endif %}
 {% endfor %}
 
-{%- comment -%} Site-wide sale: both ribbons on every product within the Theme settings → Offer ribbons window (store time zone). {%- endcomment -%}
-{%- liquid
-  assign sitewide_offer = false
-  if settings.offer_ribbons_all_products
-    assign sitewide_offer = true
-    assign tz = 'now' | date: '%z'
-    assign tz_offset = tz | slice: 0, 3 | append: ':'
-    assign tz_minutes = tz | slice: 3, 2
-    assign tz_offset = tz_offset | append: tz_minutes
-    assign now_s = 'now' | date: '%s' | plus: 0
-
-    assign offer_from_date = settings.offer_ribbons_start_date | strip
-    if offer_from_date != blank
-      assign offer_from_time = settings.offer_ribbons_start_time | strip | default: '00:00'
-      assign offer_from_s = offer_from_date | append: 'T' | append: offer_from_time | append: ':00' | append: tz_offset | date: '%s' | plus: 0
-      if offer_from_s > 0 and now_s < offer_from_s
-        assign sitewide_offer = false
-      endif
-    endif
-
-    assign offer_until_date = settings.offer_ribbons_end_date | strip
-    if offer_until_date != blank
-      assign offer_until_time = settings.offer_ribbons_end_time | strip | default: '23:59'
-      assign offer_until_s = offer_until_date | append: 'T' | append: offer_until_time | append: ':00' | append: tz_offset | date: '%s' | plus: 0
-      if offer_until_s > 0 and now_s >= offer_until_s
-        assign sitewide_offer = false
-      endif
-    endif
-  endif
-
-  if sitewide_offer
-    assign has_b2g1 = true
-    assign has_b3g2 = true
-  endif
--%}
+{%- comment -%} Site-wide sale (Theme settings → Offer ribbons): both ribbons on every card and no Flat Price badge. {%- endcomment -%}
+{%- capture sitewide_offer -%}{% render 'offer-sitewide-active' %}{%- endcapture -%}
 {% capture card_attr %}
     data-variant-title="{{ option_label | escape }}"
     data-quick-add-cart="true"
@@ -117,7 +76,7 @@
     <div class="card-image-wrapper">
      {% if is_sold_out %}
           <div class="sold-out-badge sale-badge">Sold Out</div>
-          {% elsif sitewide_offer == false and collection.handle == 'archive-sale' or sitewide_offer == false and template.suffix == 'archive-sale' %}
+          {% elsif sitewide_offer != 'true' and collection.handle == 'archive-sale' or sitewide_offer != 'true' and template.suffix == 'archive-sale' %}
           <div class="flat-price-badge sale-badge">Flat Price</div>
            {% elsif is_new_product %}
           <div class="new-badge sale-badge">New Arrivals</div>
@@ -134,12 +93,7 @@
           <div class="bestseller-badge sale-badge">Bestseller</div>
       {% endif %}
 
-      {%- if has_b2g1 or has_b3g2 -%}
-        <div class="offer-ribbons{% if has_b2g1 and has_b3g2 %} offer-ribbons--rotate{% endif %}">
-          {%- if has_b2g1 -%}<span class="offer-ribbon offer-ribbon--b2g1">Buy 2 Get 1 Free</span>{%- endif -%}
-          {%- if has_b3g2 -%}<span class="offer-ribbon offer-ribbon--b3g2">Buy 3 Get 2 Free</span>{%- endif -%}
-        </div>
-      {%- endif -%}
+      {%- render 'offer-ribbons', product: product, sitewide: sitewide_offer -%}
 
      {% render 'wishlisthero-collection-product', product: product %}
       

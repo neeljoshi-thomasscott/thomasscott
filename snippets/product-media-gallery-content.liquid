@@ -352,9 +352,11 @@
     data-presentation="{{ media_presentation }}"
     {{ block_shopify_attributes }}
   >
+    {%- capture pdp_offer_ribbons -%}{% render 'offer-ribbons', product: selected_product, class: 'offer-ribbons--pdp' %}{%- endcapture -%}
     {% capture slides %}
       {% for media in sorted_media %}
         {% capture children %}
+          {%- if forloop.first -%}{{ pdp_offer_ribbons }}{%- endif -%}
           {%- liquid
               if needs_both_sizes and forloop.first
                 assign media_sizes = sizes_single
@@ -459,6 +461,7 @@
               data-focal-point="{{ media.presentation.focal_point }}"
             {% endif %}
           >
+            {%- if forloop.first -%}{{ pdp_offer_ribbons }}{%- endif -%}
             {%- if block_settings.zoom and media.media_type == 'image' -%}
               <button
                 type="button"
