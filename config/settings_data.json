@@ -146,7 +146,7 @@
           "ts-cart-drawer-1": {
             "type": "reward",
             "settings": {
-              "goal": 2,
+              "goal": 3,
               "reward_type": "free_gift",
               "reward_text": "B2G1",
               "suffix": "",
@@ -160,7 +160,7 @@
           "reward_wLhT4D": {
             "type": "reward",
             "settings": {
-              "goal": 3,
+              "goal": 5,
               "reward_type": "free_gift",
               "reward_text": "B3G2",
               "suffix": "",
