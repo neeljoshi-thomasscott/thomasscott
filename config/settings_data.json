@@ -300,7 +300,7 @@
       },
       "15734677551373749047": {
         "type": "shopify://apps/flits/blocks/flits/d5eeb0f1-bc12-4372-af4d-40ca0d3ad847",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "ppp_icon_text_color": "#000000",
           "ppp_background_color": "#D7D7D7",
