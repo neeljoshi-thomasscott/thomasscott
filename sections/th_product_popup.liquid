@@ -61,40 +61,20 @@
 
   {%- comment -%}
     Lazy video: no src until the card scrolls into view (see script below).
-    Pick small MP4 renditions — cards are ~400px wide, so 1080p is wasted.
-    src_sd = largest MP4 with long side <= 480 (phones), src_hd = <= 720 (desktop).
+    vid.sources only exposes the 1080p MP4, but Shopify also hosts 720p/480p
+    MP4s whose names are listed in the HLS playlist; the script picks one.
   {%- endcomment -%}
   {%- liquid
     assign vid = block.settings.main_video
-    assign src_sd = ''
-    assign src_hd = ''
-    assign sd_long = 0
-    assign hd_long = 0
-    assign src_min = ''
-    assign min_long = 100000
+    assign src_mp4 = ''
+    assign src_hls = ''
     for s in vid.sources
-      if s.format == 'mp4'
-        assign long = s.width | at_least: s.height
-        if long <= 480 and long > sd_long
-          assign src_sd = s.url
-          assign sd_long = long
-        endif
-        if long <= 720 and long > hd_long
-          assign src_hd = s.url
-          assign hd_long = long
-        endif
-        if long < min_long
-          assign src_min = s.url
-          assign min_long = long
-        endif
+      if s.format == 'mp4' and src_mp4 == ''
+        assign src_mp4 = s.url
+      elsif s.format == 'm3u8'
+        assign src_hls = s.url
       endif
     endfor
-    if src_hd == ''
-      assign src_hd = src_min
-    endif
-    if src_sd == ''
-      assign src_sd = src_hd
-    endif
   -%}
   <video
     class="watch-buy-video"
@@ -103,8 +83,8 @@
     playsinline
     preload="none"
     style="aspect-ratio: {{ vid.aspect_ratio | default: 0.5625 }};"
-    data-src-mobile="{{ src_sd }}"
-    data-src-desktop="{{ src_hd }}"
+    data-src="{{ src_mp4 }}"
+    data-hls="{{ src_hls }}"
   ></video>
 
 </div>
@@ -234,16 +214,54 @@
 <script>
 // Load each video only when its card is near the viewport, pause it when it leaves.
 document.addEventListener('DOMContentLoaded', () => {
-  const videos = document.querySelectorAll('.watch-buy-video[data-src-desktop]');
+  const videos = document.querySelectorAll('.watch-buy-video[data-src]');
   if (!videos.length) return;
-  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  const targetP = window.matchMedia('(max-width: 767px)').matches ? 480 : 720;
 
-  const start = (video) => {
-    if (!video.src) {
-      video.src = isMobile ? video.dataset.srcMobile : video.dataset.srcDesktop;
-    }
+  // HLS variant "ID.SD-480p.0.9Mbps.hls.123_.m3u8" has a progressive twin
+  // "ID.SD-480p-0.9Mbps-123.mp4". Pick the largest rendition <= targetP.
+  const pickSmallSrc = (video) => {
+    const fallback = video.dataset.src;
+    const hls = video.dataset.hls;
+    if (!hls) return Promise.resolve(fallback);
+    return fetch(hls)
+      .then(r => (r.ok ? r.text() : ''))
+      .then(text => {
+        let best = null;
+        text.split('\n').forEach(line => {
+          const m = line.trim().match(/^(.+)\.(SD|HD)-(\d+)p\.([\d.]+Mbps)\.hls\.(\d+)_\.m3u8$/);
+          if (!m) return;
+          const p = +m[3];
+          if (p <= targetP && (!best || p > best.p)) {
+            best = { p, file: `${m[1]}.${m[2]}-${m[3]}p-${m[4]}-${m[5]}.mp4` };
+          }
+        });
+        return best ? new URL(best.file, new URL(hls, location.href)).href : fallback;
+      })
+      .catch(() => fallback);
+  };
+
+  const play = (video) => {
     const p = video.play();
     if (p && p.catch) p.catch(() => {});
+  };
+
+  const start = (video) => {
+    if (video.dataset.state === 'ready') return play(video);
+    if (video.dataset.state === 'loading') return;
+    video.dataset.state = 'loading';
+    pickSmallSrc(video).then(src => {
+      if (src !== video.dataset.src) {
+        // If the guessed rendition is missing, fall back to the 1080p file.
+        video.addEventListener('error', () => {
+          video.src = video.dataset.src;
+          play(video);
+        }, { once: true });
+      }
+      video.src = src;
+      video.dataset.state = 'ready';
+      if (video.dataset.visible === '1') play(video);
+    });
   };
 
   videos.forEach(video => {
@@ -254,12 +272,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (!('IntersectionObserver' in window)) {
-    videos.forEach(start);
+    videos.forEach(video => {
+      video.dataset.visible = '1';
+      start(video);
+    });
     return;
   }
 
   const io = new IntersectionObserver(entries => {
     entries.forEach(entry => {
+      entry.target.dataset.visible = entry.isIntersecting ? '1' : '0';
       if (entry.isIntersecting) start(entry.target);
       else if (entry.target.src) entry.target.pause();
     });
