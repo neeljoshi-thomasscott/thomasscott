@@ -138,8 +138,9 @@
               <a href="{{ product.url }}" ref="productLink">
                 {% if featured != blank %}
                 <img
-                  data-src="{{ featured |  image_url: width: 300 }}"
+                  src="{{ featured |  image_url: width: 300 }}"
                   class="product-image lazyload"
+                  loading="lazy"
                   alt="{{ featured.alt | default: product.title }}"
                   width="300"
                   height="400"
@@ -170,8 +171,9 @@
               <div class="product-image-slide">
                 <a href="{{ product.url }}" ref="productLink">
                   <img
-                    data-src="{{ image |  image_url: width: 300 }}"
+                    src="{{ image |  image_url: width: 300 }}"
                     class="product-image lazyload"
+                  loading="lazy"
                     alt="{{ image.alt | default: product.title }}"
                     width="300"
                     height="400"

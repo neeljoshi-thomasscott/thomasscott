@@ -14,7 +14,7 @@
         height="750" 
         fetchpriority="auto"
         class="w-full lazyload"
-        data-src="{{ section.settings.desktop_image  | image_url: width: '1440' }}"
+        src="{{ section.settings.desktop_image  | image_url: width: '1440' }}"
         alt="{% if section.settings.desktop_image.alt %}{{ section.settings.desktop_image.alt }}{% else %}{{ section.settings.heading }}{% endif %}"
         loading="lazy"
       >
