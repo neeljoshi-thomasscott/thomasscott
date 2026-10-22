@@ -518,18 +518,62 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /* Size guide: open from any [data-open-size] button, close on ×, backdrop click or Esc */
+
+// The dialog ships empty; fetch its table from sections/size-chart-ajax.liquid once.
+function loadSizeChart(modal) {
+  const body = modal && modal.querySelector("[data-size-chart-body]");
+  if (!body || body.dataset.loaded) return;
+  if (body._loading) return body._loading;
+
+  const base = modal.dataset.sizeChartUrl;
+  const url = base + (base.indexOf("?") === -1 ? "?" : "&") + "section_id=size-chart-ajax";
+
+  body._loading = fetch(url)
+    .then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    })
+    .then(function (html) {
+      const tmp = document.createElement("div");
+      tmp.innerHTML = html;
+      const section = tmp.querySelector(".shopify-section") || tmp;
+      body.innerHTML = section.innerHTML;
+      body.dataset.loaded = "1";
+    })
+    .catch(function () {
+      body.innerHTML = '<p class="size-guide-loading">Couldn’t load the size guide. Please try again.</p>';
+    })
+    .finally(function () {
+      body._loading = null;
+    });
+  return body._loading;
+}
+
+function sizeModalFor(btn) {
+  return document.getElementById(`sizeChartModal-${btn.dataset.productId}`);
+}
+
+// Prefetch on hover / touch / focus so the table is usually ready by the click
+["pointerover", "touchstart", "focusin"].forEach(function (type) {
+  document.addEventListener(type, function (e) {
+    const btn = e.target.closest && e.target.closest("[data-open-size]");
+    if (btn) loadSizeChart(sizeModalFor(btn));
+  }, { passive: true });
+});
+
 document.addEventListener("click", function (e) {
 
   // OPEN MODAL
   const openBtn = e.target.closest("[data-open-size]");
 
   if (openBtn) {
-    const modal = document.getElementById(`sizeChartModal-${openBtn.dataset.productId}`);
+    const modal = sizeModalFor(openBtn);
 
     if (modal && !modal.open) {
       e.preventDefault();
       modal.showModal();
       document.body.classList.add("popup-overlay");
+      loadSizeChart(modal);
     }
     return;
   }

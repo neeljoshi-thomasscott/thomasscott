@@ -1,0 +1,14 @@
+{%- comment -%}
+  Size chart table for one product, fetched on demand by the size guide dialog
+  (snippets/size-chart-popup.liquid, assets/custom.js) via
+  /products/{handle}?section_id=size-chart-ajax — so cards don't ship the table in the page HTML.
+  No presets: not addable in the theme editor.
+{%- endcomment -%}
+{%- render 'size-chart-content', product: product -%}
+
+{% schema %}
+{
+  "name": "Size chart (on demand)",
+  "settings": []
+}
+{% endschema %}
