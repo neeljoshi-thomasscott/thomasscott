@@ -52,7 +52,7 @@
   endif
 -%}
 {%- if end_datetime != blank -%}
-  <script src="{{ 'urgency-sale-timer.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'urgency-sale-timer.js' | asset_url }}" type="module"></script>
   <urgency-sale-timer-component
     class="urgency-timer {{ class }}"
     {% if start_datetime != blank %}
