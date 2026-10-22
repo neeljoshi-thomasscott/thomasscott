@@ -3,13 +3,14 @@
   Chart data: snippets/size-chart-data.liquid (generated from the size chart Excel — see tools/size-charts/build.js).
   Which chart a product gets: snippets/size-chart-key.liquid.
   Opened/closed by the [data-open-size] handler in assets/custom.js.
+  The dialog ships empty; the table is fetched on first open (or hover) from sections/size-chart-ajax.liquid.
 
   @param {object} product - The product
 {%- enddoc -%}
 {%- capture size_chart -%}{%- render 'size-chart-content', product: product -%}{%- endcapture -%}
 
 {%- if size_chart != blank -%}
-  <dialog id="sizeChartModal-{{ product.id }}" class="size-modal">
+  <dialog id="sizeChartModal-{{ product.id }}" class="size-modal" data-size-chart-url="{{ product.url }}">
     <div class="size-modal-content">
       <button type="button" class="close-size" aria-label="Close size guide">
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
@@ -18,7 +19,9 @@
         </svg>
       </button>
 
-      {{ size_chart }}
+      <div class="size-chart-body" data-size-chart-body>
+        <p class="size-guide-loading">Loading size guide…</p>
+      </div>
 
       <p class="size-guide-note">All measurements are of the garment. For best fit, compare with your body measurements.</p>
     </div>
@@ -95,6 +98,13 @@
   .size-table thead th {
     background: #f5f5f5;
     font-weight: 600;
+  }
+
+  .size-guide-loading {
+    font-size: 14px;
+    color: #888;
+    padding: 24px 0;
+    text-align: center;
   }
 
   .size-guide-note {
