@@ -179,3 +179,4 @@ th-product-card .th-product-card__mobile-label,
 .offer-ribbons--pdp{position:absolute; top:16px; left:0; z-index:3; pointer-events:none; display:grid;}
 .offer-ribbons--pdp .offer-ribbon{height:28px; font-size:13px; padding:0 22px 0 12px;}
 @media (max-width:767px){.offer-ribbons--pdp{top:12px;} .offer-ribbons--pdp .offer-ribbon{height:24px; font-size:12px; padding:0 18px 0 10px;}}
+.quick-add-modal .offer-ribbons--pdp{display:none !important;} /* not in the quick-add popup image */
