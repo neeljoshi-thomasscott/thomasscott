@@ -59,16 +59,53 @@
     loading="lazy"
   >
 
-  {{
-    block.settings.main_video
-    | video_tag:
-      autoplay: true,
-      loop: true,
-      muted: true,
-      controls: false,
-      playsinline: true,
-      class: 'watch-buy-video'
-  }}
+  {%- comment -%}
+    Lazy video: no src until the card scrolls into view (see script below).
+    Pick small MP4 renditions — cards are ~400px wide, so 1080p is wasted.
+    src_sd = largest MP4 with long side <= 480 (phones), src_hd = <= 720 (desktop).
+  {%- endcomment -%}
+  {%- liquid
+    assign vid = block.settings.main_video
+    assign src_sd = ''
+    assign src_hd = ''
+    assign sd_long = 0
+    assign hd_long = 0
+    assign src_min = ''
+    assign min_long = 100000
+    for s in vid.sources
+      if s.format == 'mp4'
+        assign long = s.width | at_least: s.height
+        if long <= 480 and long > sd_long
+          assign src_sd = s.url
+          assign sd_long = long
+        endif
+        if long <= 720 and long > hd_long
+          assign src_hd = s.url
+          assign hd_long = long
+        endif
+        if long < min_long
+          assign src_min = s.url
+          assign min_long = long
+        endif
+      endif
+    endfor
+    if src_hd == ''
+      assign src_hd = src_min
+    endif
+    if src_sd == ''
+      assign src_sd = src_hd
+    endif
+  -%}
+  <video
+    class="watch-buy-video"
+    muted
+    loop
+    playsinline
+    preload="none"
+    style="aspect-ratio: {{ vid.aspect_ratio | default: 0.5625 }};"
+    data-src-mobile="{{ src_sd }}"
+    data-src-desktop="{{ src_hd }}"
+  ></video>
 
 </div>
   {% endif %}
@@ -138,7 +175,7 @@
   width:100%;
   height:100%;
   object-fit:cover;
-  z-index:2;
+  z-index:4; /* sits over the empty video until it starts playing, then removed */
 }
 
 .watch-buy-video{
@@ -195,13 +232,40 @@
   }
 </style>
 <script>
+// Load each video only when its card is near the viewport, pause it when it leaves.
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.watch-buy-video').forEach(video => {
+  const videos = document.querySelectorAll('.watch-buy-video[data-src-desktop]');
+  if (!videos.length) return;
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+  const start = (video) => {
+    if (!video.src) {
+      video.src = isMobile ? video.dataset.srcMobile : video.dataset.srcDesktop;
+    }
+    const p = video.play();
+    if (p && p.catch) p.catch(() => {});
+  };
+
+  videos.forEach(video => {
     video.addEventListener('playing', () => {
       const poster = video.parentElement.querySelector('.video-poster');
       if (poster) poster.remove();
-    });
+    }, { once: true });
   });
+
+  if (!('IntersectionObserver' in window)) {
+    videos.forEach(start);
+    return;
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) start(entry.target);
+      else if (entry.target.src) entry.target.pause();
+    });
+  }, { rootMargin: '200px 0px' });
+
+  videos.forEach(video => io.observe(video));
 });
 </script>
 <script>
