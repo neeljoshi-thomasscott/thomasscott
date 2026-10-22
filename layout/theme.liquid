@@ -481,6 +481,38 @@
       .catch(console.error);
     }
 
+    // Builds a card's size buttons on first open (snippets/product-card-size-variants.liquid
+    // ships only the variant data). Card attributes are copied from the selector's close button.
+    function buildSizeButtons(selectorDiv) {
+      var holder = selectorDiv && selectorDiv.querySelector('[data-size-variants]');
+      if (!holder || holder.dataset.built) return;
+      holder.dataset.built = 'true';
+
+      var variants;
+      try { variants = JSON.parse(holder.dataset.sizeVariants || '[]'); } catch (e) { variants = []; }
+
+      var closeBtn = selectorDiv.querySelector('.product-cart-btn');
+      var cardAttrs = closeBtn
+        ? Array.from(closeBtn.attributes).filter(function (a) { return a.name !== 'class' && a.name !== 'onclick'; })
+        : [];
+
+      var frag = document.createDocumentFragment();
+      variants.forEach(function (v) {
+        var b = document.createElement('button');
+        b.className = 'size-btn btn-loader';
+        b.type = 'button';
+        cardAttrs.forEach(function (a) { b.setAttribute(a.name, a.value); });
+        b.setAttribute('data-variant-id', v[0]);
+        b.setAttribute('data-available', v[2] ? 'true' : 'false');
+        b.setAttribute('onclick', 'triggerAddToCartDesktop(this)');
+        if (!v[2]) { b.disabled = true; b.setAttribute('aria-disabled', 'true'); }
+        b.innerHTML = '<span class="loader"><svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"/></svg></span><span class="loaded"></span>';
+        b.querySelector('.loaded').textContent = v[1];
+        frag.appendChild(b);
+      });
+      holder.appendChild(frag);
+    }
+
     function toggleAddToCart(btn, hide) {
       var card = document.querySelector(btn.getAttribute('data-card'));
       if (!card) return;
@@ -506,6 +538,7 @@
           sizeSelectorDiv.classList.remove('active');
           sizeSelectorDiv.setAttribute('hidden', true);
         } else {
+          buildSizeButtons(sizeSelectorDiv);
           sizeSelectorDiv.classList.add('active');
           sizeSelectorDiv.removeAttribute('hidden');
         }

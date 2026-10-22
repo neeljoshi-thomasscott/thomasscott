@@ -12,40 +12,17 @@
             Select Size
           </div>
 
-          <div class="size-buttons">
-            {%- for variant in product.variants -%}
-              {%- assign option_label = variant.option1 | default: variant.title -%}
-              <button
-                class="size-btn btn-loader"
-                type="button"
-                {{ card_attr }}
-                data-variant-id="{{ variant.id }}"
-                data-available="{{ variant.available }}"
-                onclick="triggerAddToCartDesktop(this)"
-                {% unless variant.available %}
-                  disabled
-                  aria-disabled="true"
-                {% endunless %}
-              >
-                <span class="loader">
-                  <svg class="spinner" viewBox="0 0 50 50">
-                    <circle
-                      class="path"
-                      cx="25"
-                      cy="25"
-                      r="20"
-                      fill="none"
-                      stroke-width="4"
-                    />
-                  </svg>
-                </span>
-
-                <span class="loaded">
-                  {{ option_label }}
-                </span>
-              </button>
-            {%- endfor -%}
-          </div>
+          {%- comment -%}
+            Size buttons are built by buildSizeButtons() (layout/theme.liquid) the first time
+            the selector opens; shipping them for every card was ~60 elements per card.
+            Format: [[variant_id, "label", available], ...]
+          {%- endcomment -%}
+          {%- capture size_variants -%}
+            [{%- for variant in product.variants -%}
+              [{{ variant.id }},{{ variant.option1 | default: variant.title | json }},{{ variant.available }}]{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}]
+          {%- endcapture -%}
+          <div class="size-buttons" data-size-variants="{{ size_variants | strip | escape }}"></div>
         </div>
 
         {% comment %} <div
