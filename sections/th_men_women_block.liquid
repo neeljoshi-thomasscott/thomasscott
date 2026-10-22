@@ -9,7 +9,7 @@
             {% if block.settings.image != blank %}
               <img 
                 class="w-full lazyload"
-                data-src="{{ block.settings.image | image_url: width: 800 }}"
+                src="{{ block.settings.image | image_url: width: 800 }}"
                 alt="{% if block.settings.image.alt %}{{ block.settings.image.alt }}{% else %}{{ block.settings.title }}{% endif %}"
                 width="356" height="407" loading="lazy">
             {% endif %}

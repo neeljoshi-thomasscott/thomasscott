@@ -23,7 +23,7 @@
                 {% if block.settings.media_type == 'image' %}
                   {% if block.settings.main_image %}
                     <img
-                      data-src="{{ block.settings.main_image | image_url: width: 400 }}"
+                      src="{{ block.settings.main_image | image_url: width: 400 }}"
                       alt="{{ block.settings.main_image.alt | escape }}"
                       loading="lazy"
                       width="auto"
@@ -52,7 +52,7 @@
 
   <img
     class="video-poster lazyload"
-    data-src="{{ block.settings.main_video.preview_image | image_url: width: 400 }}"
+    src="{{ block.settings.main_video.preview_image | image_url: width: 400 }}"
     alt="{{ block.settings.main_video.preview_image.alt | escape }}"
     width="auto"
     height="auto"

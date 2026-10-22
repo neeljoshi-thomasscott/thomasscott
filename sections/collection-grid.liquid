@@ -79,7 +79,7 @@
               <div class="categroy-thumb">
 
                 {% if custom_image %}
-                 <img  data-src="{{ custom_image |  image_url: width: 268 }}" loading="lazy" width="134" height="146" fetchpriority="auto" class="lazyload" alt="{{ custom_title | default: block_collection.title }}" />
+                 <img  src="{{ custom_image |  image_url: width: 268 }}" loading="lazy" width="134" height="146" fetchpriority="auto" class="lazyload" alt="{{ custom_title | default: block_collection.title }}" />
 
                   {% comment %} {{ custom_image
                     | image_url: width: 268
@@ -153,7 +153,7 @@
               <div class="categroy-thumb">
 
                 {% if custom_image %}
-                <img  data-src="{{ custom_image |  image_url: width: 268 }}" loading="lazy" width="134" height="146" fetchpriority="auto" class="lazyload" alt="{{ custom_title | default: block_collection.title }}" />
+                <img  src="{{ custom_image |  image_url: width: 268 }}" loading="lazy" width="134" height="146" fetchpriority="auto" class="lazyload" alt="{{ custom_title | default: block_collection.title }}" />
 
                     {% comment %} {{ custom_image
                     | image_url: width: 268

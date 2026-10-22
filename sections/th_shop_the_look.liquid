@@ -35,7 +35,7 @@
             <source media="(max-width:768px)" srcset="{{ section.settings.banner_mobile  | image_url: width: '400' }}">
           {% endif %}
           {% if section.settings.banner != blank %}
-            <img data-src="{{ section.settings.banner  | image_url: width: '1440' }}" width="800" height="600" alt="Shop the look" class="w-full lazyload" />
+            <img src="{{ section.settings.banner  | image_url: width: '1440' }}" width="800" height="600" alt="Shop the look" class="w-full lazyload" loading="lazy" />
           {% endif %}
         </picture>
       {% endif %}
