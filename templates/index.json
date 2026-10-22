@@ -12,11 +12,25 @@
     "th_home_page_banner_UyyE9D": {
       "type": "th_home_page_banner",
       "blocks": {
+        "slide_9LjfQX": {
+          "type": "slide",
+          "settings": {
+            "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
+            "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
+            "heading": "",
+            "button_text": "",
+            "button_link": "shopify://collections/plus-size",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "2026-10-14",
+            "end_time": "00:00"
+          }
+        },
         "slide_kwmVBJ": {
           "type": "slide",
           "settings": {
-            "desktop_image": "shopify://shop_images/b2g1-b3g2-desktop-home-banner.webp",
-            "mobile_image": "shopify://shop_images/b2g1-b3g2-desktop-mobile-banner.webp",
+            "desktop_image": "shopify://shop_images/b2g1-offer-pdp-desktop-image.webp",
+            "mobile_image": "shopify://shop_images/b2g1-offer-pdp-mobile-image.webp",
             "heading": "",
             "button_text": "",
             "button_link": "shopify://collections/new-arrivals",
@@ -236,20 +250,6 @@
             "end_date": "",
             "end_time": ""
           }
-        },
-        "slide_9LjfQX": {
-          "type": "slide",
-          "settings": {
-            "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
-            "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
-            "heading": "",
-            "button_text": "",
-            "button_link": "shopify://collections/plus-size",
-            "start_date": "",
-            "start_time": "",
-            "end_date": "2026-10-14",
-            "end_time": "00:00"
-          }
         }
       },
       "block_order": [
@@ -280,9 +280,9 @@
           "type": "collection_card",
           "settings": {
             "collection": "new-arrivals",
-            "tag_text": "FESTIVE PICK",
             "custom_image": "shopify://shop_images/Shirt_Icon_4fd52588-1881-4e0c-851e-2fa4a24ff8bb.png",
             "custom_title": "",
+            "tag_text": "FESTIVE PICK",
             "tag_bg_start": "#5a0f24",
             "tag_bg_end": "#a8264f",
             "tag_color": "#f3d27a",
