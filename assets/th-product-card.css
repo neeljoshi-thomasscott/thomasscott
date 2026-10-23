@@ -173,6 +173,7 @@ th-product-card .th-product-card__mobile-label,
 .offer-ribbons--rotate .offer-ribbon--b3g2{animation-delay:-3s;}
 @keyframes offer-ribbon-swap{0%,45%{opacity:1; visibility:visible;} 50%,95%{opacity:0; visibility:hidden;} 100%{opacity:1; visibility:visible;}}
 @media (prefers-reduced-motion: reduce){.offer-ribbons--rotate .offer-ribbon{animation-duration:12s;} .offer-ribbon::after{animation:none; display:none;}}
+.card-image-wrapper:has(> .offer-ribbons) > .new-badge{display:none;} /* one tag at a time: offer ribbon wins over New Arrivals */
 @media (max-width:767px){.custom-product-card .offer-ribbons{bottom:22px;} .custom-product-card .offer-ribbon{height:20px; font-size:10px; padding:0 15px 0 6px;}}
 /* Product page: on the first image, top-left */
 .product-media-container:has(> .offer-ribbons--pdp),slideshow-slide:has(> .offer-ribbons--pdp){position:relative;}
