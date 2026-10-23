@@ -318,22 +318,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     }, { passive: true });
-    const filterBottom = document.querySelector('.sticky-filters');
-    let lastScrollY = window.scrollY;
-
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-
-        if (currentScrollY < lastScrollY) {
-            // Scrolling Up
-            filterBottom?.classList.add('filterscrolled');
-        } else if (currentScrollY > lastScrollY) {
-            // Scrolling Down
-            filterBottom?.classList.remove('filterscrolled');
-        }
-
-        lastScrollY = currentScrollY;
-    }, { passive: true });
 
     /* =========================
        FAQ Accordion

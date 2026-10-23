@@ -294,11 +294,8 @@ button.product__form--add-to-cart svg {
     height: 59px;
     background: var(--bg-color);
     /* box-shadow:inset 0px 0px 40px rgba(0,0,0,.3); */
-    visibility:hidden;
-    opacity:0;
     z-index: 999;
   }
-  .sticky-filters.filterscrolled{visibility:visible; opacity:1;}
   .sticky-filters .facets-toggle__button{font-size:14px; font-weight:600; color:var(--primary-color); line-height:19px; text-transform:uppercase; letter-spacing:8%; gap:9px;}
 .sticky-filters .sorting-filter__select-wrapper{display:flex; align-items:center; padding:0;}
 .sticky-filters .sorting-filter__select{font-size:14px; font-weight:600; color:var(--primary-color);background:transparent; padding:0;}
