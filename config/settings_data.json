@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "sale_timer_enable": true,
+    "sale_timer_enable": false,
     "sale_timer_start_date": "2026-10-14",
     "sale_timer_start_time": "00:00",
     "sale_timer_end_date": "2026-11-12",
