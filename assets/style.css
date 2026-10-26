@@ -870,7 +870,23 @@ button.wishlisthero-product-in-wishlist svg.svg-inline--fa.fa-heart.fa-w-16.fa-1
 
 }
 @media only screen and (min-width: 1200px) {
-
+/* Desktop header: centre the logo on the page. Wrappers flatten so search+left menu and right menu+icons balance as two equal halves */
+.header-bottom .header-menu, .header-bottom .header-menu .menu, .header-bottom .main-menu-div{display:contents;}
+.header-bottom .header-left{flex:0 1 190px; min-width:max-content;}
+.header-bottom .header-right{flex:0 1 190px; min-width:max-content; justify-content:flex-end;}
+.header-bottom .menu-left{flex:1 1 0; min-width:max-content; justify-content:flex-end;}
+.header-bottom .menu-right{flex:1 1 0; min-width:max-content; justify-content:flex-start;}
+.header-bottom .menu .menu-list li a{white-space:nowrap;}
+.header-bottom .main-menu-div > .header-logo{margin:0 24px;}
+}
+@media only screen and (min-width: 1200px) and (max-width: 1599px) {
+.header-bottom .menu .menu-list li{padding:0 9px;}
+.header .header-bottom .header-right .header--icon, .header-bottom .header-right .site-header__icon, .header-bottom .header-user{padding-right:10px; margin-right:10px;}
+}
+@media only screen and (min-width: 1200px) and (max-width: 1365px) {
+.header-bottom .menu .menu-list li{padding:0 6px;}
+.header .header-bottom .header-right .header--icon, .header-bottom .header-right .site-header__icon, .header-bottom .header-user{padding-right:8px; margin-right:8px;}
+.header-bottom .main-menu-div > .header-logo{margin:0 14px;}
 }
 @media only screen and (min-width: 768px) {
 .page-width-normal {
