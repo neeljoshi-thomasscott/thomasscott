@@ -1,0 +1,29 @@
+{%- comment -%}
+  Organization structured data (from SEO team). Rendered on the homepage only.
+{%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Thomas Scott",
+      "url": "https://thomasscott.in/",
+      "logo": "https://thomasscott.in/cdn/shop/files/thomas-logo.svg",
+      "sameAs": [
+        "https://www.facebook.com/thomasscott.in",
+        "https://www.instagram.com/thomasscott.in/",
+        "https://www.linkedin.com/company/thomasscott/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-9920736900",
+          "contactType": "customer service",
+          "email": "contact@thomasscott.in",
+          "areaServed": "IN",
+          "availableLanguage": ["en", "hi"]
+        }
+      ]
+    }
+  </script>
+{%- endif -%}
