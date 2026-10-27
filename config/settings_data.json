@@ -298,10 +298,16 @@
           "custom_checkout_paths": ""
         }
       },
-      "1409715032340194113": {
-        "type": "shopify://apps/gokwik-cart-slide-cart-drawer/blocks/app-embed/531cd8ff-cc36-43b1-9a44-c16d44927215",
-        "disabled": true,
-        "settings": {}
+      "15734677551373749047": {
+        "type": "shopify://apps/flits/blocks/flits/d5eeb0f1-bc12-4372-af4d-40ca0d3ad847",
+        "disabled": false,
+        "settings": {
+          "ppp_icon_text_color": "#000000",
+          "ppp_background_color": "#D7D7D7",
+          "ppp_enabled": false,
+          "ppp_use_on_cart": false,
+          "ppp_advanced_config": ""
+        }
       }
     },
     "color_schemes": {
