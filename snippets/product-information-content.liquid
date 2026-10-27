@@ -130,7 +130,7 @@
             <path d="M31.59 23L27 18.41V20.87L26.14 21C21.83 21.61 18.91 23.87 17.24 27.33C19.56 25.69 22.44 24.9 26 24.9H27V27.59M25 25.92C20.53 26.13 17.33 27.74 15 31C16 26 19 21 26 20V16L33 23L26 30V25.9C25.67 25.9 25.34 25.91 25 25.92Z" fill="black"/>
         </svg> {% endcomment %}
     </button>
-{% render 'wishlisthero-collection-product' with product: product %}
+{% render 'wishlisthero-collection-product' with product, product: product %}
 
 
           {% comment %} <a href="/a/wishlist-hero/wishlist"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -365,4 +365,14 @@ document.dispatchEvent(new CustomEvent("wishlistHeroReload"));
     e.stopPropagation();
   });
 });
-</script>
+</script>{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'wishlisthero-collection-product' with product: product %}"
+  to: "{% render 'wishlisthero-collection-product' with product, product: product
+    %}"
+  position: 5112..5189
+{%- endcomment -%}
