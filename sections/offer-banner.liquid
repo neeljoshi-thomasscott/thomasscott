@@ -51,7 +51,7 @@
       {%- endif -%}
     </div>
   </div>
-  {% render 'schedule-filter', root: 'OfferBanner-' | append: section.id %}
+  {% render 'schedule-filter', root: 'OfferBanner-', append: section.id %}
 
   <style>
     .section-offer-banner,
@@ -156,3 +156,13 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'schedule-filter', root: 'OfferBanner-' | append: section.id %}"
+  to: "{% render 'schedule-filter', root: 'OfferBanner-', append: section.id %}"
+  position: 1933..2005
+{% endcomment %}
