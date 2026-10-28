@@ -252,16 +252,6 @@
           "searchAndFilterApp": "none"
         }
       },
-      "11656086624703393754": {
-        "type": "shopify://apps/unloq-thomas-scott/blocks/fealtyx-offer-widget/019dd942-5413-7193-91b2-19de38eb2283",
-        "disabled": true,
-        "settings": {}
-      },
-      "1357647462806583907": {
-        "type": "shopify://apps/unloq-thomas-scott/blocks/fealtyx-offer-widget-qa/019dd942-5413-7193-91b2-19de38eb2283",
-        "disabled": false,
-        "settings": {}
-      },
       "7870687481494312845": {
         "type": "shopify://apps/wishlist-hero/blocks/app-embed/a9a5079b-59e8-47cb-b659-ecf1c60b9b72",
         "disabled": false,
