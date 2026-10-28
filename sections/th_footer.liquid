@@ -99,6 +99,11 @@
       {% endif %}>{{ link.title }}</a>
                   </li>
                 {% endfor %}
+                {% comment %} flits support added code from here, to add reward page link in footer {% endcomment %}
+                {%if block.settings.heading == "CUSTOMER SERVICE" %}
+                <li><a href="/pages/rewards">Loyalty Program</a></li>
+              {% endif %}
+              {% comment %} till here {% endcomment %}
               </ul>
             </div>
           {% endif %}

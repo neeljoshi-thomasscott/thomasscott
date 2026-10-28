@@ -12,6 +12,10 @@
     "main": {
       "type": "main-page",
       "blocks": {
+        "flits_flits_reward_page_TEaBCC": {
+          "type": "shopify://apps/flits/blocks/flits-reward-page/d5eeb0f1-bc12-4372-af4d-40ca0d3ad847",
+          "settings": {}
+        },
         "heading": {
           "type": "text",
           "name": "Title",
@@ -45,6 +49,7 @@
         }
       },
       "block_order": [
+        "flits_flits_reward_page_TEaBCC",
         "heading",
         "page-content"
       ],

@@ -997,6 +997,14 @@ window.addEventListener('pageshow', function (e) {
     window.location.replace('/');
   </script>
 {% endif %}
-
+{% comment %} flits support added below code from here, to have reward page in full width {% endcomment %}
+{% if request.path == '/pages/rewards' %}
+  <style>
+    .policies-page .mobile-column {
+      width: unset !important;
+    }
+  </style>
+{% endif %}
+{% comment %} till here {% endcomment %}
   </body>
 </html>
