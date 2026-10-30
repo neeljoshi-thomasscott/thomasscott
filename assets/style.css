@@ -352,7 +352,6 @@ button.wishlisthero-product-in-wishlist svg.svg-inline--fa.fa-heart.fa-w-16.fa-1
 .custom-product-card .quick-add-btn{width:22px; height:22px; display:flex; align-items:center; justify-content:center; position:absolute; bottom:20px; right:20px; background:transparent; border:0; border-radius:0; z-index:12; cursor: pointer;} 
 .custom-product-card .card-info{padding:20px 0 0;}
 .custom-product-card .card-info .product-title{font-size:13px; color:var(--gray-color); font-weight:600; line-height:18px; margin-bottom:6px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
-.custom-product-card .card-info .card-heading{min-height: 64px;}
 .custom-product-card .card-info .product-title a{color:var(--gray-color); text-decoration:none;}
 .custom-product-card .card-info .card-rating{display:flex; width:fit-content; align-items:center; gap:4px; margin-bottom:6px; font-size:12px; line-height:16px; color:var(--primary-color);}
 .custom-product-card .card-info .card-rating__score{display:inline-flex; align-items:center; gap:3px; font-weight:600;}
