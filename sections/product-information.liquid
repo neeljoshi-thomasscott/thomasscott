@@ -169,7 +169,7 @@
         {% if product.metafields.judgeme.review_widget_data.value.number_of_reviews>0 %}
         <div class="sticky-rating ">
           <span class="ratings ">
-            {{ product.metafields.judgeme.review_widget_data.value.average_rating }}
+            {{ product.metafields.judgeme.review_widget_data.value.average_rating | round: 1 }}
             <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7.0863 0L9.27596 4.43602L14.1726 5.15174L10.6294 8.60277L11.4656 13.4781L7.0863 11.1751L2.70697 13.4781L3.54315 8.60277L0 5.15174L4.89663 4.43602L7.0863 0Z" fill="#1E1E1E"/>
             </svg>
