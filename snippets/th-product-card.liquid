@@ -270,6 +270,19 @@
         {{ product.metafields.custom.short_title | default: product.title }}
       </a>
     </h3>
+    {%- assign card_rating_count = product.metafields.reviews.rating_count.value | default: 0 -%}
+    {%- if card_rating_count > 0 -%}
+      {%- assign card_rating = product.metafields.reviews.rating.value.rating | round: 1 -%}
+      <div class="card-rating" aria-label="Rated {{ card_rating }} out of 5 from {{ card_rating_count }} reviews">
+        <span class="card-rating__score">
+          {{- card_rating -}}
+          <svg width="11" height="11" viewBox="0 0 15 14" fill="none" aria-hidden="true">
+            <path d="M7.0863 0L9.27596 4.43602L14.1726 5.15174L10.6294 8.60277L11.4656 13.4781L7.0863 11.1751L2.70697 13.4781L3.54315 8.60277L0 5.15174L4.89663 4.43602L7.0863 0Z" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="card-rating__count">| {{ card_rating_count }}</span>
+      </div>
+    {%- endif -%}
     {% render 'price', product_resource: product %}
     {% if enable_swatches == true %}
       {% render 'th-swatches', product: product, card_attr: card_attr %}
