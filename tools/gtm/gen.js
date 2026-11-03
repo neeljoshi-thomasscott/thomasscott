@@ -6,8 +6,8 @@ const path = require('path');
 const ExcelJS = require('exceljs');
 
 const OUT = process.argv[2] || __dirname;
-const GA4_ID = 'G-XXXXXXXXXX';
-const META_ID = 'XXXXXXXXXXXXXXX';
+const GA4_ID = 'G-1EBB8T5HF1';
+const META_ID = '605451321690258';
 const ACCOUNT_ID = '6345737611';
 const CONTAINER_ID = '247128781';
 const PUBLIC_ID = 'GTM-ML4RJ2Z4';
