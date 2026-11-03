@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-11-03 13:17:01",
+  "exportTime": "2026-11-03 13:20:12",
   "containerVersion": {
     "path": "accounts/6345737611/containers/247128781/versions/0",
     "accountId": "6345737611",
@@ -15977,6 +15977,12 @@
         "containerId": "247128781",
         "type": "PAGE_HOSTNAME",
         "name": "Page Hostname"
+      },
+      {
+        "accountId": "6345737611",
+        "containerId": "247128781",
+        "type": "REFERRER",
+        "name": "Referrer"
       },
       {
         "accountId": "6345737611",

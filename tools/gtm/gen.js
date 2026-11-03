@@ -437,7 +437,7 @@ if (contactTriggers.length) {
 // ---------- built-in variables ----------
 const builtIns = [
   ['CLICK_ELEMENT', 'Click Element'], ['CLICK_CLASSES', 'Click Classes'], ['CLICK_ID', 'Click ID'], ['CLICK_TEXT', 'Click Text'],
-  ['CLICK_URL', 'Click URL'], ['PAGE_PATH', 'Page Path'], ['PAGE_URL', 'Page URL'], ['PAGE_HOSTNAME', 'Page Hostname'], ['EVENT', 'Event'], ['FORM_ELEMENT', 'Form Element'],
+  ['CLICK_URL', 'Click URL'], ['PAGE_PATH', 'Page Path'], ['PAGE_URL', 'Page URL'], ['PAGE_HOSTNAME', 'Page Hostname'], ['REFERRER', 'Referrer'], ['EVENT', 'Event'], ['FORM_ELEMENT', 'Form Element'],
 ].map(([type, name]) => ({ ...base, type, name }));
 
 const container = {
