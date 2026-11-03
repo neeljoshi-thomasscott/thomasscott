@@ -350,7 +350,7 @@
    "meta_event": "",
    "priority": "Medium",
    "status": "Added",
-   "notes": "Only click-submit is captured; pressing Enter in the input submits form.predictive-search-form without a button click - add a GTM Form Submission trigger on .predictive-search-form (or rely on the GA4 search pixel)."
+   "notes": "Only click-submit is captured; pressing Enter in the input submits form.predictive-search-form without a button click - add a GTM Form Submission trigger on .predictive-search-form (the Shopify Google app also sends GA4 search)."
   },
   {
    "page": "Global",

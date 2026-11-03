@@ -1,6 +1,10 @@
 // Builds gtm_container_import.json + gtm_tracking_plan.xlsx from the rows_*.json tracking inventory.
 // Usage (needs exceljs): npm i --no-save exceljs@4.4.0 && node tools/gtm/gen.js tools/gtm
 // Edit the rows_*.json files when tags change in the theme, then re-run.
+//
+// Clicks only. Ecommerce events (page_view, view_item, add_to_cart, begin_checkout, purchase, ...) are already
+// sent by the Shopify Google & YouTube app (GA4) and the Facebook & Instagram app (Meta) as web pixels, so this
+// container must not send them again: no page_view, no PageView, no conversion tags.
 const fs = require('fs');
 const path = require('path');
 const ExcelJS = require('exceljs');
@@ -27,7 +31,6 @@ for (const f of rowFiles) {
 // ---------- event config ----------
 const CARD_FOLDER = 'Shopify - Product Card & Quick Add';
 const CLICK_FOLDER = 'Shopify - Clicks';
-const PIXEL_FOLDER = 'Shopify - Checkout (Pixel)';
 const META_FOLDER = 'Meta';
 const cardEvents = new Set(['select_item', 'quick_add_open', 'grid_color_select', 'grid_color_more_click', 'size_select',
   'size_guide_click', 'size_guide_close', 'quick_add_to_bag_click', 'quick_buy_now_click', 'quick_add_close', 'add_to_wishlist',
@@ -70,7 +73,7 @@ const paramTable = (key, pairs, k1 = 'parameter', k2 = 'parameterValue') => ({
 });
 
 const folders = {};
-for (const name of [CLICK_FOLDER, CARD_FOLDER, PIXEL_FOLDER, META_FOLDER]) {
+for (const name of [CLICK_FOLDER, CARD_FOLDER, META_FOLDER]) {
   folders[name] = { ...base, folderId: id(), name };
 }
 
@@ -215,99 +218,8 @@ function() {
   return [item];
 }`, CARD_FOLDER, 'GA4 items array for click-based ecommerce events (select_item, add_to_wishlist)');
 
-// --- pixel (dataLayer) variables ---
-dlv('dlv - shopify', 'shopify', PIXEL_FOLDER);
-dlv('dlv - shopify.productVariant.product.title', 'shopify.productVariant.product.title', PIXEL_FOLDER);
-dlv('dlv - shopify.productVariant.product.id', 'shopify.productVariant.product.id', PIXEL_FOLDER);
-dlv('dlv - shopify.productVariant.price.amount', 'shopify.productVariant.price.amount', PIXEL_FOLDER);
-dlv('dlv - shopify.cartLine.quantity', 'shopify.cartLine.quantity', PIXEL_FOLDER);
-dlv('dlv - shopify.checkout.totalPrice.amount', 'shopify.checkout.totalPrice.amount', PIXEL_FOLDER);
-dlv('dlv - shopify.checkout.currencyCode', 'shopify.checkout.currencyCode', PIXEL_FOLDER);
-dlv('dlv - shopify.checkout.order.id', 'shopify.checkout.order.id', PIXEL_FOLDER);
-dlv('dlv - shopify.checkout.lineItems', 'shopify.checkout.lineItems', PIXEL_FOLDER);
-dlv('dlv - shopify.searchResult.query', 'shopify.searchResult.query', PIXEL_FOLDER);
-dlv('dlv - page_location', 'page_location', PIXEL_FOLDER);
-dlv('dlv - ts_pixel', 'ts_pixel', PIXEL_FOLDER);
-dlv('dlv - event_id', 'event_id', PIXEL_FOLDER);
-constVar('const - GA4 Measurement ID', GA4_ID, PIXEL_FOLDER);
+constVar('const - GA4 Measurement ID', GA4_ID, CLICK_FOLDER);
 constVar('const - Meta Pixel ID', META_ID, META_FOLDER);
-
-jsVar('cjs - is_pixel_sandbox', `
-function() {
-  return {{dlv - ts_pixel}} === true;
-}`, PIXEL_FOLDER, 'True inside the Shopify custom pixel sandbox (the pixel pushes ts_pixel: true before loading GTM).');
-jsVar('cjs - send_page_view', `
-function() {
-  return {{cjs - is_pixel_sandbox}} ? false : true;
-}`, PIXEL_FOLDER, 'No GA4 page_view from the pixel sandbox (the theme page already sends one).');
-jsVar('cjs - page_location', `
-function() {
-  return {{dlv - page_location}} || {{Page URL}};
-}`, PIXEL_FOLDER, 'Real page URL in the sandbox (pixel pushes page_location), else Page URL.');
-
-jsVar('cjs - pixel_items', `
-function() {
-  var d = {{dlv - shopify}};
-  if (!d) return undefined;
-  var fromVariant = function (v, qty) {
-    if (!v) return undefined;
-    var p = v.product || {};
-    var it = { item_id: p.id || v.id, item_name: p.title || v.title, quantity: qty || 1 };
-    if (v.title) it.item_variant = v.title;
-    if (v.price && v.price.amount !== undefined) it.price = v.price.amount;
-    if (p.type) it.item_category = p.type;
-    if (p.vendor) it.item_brand = p.vendor;
-    return it;
-  };
-  var out = [];
-  if (d.productVariant) out.push(fromVariant(d.productVariant, 1));
-  else if (d.cartLine) out.push(fromVariant(d.cartLine.merchandise, d.cartLine.quantity));
-  else if (d.cart && d.cart.lines) d.cart.lines.forEach(function (l) { out.push(fromVariant(l.merchandise, l.quantity)); });
-  else if (d.checkout && d.checkout.lineItems) d.checkout.lineItems.forEach(function (l) { out.push(fromVariant(l.variant, l.quantity)); });
-  out = out.filter(Boolean);
-  return out.length ? out : undefined;
-}`, PIXEL_FOLDER, 'GA4 items from the pixel payload (productVariant / cartLine / cart.lines / checkout.lineItems)');
-
-jsVar('cjs - pixel_value', `
-function() {
-  var d = {{dlv - shopify}};
-  if (!d) return undefined;
-  var amt = function (m) { return m && m.amount !== undefined ? Number(m.amount) : undefined; };
-  if (d.productVariant) return amt(d.productVariant.price);
-  if (d.cartLine) return amt(d.cartLine.cost && d.cartLine.cost.totalAmount);
-  if (d.cart) return amt(d.cart.cost && d.cart.cost.totalAmount);
-  if (d.checkout) return amt(d.checkout.totalPrice);
-  return undefined;
-}`, PIXEL_FOLDER);
-
-jsVar('cjs - pixel_currency', `
-function() {
-  var d = {{dlv - shopify}} || {};
-  var c = (d.checkout && d.checkout.currencyCode)
-    || (d.productVariant && d.productVariant.price && d.productVariant.price.currencyCode)
-    || (d.cartLine && d.cartLine.cost && d.cartLine.cost.totalAmount && d.cartLine.cost.totalAmount.currencyCode)
-    || (d.cart && d.cart.cost && d.cart.cost.totalAmount && d.cart.cost.totalAmount.currencyCode);
-  return c || 'INR';
-}`, PIXEL_FOLDER);
-
-jsVar('cjs - pixel_content_ids', `
-function() {
-  var items = {{cjs - pixel_items}} || [];
-  return items.map(function (i) { return String(i.item_id); });
-}`, META_FOLDER, 'Meta content_ids from the pixel items');
-
-jsVar('cjs - pixel_num_items', `
-function() {
-  var items = {{cjs - pixel_items}} || [];
-  return items.reduce(function (n, i) { return n + (i.quantity || 1); }, 0);
-}`, META_FOLDER);
-
-jsVar('cjs - pixel_transaction_id', `
-function() {
-  var d = {{dlv - shopify}} || {};
-  var o = d.checkout && d.checkout.order;
-  return o && o.id ? String(o.id) : undefined;
-}`, PIXEL_FOLDER);
 
 // ---------- triggers ----------
 const triggers = [];
@@ -359,11 +271,6 @@ for (const v of ['sort_change', 'cart_qty_change']) {
 }
 ['track_event', 'track_value', 'track_label', 'track_section', 'product_id', 'product_title', 'variant_id'].forEach((k) => dlv(`dlv - ${k}`, k, CLICK_FOLDER));
 
-const pixelEvents = ['product_viewed', 'product_added_to_cart', 'cart_viewed', 'checkout_started', 'payment_info_submitted', 'checkout_completed', 'search_submitted'];
-const pixelTriggers = {};
-for (const e of pixelEvents) {
-  pixelTriggers[e] = addTrigger({ name: `CE - ${e} (pixel)`, type: 'CUSTOM_EVENT', customEventFilter: [eqFilter('{{_event}}', e)] }, PIXEL_FOLDER);
-}
 const INIT_ALL_PAGES = '2147479573';
 
 // ---------- tags ----------
@@ -379,7 +286,8 @@ addTag({
   type: 'googtag',
   parameter: [
     T('tagId', '{{const - GA4 Measurement ID}}'),
-    paramTable('configSettingsTable', [['send_page_view', '{{cjs - send_page_view}}'], ['page_location', '{{cjs - page_location}}']]),
+    // The Google & YouTube app already sends page_view
+    paramTable('configSettingsTable', [['send_page_view', 'false']]),
   ],
   firingTriggerId: [INIT_ALL_PAGES],
 }, CLICK_FOLDER);
@@ -482,25 +390,9 @@ for (const [v, trig] of Object.entries(selectChange)) {
   ], [trig.triggerId], v === 'cart_qty_change' ? CLICK_FOLDER : CLICK_FOLDER);
 }
 
-// Pixel conversion events (the ONLY source of these)
-const pixelGa4 = {
-  product_viewed: 'view_item', product_added_to_cart: 'add_to_cart', cart_viewed: 'view_cart', checkout_started: 'begin_checkout',
-  payment_info_submitted: 'add_payment_info', checkout_completed: 'purchase', search_submitted: 'search',
-};
-for (const [pe, ga] of Object.entries(pixelGa4)) {
-  let params;
-  if (ga === 'search') {
-    params = [['search_term', '{{dlv - shopify.searchResult.query}}'], ['page_location', '{{cjs - page_location}}']];
-  } else {
-    params = [['currency', '{{cjs - pixel_currency}}'], ['value', '{{cjs - pixel_value}}'], ['items', '{{cjs - pixel_items}}'], ['page_location', '{{cjs - page_location}}']];
-    if (ga === 'purchase') params.push(['transaction_id', '{{cjs - pixel_transaction_id}}']);
-  }
-  ga4Event(`GA4 - ${ga} (pixel)`, ga, params, [pixelTriggers[pe].triggerId], PIXEL_FOLDER);
-}
-
 // ---------- Meta ----------
 const metaBase = addTag({
-  name: 'Meta - Base code + PageView',
+  name: 'Meta - Base code (no PageView)',
   type: 'html',
   parameter: [T('html', `<script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -511,8 +403,7 @@ document,'script','https://connect.facebook.net/en_US/fbevents.js');
 if (!window.__tsMetaInit) {
   fbq('init', {{const - Meta Pixel ID}});
   window.__tsMetaInit = true;
-  // No PageView from the Shopify pixel sandbox: the theme page already sends one
-  if (!{{cjs - is_pixel_sandbox}}) fbq('track', 'PageView');
+  // No PageView: the Facebook & Instagram app already sends it
 }
 </script>`), B('supportDocumentWrite', false)],
   firingTriggerId: [INIT_ALL_PAGES],
@@ -526,19 +417,6 @@ const metaTag = (name, js, triggerIds) => addTag({
   setupTag: [{ tagName: metaBase.name, stopOnSetupFailure: true }],
 }, META_FOLDER);
 
-const ecomPayload = `{
-  content_ids: {{cjs - pixel_content_ids}},
-  content_type: 'product',
-  value: {{cjs - pixel_value}},
-  currency: {{cjs - pixel_currency}},
-  num_items: {{cjs - pixel_num_items}}
-}`;
-metaTag('Meta - ViewContent (pixel)', `fbq('track', 'ViewContent', ${ecomPayload}, { eventID: {{dlv - event_id}} });`, [pixelTriggers.product_viewed.triggerId]);
-metaTag('Meta - AddToCart (pixel)', `fbq('track', 'AddToCart', ${ecomPayload}, { eventID: {{dlv - event_id}} });`, [pixelTriggers.product_added_to_cart.triggerId]);
-metaTag('Meta - InitiateCheckout (pixel)', `fbq('track', 'InitiateCheckout', ${ecomPayload}, { eventID: {{dlv - event_id}} });`, [pixelTriggers.checkout_started.triggerId]);
-metaTag('Meta - AddPaymentInfo (pixel)', `fbq('track', 'AddPaymentInfo', ${ecomPayload}, { eventID: {{dlv - event_id}} });`, [pixelTriggers.payment_info_submitted.triggerId]);
-metaTag('Meta - Purchase (pixel)', `fbq('track', 'Purchase', ${ecomPayload}, { eventID: {{cjs - pixel_transaction_id}} });`, [pixelTriggers.checkout_completed.triggerId]);
-metaTag('Meta - Search (pixel)', `fbq('track', 'Search', { search_string: {{dlv - shopify.searchResult.query}} }, { eventID: {{dlv - event_id}} });`, [pixelTriggers.search_submitted.triggerId]);
 if (clickTriggers.add_to_wishlist) {
   metaTag('Meta - AddToWishlist', `fbq('track', 'AddToWishlist', {
   content_ids: [{{cjs - product_id}}],
@@ -703,17 +581,16 @@ console.log(`container: ${tags.length} tags, ${triggers.length} triggers, ${vari
     ['Click a colour swatch on a product card', 'grid_color_select (color, position, product_id)'],
     ['Click the wishlist heart on a card (not yet wishlisted)', 'add_to_wishlist (GA4) + Meta AddToWishlist; clicking again (remove) fires nothing'],
     ['Click the bag icon on a card', 'quick_add_open'],
-    ['Desktop: click an in-stock size in the inline list', 'size_select (source=quick_add_inline) AND quick_add_to_bag_click, then product_added_to_cart (pixel) -> add_to_cart / AddToCart'],
+    ['Desktop: click an in-stock size in the inline list', 'size_select (source=quick_add_inline) AND quick_add_to_bag_click'],
     ['Mobile: click a size in the quick-add modal', 'size_select (source=quick_add, available true/false)'],
     ['Mobile: click Size Guide in the modal', 'size_guide_click (source=quick_add)'],
-    ['Mobile: click ADD TO BAG in the modal', 'quick_add_to_bag_click, then product_added_to_cart (pixel) -> add_to_cart / AddToCart'],
-    ['Mobile: open the modal again, click BUY NOW', 'quick_buy_now_click, then checkout_started (pixel) -> begin_checkout / InitiateCheckout'],
+    ['Mobile: click ADD TO BAG in the modal', 'quick_add_to_bag_click'],
+    ['Mobile: open the modal again, click BUY NOW', 'quick_buy_now_click'],
     ['Open the modal and close it with X', 'quick_add_close (size_selected true/false)'],
     ['Product page: pick size, Size Guide, Add to Bag, Buy Now', 'pdp_size_select, size_guide_click (source=product_page), pdp_add_to_bag_click, pdp_buy_now_click'],
-    ['Open cart drawer, change qty, remove, apply coupon, Checkout', 'cart_qty_change, cart_remove, coupon_apply, cart_checkout_click, then checkout_started (pixel)'],
-    ['Complete a test order (Bogus gateway / test mode)', 'checkout_completed (pixel) -> purchase / Purchase with transaction_id / eventID = order id'],
-    ['Confirm no double counting', 'Button clicks fire NO add_to_cart / begin_checkout / purchase; only the (pixel) tags do'],
-    ['Check GA4 DebugView', 'Events arrive once with the parameters above; page_view once per page'],
+    ['Open cart drawer, change qty, remove, apply coupon, Checkout', 'cart_qty_change, cart_remove, coupon_apply, cart_checkout_click'],
+    ['Confirm no double counting', 'GTM fires NO page_view, PageView, add_to_cart, begin_checkout or purchase (the Google and Facebook apps send those)'],
+    ['Check GA4 DebugView', 'Click events arrive once with the parameters above; page_view once per page (from the Google app)'],
   ];
   sheet('Test Checklist', ['Step', 'Action', 'Expected event(s)', 'Pass/Fail'],
     checklist.map(([a, e], i) => ({ 'Step': i + 1, 'Action': a, 'Expected event(s)': e, 'Pass/Fail': '' })));
