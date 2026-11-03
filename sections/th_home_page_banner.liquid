@@ -62,6 +62,10 @@
             class="home-thumb-link"
             href="{{ block.settings.button_link }}"
             aria-label="{{ block.settings.heading | default: block.settings.button_text | escape }}"
+            data-track="hero_cta_click"
+            data-track-label="{{ block.settings.heading | default: block.settings.button_text | escape }}"
+            data-track-section="{{ section.id }}"
+            data-track-position="{{ forloop.index }}"
           >
         {% endif %}
 

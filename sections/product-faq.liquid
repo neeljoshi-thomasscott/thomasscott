@@ -24,7 +24,7 @@
     {% content_for 'blocks' %}
     <div class="faq-main">
       {% for faq in faq_items.value %}
-        <div class="faq-card {% if forloop.first %}active{% endif %}">
+        <div class="faq-card {% if forloop.first %}active{% endif %}" data-track="pdp_faq_click" data-track-label="{{ faq.heading.value | strip_html | escape }}">
           <div class="faq-left">
             <div class="faq-count">
               {% if forloop.index < 10 %}

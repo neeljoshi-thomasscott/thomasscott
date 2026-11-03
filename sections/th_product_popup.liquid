@@ -5,7 +5,7 @@
       <h4 class="thomasxlheading">{{ section.settings.heading }}</h4>
 
       {% if section.settings.button_text != blank %}
-        <a href="{{ section.settings.button_link }}" class="thomas-btn thomas-black-btn hovertime">
+        <a href="{{ section.settings.button_link }}" class="thomas-btn thomas-black-btn hovertime" data-track="banner_click" data-track-label="{{ section.settings.button_text | escape }}" data-track-section="{{ section.id }}">
           {{ section.settings.button_text }}
         </a>
       {% endif %}

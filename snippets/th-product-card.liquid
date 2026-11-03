@@ -59,6 +59,23 @@
     data-quick-add-btn="{{ btn_id }}"
 {% endcapture %}
 
+{%- comment -%} GTM: list name and grid position for the card's tracking attributes {%- endcomment -%}
+{%- liquid
+  assign card_list_name = list_name
+  if card_list_name == blank and template.name == 'collection'
+    assign card_list_name = collection.title
+  elsif card_list_name == blank and template.name == 'search'
+    assign card_list_name = 'Search results'
+  endif
+  if card_list_name == blank
+    assign card_section_title = section.settings.heading | default: section.settings.title | strip_html
+    assign card_list_name = template.name | capitalize
+    if card_section_title != blank
+      assign card_list_name = card_list_name | append: ' - ' | append: card_section_title
+    endif
+  endif
+-%}
+
 <style>
     button.card-slider-btn.prev svg {
       transform: rotate(180deg);
@@ -71,7 +88,17 @@
   }
 </style>
 
-<div class="custom-product-card product-card th-product-card {{ card_id }}">
+<div
+  class="custom-product-card product-card th-product-card {{ card_id }}"
+  data-track-product
+  data-product-id="{{ product.id }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-price="{{ product.price | money_without_currency | remove: ',' }}"
+  data-product-compare-price="{{ product.compare_at_price | money_without_currency | remove: ',' }}"
+  data-product-type="{{ product.type | escape }}"
+  data-list-name="{{ card_list_name | escape }}"
+  {% if index != blank %}data-index="{{ index }}"{% endif %}
+>
   <div class="item">
     <div class="card-image-wrapper">
      {% if is_sold_out %}
@@ -135,7 +162,7 @@
             {%- assign featured = product.featured_image -%}
             {%- comment -%} First slide: always the featured image {%- endcomment -%}
             <div class="product-image-slide">
-              <a href="{{ product.url }}" ref="productLink">
+              <a href="{{ product.url }}" ref="productLink" data-track="select_item" data-track-label="image">
                 {% if featured != blank %}
                 <img
                   src="{{ featured |  image_url: width: 300 }}"
@@ -169,7 +196,7 @@
               {%- if image.id == featured.id -%}{%- continue -%}{%- endif -%}
               {%- if count >= 4 -%}{%- break -%}{%- endif -%}
               <div class="product-image-slide">
-                <a href="{{ product.url }}" ref="productLink">
+                <a href="{{ product.url }}" ref="productLink" data-track="select_item" data-track-label="image">
                   <img
                     src="{{ image |  image_url: width: 300 }}"
                     class="product-image lazyload"
@@ -196,7 +223,7 @@
             {%- endfor -%}
           {%- else -%}
             <div class="product-image-slide">
-              <a href="{{ product.url }}">
+              <a href="{{ product.url }}" data-track="select_item" data-track-label="image">
                 {{ 'product-1' | placeholder_svg_tag: 'product-image placeholder-svg' }}
               </a>
             </div>
@@ -228,6 +255,7 @@
 
       <button
         class="quick-add-btn quick-add-btn-desktop"
+        data-track="quick_add_open"
         {{ card_attr }}
         onclick="toggleAddToCart(this)"
         type="button"
@@ -267,7 +295,7 @@
     {% endcomment %}
     <div class="card-heading">
       <h3 class="product-title">
-        <a href="{{ product.url }}">
+        <a href="{{ product.url }}" data-track="select_item" data-track-label="title">
           {{ product.metafields.custom.short_title | default: product.title }}
         </a>
       </h3>

@@ -100,6 +100,9 @@
           data-variant-img="{{ variant.featured_image | image_url }}"
           {{ card_attr }}
           onclick="loadSwatchCard(this)"
+          data-track="grid_color_select"
+          data-track-color="{{ colorname | escape }}"
+          data-track-position="{{ forloop.index }}"
         >
           <span class="loader">
             <svg class="spinner" viewBox="0 0 50 50">
@@ -125,6 +128,8 @@
         <a 
           href="{{ product.url }}"
           class="more-swatches"
+          data-track="grid_color_more_click"
+          data-track-label="+{{ remaining }}"
         >
           +{{ remaining }}
         </a>

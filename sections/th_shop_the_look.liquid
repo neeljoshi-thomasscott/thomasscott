@@ -48,7 +48,7 @@
              style="top:{{ block.settings.card_top }}%; left:{{ block.settings.card_left }}%;"
              data-target="card-{{ block.id }}"
              data-slide-index="{{ forloop.index0 }}">
-          <button class="hotspot-dot" aria-label="Open product"></button>
+          <button class="hotspot-dot" aria-label="Open product" data-track="shop_the_look_click" data-track-label="{{ product.title | escape }}" data-track-action="hotspot_open" data-track-section="{{ section.id }}"></button>
         </div>
 
         <!-- DESKTOP POPUP CARD (exactly your working code) -->

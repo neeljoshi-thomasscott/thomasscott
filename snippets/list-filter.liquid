@@ -298,6 +298,10 @@
                         disabled
                       {% endif %}
                       ref="facetInputs[]"
+                      data-track="filter_apply"
+                      data-track-filter="{{ filter.label | escape }}"
+                      data-track-value="{{ value.label | escape }}"
+                      data-track-section="{{ sectionId }}"
                     >
                     <label
                       class="facets__image-label"
@@ -335,6 +339,10 @@
                             disabled
                           {% endif %}
                           ref="facetInputs[]"
+                          data-track="filter_apply"
+                          data-track-filter="{{ filter.label | escape }}"
+                          data-track-value="{{ value.label | escape }}"
+                          data-track-section="{{ sectionId }}"
                         >
                         {% render 'swatch', swatch: value.swatch, mode: 'filter' %}
                         {% if is_disabled %}
@@ -378,6 +386,10 @@
                           disabled
                         {% endif %}
                         ref="facetInputs[]"
+                        data-track="filter_apply"
+                        data-track-filter="{{ filter.label | escape }}"
+                        data-track-value="{{ value.label | escape }}"
+                        data-track-section="{{ sectionId }}"
                         tabindex="-1"
                       >
                       <label
@@ -400,7 +412,9 @@
                       </label>
                     </div>
                   {% else %}
+                    {%- capture filter_track_attrs -%}data-track="filter_apply" data-track-filter="{{ filter.label | escape }}" data-track-value="{{ value.label | escape }}" data-track-section="{{ sectionId }}"{%- endcapture -%}
                     {% render 'checkbox',
+                      input_attributes: filter_track_attrs,
                       name: value.param_name,
                       value: value.value,
                       label: value.label,
@@ -445,6 +459,9 @@
             >
               <button
                 type="button"
+                data-track="filter_clear"
+                data-track-filter="{{ filter.label | escape }}"
+                data-track-section="{{ sectionId }}"
                 on:click="/clearFilter"
                 on:keydown="/clearFilter"
                 class="clear-filter button button-secondary"

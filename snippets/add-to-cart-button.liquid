@@ -8,6 +8,8 @@
   @param {string} [class] - Additional CSS classes to apply to the button.
   @param {string} [id] - The ID attribute for the button.
   @param {string} [data_testid] - The data-testid attribute for testing.
+  @param {string} [track] - GTM data-track event name. Defaults to pdp_add_to_bag_click.
+  @param {string} [track_source] - GTM data-track-source value. Defaults to product_page.
 {%- enddoc -%}
 
 {%- liquid
@@ -31,6 +33,8 @@
     name="add"
     ref="addToCartButton"
     on:click="/handleClick"
+    data-track="{{ track | default: 'pdp_add_to_bag_click' }}"
+    data-track-source="{{ track_source | default: 'product_page' }}"
     class="button {{ class }}"
     {% if data_testid %}
       data-testid="{{ data_testid }}"

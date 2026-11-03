@@ -14,7 +14,7 @@
       {% render 'schedule', s: section.settings %}
     >
       {%- if section.settings.link != blank -%}
-        <a class="offer-banner__link" href="{{ section.settings.link }}" aria-label="{{ alt }}">
+        <a class="offer-banner__link" href="{{ section.settings.link }}" aria-label="{{ alt }}" data-track="banner_click" data-track-label="{{ alt | escape }}" data-track-section="{{ section.id }}">
       {%- endif -%}
       <picture class="offer-banner__picture">
         {%- if mobile_image != blank -%}

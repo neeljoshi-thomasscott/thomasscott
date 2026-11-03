@@ -42,6 +42,8 @@
         id="sort-select-{{ section_id }}"
         name="sort_by"
         class="sorting-filter__select"
+        data-track="sort_change"
+        data-track-section="{{ section_id }}"
         {% if should_use_select_on_mobile == false %}
           disabled
         {% endif %}
@@ -51,6 +53,7 @@
   {% unless option.name == 'Alphabetically, Z-A' or option.name == 'Alphabetically, A-Z'  %}
           <option
             value="{{ option.value }}"
+            data-track-label="{{ option.name | escape }}"
             {% if option.value == sort_by %}
               selected
             {% endif %}
@@ -145,6 +148,10 @@
                   value="{{ option.value }}"
                   class="sorting-filter__input"
                   data-option-name="{{ option.name }}"
+                  data-track="sort_change"
+                  data-track-label="{{ option.name | escape }}"
+                  data-track-value="{{ option.value | escape }}"
+                  data-track-section="{{ section_id }}"
                   {% if option.value == sort_by %}
                     checked
                   {% endif %}

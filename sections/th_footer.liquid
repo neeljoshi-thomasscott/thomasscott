@@ -57,7 +57,7 @@
     placeholder="Enter Your Email ID"
     required
   >
-  <button type="submit" class="submit-btn">
+  <button type="submit" class="submit-btn" data-track="newsletter_signup" data-track-label="{{ section.settings.newsletter_title | escape }}" data-track-section="{{ section.id }}">
     <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
       <path d="M0.5625 5.0625L14.0625 5.0625" stroke="white" stroke-width="1.125"/>
       <path d="M9.5625 0.5625L14.0625 5.0625L9.5625 9.5625" stroke="white" stroke-width="1.125"/>
@@ -94,14 +94,14 @@
               <ul class="footer-list">
                 {% for link in linklists[block.settings.menu].links %}
                   <li>
-                    <a href="{{ link.url }}" {% if link.title == 'TRACK ORDER' %}
+                    <a href="{{ link.url }}" data-track="{% if link.url contains 'tel:' or link.url contains 'mailto:' or link.url contains '/pages/contact' or link.url contains 'wa.me' or link.url contains 'whatsapp' %}contact_click{% else %}footer_link_click{% endif %}" data-track-label="{{ link.title | escape }}" data-track-menu="{{ block.settings.heading | escape }}" data-track-section="{{ section.id }}" {% if link.title == 'TRACK ORDER' %}
         target="_blank" rel="noopener noreferrer"
       {% endif %}>{{ link.title }}</a>
                   </li>
                 {% endfor %}
                 {% comment %} flits support added code from here, to add reward page link in footer {% endcomment %}
                 {%if block.settings.heading == "CUSTOMER SERVICE" %}
-                <li><a href="/pages/rewards">Loyalty Program</a></li>
+                <li><a href="/pages/rewards" data-track="footer_link_click" data-track-label="Loyalty Program" data-track-menu="{{ block.settings.heading | escape }}" data-track-section="{{ section.id }}">Loyalty Program</a></li>
               {% endif %}
               {% comment %} till here {% endcomment %}
               </ul>
@@ -118,13 +118,13 @@
  
  <ul class="footer-legal">
           {% for link in linklists[section.settings.legal_menu1].links %}
-            <li><a href="{{ link.url }}" target="_blank">{{ link.title }}</a></li>
+            <li><a href="{{ link.url }}" target="_blank" data-track="footer_link_click" data-track-label="{{ link.title | escape }}" data-track-menu="legal" data-track-section="{{ section.id }}">{{ link.title }}</a></li>
           {% endfor %}
         </ul>
       <!-- SOCIAL -->
       <ul class="footer-social">
 				<li>
-					<a href="{{section.settings.social_facebook_link }}" target="_blank">
+					<a href="{{section.settings.social_facebook_link }}" target="_blank" data-track="social_click" data-track-label="Facebook" data-track-section="{{ section.id }}">
 						<svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<circle cx="19.1707" cy="19.1707" r="18.7713" stroke="white" stroke-opacity="0.2" stroke-width="0.798781"></circle>
 							<path d="M23.9634 12.4079C23.9634 12.2961 23.9175 12.1889 23.8358 12.1099C23.7541 12.0308 23.6433 11.9864 23.5277 11.9864H21.3492C20.2522 11.9336 19.1782 12.3028 18.3618 13.0135C17.5454 13.7243 17.0531 14.7186 16.9922 15.7794V18.0552H14.8138C14.6982 18.0552 14.5874 18.0996 14.5057 18.1786C14.424 18.2576 14.3781 18.3648 14.3781 18.4766V20.6681C14.3781 20.7799 14.424 20.8871 14.5057 20.9661C14.5874 21.0451 14.6982 21.0895 14.8138 21.0895H16.9922V26.7368C16.9922 26.8486 17.0381 26.9558 17.1199 27.0348C17.2016 27.1139 17.3124 27.1583 17.4279 27.1583H20.0421C20.1577 27.1583 20.2685 27.1139 20.3502 27.0348C20.4319 26.9558 20.4778 26.8486 20.4778 26.7368V21.0895H22.7609C22.8578 21.0909 22.9524 21.0609 23.0297 21.0045C23.107 20.948 23.1627 20.8682 23.1879 20.7777L23.8153 18.5862C23.8326 18.5239 23.8349 18.4586 23.8221 18.3953C23.8092 18.3321 23.7815 18.2725 23.7411 18.2212C23.7007 18.1699 23.6487 18.1283 23.589 18.0995C23.5294 18.0707 23.4637 18.0555 23.397 18.0552H20.4778V15.7794C20.4995 15.5708 20.6008 15.3774 20.7619 15.2372C20.9231 15.0969 21.1325 15.0197 21.3492 15.0208H23.5277C23.6433 15.0208 23.7541 14.9764 23.8358 14.8974C23.9175 14.8183 23.9634 14.7111 23.9634 14.5994V12.4079Z" fill="white"></path>
@@ -132,7 +132,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="{{section.settings.social_instagram_link }}" target="_blank">
+					<a href="{{section.settings.social_instagram_link }}" target="_blank" data-track="social_click" data-track-label="Instagram" data-track-section="{{ section.id }}">
 					<svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<circle cx="19.1707" cy="19.1707" r="18.7713" stroke="white" stroke-opacity="0.2" stroke-width="0.798781"></circle>
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M16.4416 11.2281C17.2508 11.1909 17.5088 11.1826 19.5701 11.1826C21.6314 11.1826 21.8894 11.1916 22.6979 11.2281C23.5064 11.2647 24.0583 11.3937 24.5412 11.5807C25.0469 11.7718 25.5056 12.0705 25.885 12.4568C26.2714 12.8355 26.5694 13.2936 26.7598 13.7999C26.9474 14.2828 27.0757 14.8347 27.113 15.6418C27.1502 16.4524 27.1585 16.7104 27.1585 18.771C27.1585 20.8323 27.1496 21.0903 27.113 21.8995C27.0764 22.7067 26.9474 23.2585 26.7598 23.7414C26.5694 24.2479 26.2709 24.7067 25.885 25.086C25.5056 25.4723 25.0469 25.7703 24.5412 25.9607C24.0583 26.1484 23.5064 26.2767 22.6993 26.3139C21.8894 26.3512 21.6314 26.3594 19.5701 26.3594C17.5088 26.3594 17.2508 26.3505 16.4416 26.3139C15.6345 26.2774 15.0826 26.1484 14.5997 25.9607C14.0933 25.7703 13.6345 25.4718 13.2552 25.086C12.8691 24.707 12.5704 24.2484 12.3797 23.7421C12.1928 23.2592 12.0645 22.7073 12.0272 21.9002C11.99 21.0896 11.9817 20.8316 11.9817 18.771C11.9817 16.7097 11.9907 16.4517 12.0272 15.6432C12.0638 14.8347 12.1928 14.2828 12.3797 13.7999C12.5706 13.2936 12.8696 12.835 13.2559 12.4561C13.6346 12.0701 14.093 11.7714 14.599 11.5807C15.0819 11.3937 15.6338 11.2654 16.4409 11.2281H16.4416ZM22.6365 12.5941C21.8363 12.5575 21.5962 12.5499 19.5701 12.5499C17.544 12.5499 17.3039 12.5575 16.5037 12.5941C15.7635 12.6279 15.362 12.7513 15.0943 12.8555C14.7404 12.9935 14.4872 13.157 14.2217 13.4226C13.9699 13.6675 13.7761 13.9657 13.6546 14.2952C13.5504 14.5629 13.4269 14.9644 13.3931 15.7046C13.3566 16.5049 13.349 16.7449 13.349 18.771C13.349 20.7971 13.3566 21.0372 13.3931 21.8374C13.4269 22.5777 13.5504 22.9792 13.6546 23.2468C13.776 23.5759 13.9699 23.8746 14.2217 24.1195C14.4666 24.3713 14.7653 24.5651 15.0943 24.6865C15.362 24.7907 15.7635 24.9142 16.5037 24.948C17.3039 24.9846 17.5433 24.9922 19.5701 24.9922C21.5969 24.9922 21.8363 24.9846 22.6365 24.948C23.3767 24.9142 23.7782 24.7907 24.0459 24.6865C24.3998 24.5486 24.653 24.3851 24.9186 24.1195C25.1704 23.8746 25.3642 23.5759 25.4856 23.2468C25.5898 22.9792 25.7133 22.5777 25.7471 21.8374C25.7836 21.0372 25.7912 20.7971 25.7912 18.771C25.7912 16.7449 25.7836 16.5049 25.7471 15.7046C25.7133 14.9644 25.5898 14.5629 25.4856 14.2952C25.3476 13.9414 25.1842 13.6882 24.9186 13.4226C24.6736 13.1708 24.3754 12.9771 24.0459 12.8555C23.7782 12.7513 23.3767 12.6279 22.6365 12.5941ZM18.6009 21.1103C19.1422 21.3357 19.7449 21.3661 20.3061 21.1964C20.8674 21.0267 21.3523 20.6674 21.678 20.1799C22.0038 19.6924 22.1502 19.1069 22.0922 18.5234C22.0343 17.94 21.7756 17.3948 21.3603 16.9809C21.0955 16.7163 20.7754 16.5137 20.423 16.3877C20.0706 16.2617 19.6946 16.2154 19.3221 16.2521C18.9496 16.2888 18.5899 16.4077 18.2689 16.6001C17.9479 16.7926 17.6735 17.0538 17.4656 17.365C17.2576 17.6762 17.1212 18.0296 17.0663 18.3999C17.0113 18.7701 17.0391 19.1479 17.1477 19.5061C17.2563 19.8643 17.4429 20.1939 17.6942 20.4713C17.9455 20.7487 18.2551 20.967 18.6009 21.1103ZM16.8121 16.013C17.1743 15.6508 17.6042 15.3635 18.0775 15.1675C18.5507 14.9715 19.0579 14.8706 19.5701 14.8706C20.0823 14.8706 20.5895 14.9715 21.0627 15.1675C21.536 15.3635 21.966 15.6508 22.3281 16.013C22.6903 16.3752 22.9776 16.8052 23.1737 17.2784C23.3697 17.7516 23.4706 18.2588 23.4706 18.771C23.4706 19.2832 23.3697 19.7904 23.1737 20.2637C22.9776 20.7369 22.6903 21.1669 22.3281 21.5291C21.5967 22.2606 20.6046 22.6715 19.5701 22.6715C18.5356 22.6715 17.5435 22.2606 16.8121 21.5291C16.0806 20.7976 15.6696 19.8055 15.6696 18.771C15.6696 17.7366 16.0806 16.7445 16.8121 16.013ZM24.3356 15.4514C24.4254 15.3668 24.4972 15.265 24.5469 15.152C24.5966 15.0391 24.6232 14.9173 24.625 14.794C24.6268 14.6706 24.6038 14.5481 24.5574 14.4338C24.511 14.3194 24.4422 14.2156 24.3549 14.1283C24.2677 14.0411 24.1638 13.9722 24.0495 13.9258C23.9351 13.8795 23.8127 13.8565 23.6893 13.8583C23.5659 13.8601 23.4442 13.8866 23.3312 13.9363C23.2183 13.986 23.1165 14.0579 23.0318 14.1476C22.8671 14.3222 22.777 14.554 22.7805 14.794C22.784 15.0339 22.8809 15.263 23.0505 15.4327C23.2202 15.6024 23.4493 15.6993 23.6893 15.7028C23.9292 15.7063 24.1611 15.6161 24.3356 15.4514Z" fill="white"></path>
@@ -141,7 +141,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="{{ section.settings.social_youtube_link }}" target="_blank">
+					<a href="{{ section.settings.social_youtube_link }}" target="_blank" data-track="social_click" data-track-label="YouTube" data-track-section="{{ section.id }}">
 						<svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<circle cx="19.1707" cy="19.1707" r="18.7713" stroke="white" stroke-opacity="0.2" stroke-width="0.798781"></circle>
 							<g clip-path="url(#clip0_38_589)">
@@ -156,7 +156,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="{{ section.settings.social_twitter_link }}" target="_blank">
+					<a href="{{ section.settings.social_twitter_link }}" target="_blank" data-track="social_click" data-track-label="LinkedIn" data-track-section="{{ section.id }}">
 						<svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<circle cx="19.1707" cy="19.1707" r="18.7713" stroke="white" stroke-opacity="0.2" stroke-width="0.798781"></circle>
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M14.9771 26.3594V15.5801H11.3947V26.3593H14.9771V26.3594ZM13.1863 14.109C14.4352 14.109 15.2131 13.2806 15.2131 12.2462C15.1895 11.1888 14.4352 10.3838 13.2097 10.3838C11.9841 10.3838 11.1829 11.1888 11.1829 12.2462C11.1829 13.2806 11.9604 14.109 13.1627 14.109L13.1863 14.109ZM16.9598 26.3594C16.9598 26.3594 17.0068 16.5915 16.9598 15.5802H20.5428V17.1434H20.519C20.9901 16.4078 21.8389 15.3271 23.7714 15.3271C26.1292 15.3271 27.8964 16.8677 27.8964 20.1786V26.3594H24.314V20.5928C24.314 19.1438 23.7957 18.1551 22.4988 18.1551C21.5093 18.1551 20.9196 18.8217 20.6606 19.466C20.5659 19.6954 20.5428 20.0175 20.5428 20.3397V26.3594H16.9598Z" fill="white"></path>
@@ -181,7 +181,7 @@
 
         <ul>
           {% for link in linklists[section.settings.legal_menu].links %}
-            <li><a href="{{ link.url }}" target="_blank">{{ link.title }}</a></li>
+            <li><a href="{{ link.url }}" target="_blank" data-track="footer_link_click" data-track-label="{{ link.title | escape }}" data-track-menu="policy" data-track-section="{{ section.id }}">{{ link.title }}</a></li>
           {% endfor %}
         </ul>
       </div>

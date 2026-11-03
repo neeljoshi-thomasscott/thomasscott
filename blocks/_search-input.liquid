@@ -17,6 +17,9 @@
   method="get"
   role="search"
   class="search-page-input__parent"
+  data-track="search_submit"
+  data-track-label="search_page"
+  data-track-section="{{ section.id }}"
 >
   <search-page-input-component
     style="{% render 'size-style', settings: block_settings %}{% render 'spacing-style', settings: block_settings %}"

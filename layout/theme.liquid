@@ -494,7 +494,7 @@
 
       var closeBtn = selectorDiv.querySelector('.product-cart-btn');
       var cardAttrs = closeBtn
-        ? Array.from(closeBtn.attributes).filter(function (a) { return a.name !== 'class' && a.name !== 'onclick'; })
+        ? Array.from(closeBtn.attributes).filter(function (a) { return a.name !== 'class' && a.name !== 'onclick' && a.name.indexOf('data-track') !== 0; })
         : [];
 
       var frag = document.createDocumentFragment();
@@ -506,6 +506,10 @@
         b.setAttribute('data-variant-id', v[0]);
         b.setAttribute('data-available', v[2] ? 'true' : 'false');
         b.setAttribute('onclick', 'triggerAddToCartDesktop(this)');
+        b.setAttribute('data-track', 'size_select');
+        b.setAttribute('data-track-size', v[1]);
+        b.setAttribute('data-track-available', v[2] ? 'true' : 'false');
+        b.setAttribute('data-track-source', 'quick_add_inline');
         if (!v[2]) { b.disabled = true; b.setAttribute('aria-disabled', 'true'); }
         b.innerHTML = '<span class="loader"><svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"/></svg></span><span class="loaded"></span>';
         b.querySelector('.loaded').textContent = v[1];
@@ -624,6 +628,10 @@
           card.id = (newCard.id || '') + '_' + uid;
           card.className = Array.from(newCard.classList).map(function (c) { return c + ' _' + uid; }).join(' ');
           card.innerHTML = newCard.innerHTML;
+          // GTM: the swapped-in colour is a different product; keep list name and position
+          ['data-product-id', 'data-product-title', 'data-product-price', 'data-product-compare-price', 'data-product-type'].forEach(function (name) {
+            card.setAttribute(name, newCard.getAttribute(name) || '');
+          });
         }
       } catch (e) { console.error(e); }
       btn.classList.remove('loading');

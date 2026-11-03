@@ -22,6 +22,9 @@
           facets-remove__pill
         "
         data-url="{{ filter.url_to_remove }}"
+        data-track="filter_clear"
+        data-track-filter="{{ filter.label | escape }}"
+        data-track-value="price_range"
         tabindex="0"
         role="button"
         on:click="/removeFilter?form="
@@ -56,6 +59,9 @@
             {% if value.swatch %}pills__pill--swatch{% endif %}
           "
           data-url="{{ value.url_to_remove }}"
+          data-track="filter_clear"
+          data-track-filter="{{ filter.label | escape }}"
+          data-track-value="{{ value.label | escape }}"
           tabindex="0"
           role="button"
           on:click="/removeFilter?form="
@@ -94,6 +100,8 @@
       <div class="plp-clear-top">
         <a
           href="{{ collection.url }}"
+          data-track="filter_clear"
+          data-track-label="clear_all_filters"
           class="clear-all-filters-btn">
           Clear all filters
         </a>
@@ -107,6 +115,8 @@
         type="button"
         class="button-unstyled facets__clear-all-link"
         ref="clearButton"
+        data-track="filter_clear"
+        data-track-label="clear_all"
         on:click="/removeFilter?form="
         on:keydown="/removeFilter?form="
       >

@@ -2,7 +2,7 @@
 <div class="container">
   <nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
     
-    <a href="{{ routes.root_url }}">Home</a>
+    <a href="{{ routes.root_url }}" data-track="breadcrumb_click" data-track-label="Home">Home</a>
     {% capture separator %}
       <span class="breadcrumb-separator">
         <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
@@ -17,11 +17,11 @@
 
       {% if collection %}
         {{ separator }}
-        <a href="{{ collection.url }}">{{ collection.title }}</a>
+        <a href="{{ collection.url }}" data-track="breadcrumb_click" data-track-label="{{ collection.title | escape }}">{{ collection.title }}</a>
 
       {% elsif first_collection %}
         {{ separator }}
-        <a href="{{ first_collection.url }}">{{ first_collection.title }}</a>
+        <a href="{{ first_collection.url }}" data-track="breadcrumb_click" data-track-label="{{ first_collection.title | escape }}">{{ first_collection.title }}</a>
       {% endif %}
 
       {{ separator }}
@@ -55,7 +55,7 @@
     {% elsif template contains 'article' %}
 
       {{ separator }}
-      <a href="{{ blog.url }}">Blogs</a>
+      <a href="{{ blog.url }}" data-track="breadcrumb_click" data-track-label="Blogs">Blogs</a>
 
       {{ separator }}
       <span class="breadcrumb-current">{{ article.title }}</span>

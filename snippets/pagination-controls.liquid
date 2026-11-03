@@ -35,6 +35,9 @@
           <a
             href="{{ paginate.previous.url }}"
             aria-label="{{ 'content.pagination.previous' | t }}"
+            data-track="pagination_click"
+            data-track-label="previous"
+            data-track-value="{{ paginate.current_page | minus: 1 }}"
             class="pagination__link pagination__link--arrow"
             {% if on_click_handler != blank %}
               on:click="{{ on_click_handler }}?{{ prev_params }}"
@@ -108,6 +111,9 @@
             <a
               href="{{ part.url }}"
               aria-label="{{ 'content.pagination.page' | t: page: part.title }}"
+              data-track="pagination_click"
+              data-track-label="page"
+              data-track-value="{{ part.title | escape }}"
               class="pagination__link pagination__link--page"
               {% if on_click_handler != blank %}
                 on:click="{{ on_click_handler }}?{{ part_params }}"
@@ -140,6 +146,9 @@
           <a
             href="{{ paginate.next.url }}"
             aria-label="{{ 'content.pagination.next' | t }}"
+            data-track="pagination_click"
+            data-track-label="next"
+            data-track-value="{{ paginate.current_page | plus: 1 }}"
             class="pagination__link pagination__link--arrow"
             {% if on_click_handler != blank %}
               on:click="{{ on_click_handler }}?{{ next_params }}"

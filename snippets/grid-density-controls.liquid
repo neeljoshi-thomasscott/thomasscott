@@ -20,6 +20,8 @@
           name="grid-mobile"
           value="mobile-single"
           class="column-options__option-input"
+          data-track="view_toggle"
+          data-track-label="mobile_single_column"
           aria-label="{{ 'content.grid_view.single_item' | t }}"
           on:change="results-list/updateLayout"
         >
@@ -44,6 +46,8 @@
           checked
           aria-label="{{ 'content.grid_view.default_view' | t }}"
           data-grid-layout="mobile-option"
+          data-track="view_toggle"
+          data-track-label="mobile_two_column"
           on:change="results-list/updateLayout"  
         >
         <span class="column-picker column-picker-mobile--double">
@@ -65,6 +69,8 @@
           
           {% comment %} aria-label="{{ 'content.grid_view.default_view' | t }}" {% endcomment %}
           data-grid-layout="desktop-default-option"
+          data-track="view_toggle"
+          data-track-label="desktop_default"
           on:change="results-list/updateLayout"
           data-skip-node-update
         >
@@ -84,6 +90,8 @@
           value="zoom-out"
           checked
           class="column-options__option-input"
+          data-track="view_toggle"
+          data-track-label="desktop_zoom_out"
            aria-label="{{ 'content.grid_view.default_view' | t }}"
           {% comment %} aria-label="{{ 'content.grid_view.zoom_out' | t }}" {% endcomment %}
           on:change="results-list/updateLayout"

@@ -24,12 +24,12 @@
     data-quick-add-btn="{{ btn_id }}"
 {% endcapture %}
     <div class="{{ section_class }} {{ card_id }}">
-    <a href="{{ product.url }}" class="shop-look-thumb">
+    <a href="{{ product.url }}" class="shop-look-thumb" data-track="shop_the_look_click" data-track-label="{{ product.title | escape }}" data-track-action="product_image" data-track-section="{{ section.id }}">
     <img src="{{ product.featured_image | image_url: width: '200px' }}" alt="{{ product.title }}">
     </a>
     <div class="shop-look-content">
     <div class="thomassmheading">
-        <a href="{{ product.url }}">{{ product.title }}</a>
+        <a href="{{ product.url }}" data-track="shop_the_look_click" data-track-label="{{ product.title | escape }}" data-track-action="product_title" data-track-section="{{ section.id }}">{{ product.title }}</a>
     </div>
         <div class="content">
         {% render 'price', product_resource: product %}
@@ -38,6 +38,10 @@
         <button 
             class="shop-look-quick-add" 
             data-product-id="{{ product.id }}"
+            data-track="shop_the_look_click"
+            data-track-label="{{ product.title | escape }}"
+            data-track-action="quick_add_open"
+            data-track-section="{{ section.id }}"
             {{ card_attr }}
             onclick="toggleAddToCart(this)"
         >

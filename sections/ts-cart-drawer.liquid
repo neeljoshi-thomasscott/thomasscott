@@ -185,7 +185,7 @@
               </button>
             {%- endif -%}
           </div>
-          <button type="button" class="ts-cd__close" data-ts-cd-action="close" aria-label="Close cart">
+          <button type="button" class="ts-cd__close" data-ts-cd-action="close" aria-label="Close cart" data-track="cart_close">
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2 2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
         </div>
@@ -342,7 +342,7 @@
               <div class="ts-cd__card ts-cd__empty">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 9V6a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
                 <p class="ts-cd__empty-title">Your cart is empty</p>
-                <a class="ts-cd__btn" href="{{ section.settings.empty_link | default: routes.all_products_collection_url }}">Continue shopping</a>
+                <a class="ts-cd__btn" href="{{ section.settings.empty_link | default: routes.all_products_collection_url }}" data-track="continue_shopping_click" data-track-label="drawer_empty">Continue shopping</a>
               </div>
             {%- else -%}
               {%- comment -%} ── LINE ITEMS ───────────────────────────────── {%- endcomment -%}
@@ -362,6 +362,7 @@
                     assign can_update = item.instructions.can_update_quantity | default: true, allow_false: true
                     assign can_remove = item.instructions.can_remove | default: true, allow_false: true
                   -%}
+                  {%- capture ts_track_item -%}data-track-product-id="{{ item.product_id }}" data-track-product-title="{{ item.product.title | escape }}" data-track-variant-id="{{ item.variant_id }}" data-track-variant-title="{{ item.variant.title | escape }}" data-track-price="{{ item.final_price | money_without_currency | remove: ',' }}" data-track-quantity="{{ item.quantity }}"{%- endcapture -%}
                   <li
                     id="TsCartDrawerLine-{{ item.key }}"
                     class="ts-cd__item"
@@ -370,14 +371,15 @@
                     data-variant-id="{{ item.variant_id }}"
                     data-quantity="{{ item.quantity }}"
                     data-properties="{{ item.properties | json | escape }}"
+                    {{ ts_track_item }}
                   >
-                    <a class="ts-cd__item-media" href="{{ item.url }}">
+                    <a class="ts-cd__item-media" href="{{ item.url }}" data-track="cart_item_click" data-track-label="image" {{ ts_track_item }}>
                       {%- if item.image -%}
                         {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title, sizes: '80px' }}
                       {%- endif -%}
                     </a>
                     <div class="ts-cd__item-info">
-                      <a class="ts-cd__item-title" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                      <a class="ts-cd__item-title" href="{{ item.url }}" data-track="cart_item_click" data-track-label="title" {{ ts_track_item }}>{{ item.product.title | escape }}</a>
                       {%- if item.product.has_only_default_variant == false and item.item_components.size == 0 -%}
                         <label class="visually-hidden" for="ts-cd-size-{{ forloop.index }}">Size</label>
                         <span class="ts-cd__select">
@@ -412,12 +414,12 @@
                       {%- endif -%}
                       <div class="ts-cd__item-actions">
                         <div class="ts-cd__qty">
-                          <button type="button" data-ts-cd-action="decrease" aria-label="Decrease quantity of {{ item.product.title | escape }}" {% unless can_update %}disabled{% endunless %}>-</button>
+                          <button type="button" data-ts-cd-action="decrease" aria-label="Decrease quantity of {{ item.product.title | escape }}" {% unless can_update %}disabled{% endunless %} data-track="cart_qty_change" data-track-label="decrease" {{ ts_track_item }}>-</button>
                           <span aria-live="polite">{{ item.quantity }}</span>
-                          <button type="button" data-ts-cd-action="increase" aria-label="Increase quantity of {{ item.product.title | escape }}" {% unless can_update %}disabled{% endunless %}>+</button>
+                          <button type="button" data-ts-cd-action="increase" aria-label="Increase quantity of {{ item.product.title | escape }}" {% unless can_update %}disabled{% endunless %} data-track="cart_qty_change" data-track-label="increase" {{ ts_track_item }}>+</button>
                         </div>
                         {%- if can_remove -%}
-                          <button type="button" class="ts-cd__remove" data-ts-cd-action="remove" aria-label="Remove {{ item.product.title | escape }}">
+                          <button type="button" class="ts-cd__remove" data-ts-cd-action="remove" aria-label="Remove {{ item.product.title | escape }}" data-track="cart_remove" {{ ts_track_item }}>
                             <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-3 6h12l-1 12H7L6 9Zm4 2v8h1.5v-8H10Zm3.5 0v8H15v-8h-1.5Z"/></svg>
                           </button>
                         {%- endif -%}
@@ -434,7 +436,7 @@
                   <label class="ts-cd__coupon-label" for="ts-cd-coupon">Enter coupon code</label>
                   <div class="ts-cd__coupon-row">
                     <input id="ts-cd-coupon" type="text" name="discount" placeholder="Enter coupon code" autocomplete="off" autocapitalize="characters" spellcheck="false">
-                    <button type="submit" class="ts-cd__apply" disabled>Apply</button>
+                    <button type="submit" class="ts-cd__apply" disabled data-track="coupon_apply" data-track-label="drawer_field">Apply</button>
                   </div>
                   <p class="ts-cd__coupon-error" data-ts-cd-coupon-error hidden></p>
                 </form>
@@ -444,7 +446,7 @@
                       <li class="ts-cd__code">
                         <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.4 11.6 12.4 2.6A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .6.2 1.1.6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8ZM6.5 8A1.5 1.5 0 1 1 6.5 5a1.5 1.5 0 0 1 0 3Z"/></svg>
                         <span><strong>{{ code | escape }}</strong> applied</span>
-                        <button type="button" data-ts-cd-action="remove-code" data-code="{{ code | escape }}" aria-label="Remove coupon {{ code | escape }}">Remove</button>
+                        <button type="button" data-ts-cd-action="remove-code" data-code="{{ code | escape }}" aria-label="Remove coupon {{ code | escape }}" data-track="coupon_remove" data-track-coupon="{{ code | escape }}">Remove</button>
                       </li>
                     {%- endfor -%}
                   </ul>
@@ -545,7 +547,7 @@
               data-gokwik-processed stops snippets/gokwik.liquid from cloning and redecorating this
               button; ts-cart-drawer.js opens GoKwik checkout itself.
             {%- endcomment -%}
-            <button type="button" class="ts-cd__checkout" data-ts-cd-action="checkout" data-gokwik-processed="true">
+            <button type="button" class="ts-cd__checkout" data-ts-cd-action="checkout" data-gokwik-processed="true" data-track="cart_checkout_click" data-track-label="drawer" data-track-value="{{ cart.total_price | money_without_currency | remove: ',' }}" data-track-quantity="{{ cart.item_count }}">
               <span>Checkout</span>
               <img src="https://cdn.gokwik.co/v4/images/upi-icons.svg" alt="" width="64" height="22" loading="lazy">
             </button>
@@ -573,7 +575,7 @@
               <label class="visually-hidden" for="ts-cd-coupon-offers">Enter coupon code</label>
               <div class="ts-cd__coupon-row">
                 <input id="ts-cd-coupon-offers" type="text" name="discount" placeholder="Enter coupon code" autocomplete="off" autocapitalize="characters" spellcheck="false">
-                <button type="submit" class="ts-cd__apply" disabled>Apply</button>
+                <button type="submit" class="ts-cd__apply" disabled data-track="coupon_apply" data-track-label="offers_field">Apply</button>
               </div>
               <p class="ts-cd__coupon-error" data-ts-cd-coupon-error hidden></p>
             </form>
@@ -601,7 +603,7 @@
                       {%- if is_applied -%}
                         <span class="ts-cd__offer-applied">Applied</span>
                       {%- else -%}
-                        <button type="button" class="ts-cd__offer-apply" data-ts-cd-action="apply-offer" data-code="{{ code | escape }}">Apply</button>
+                        <button type="button" class="ts-cd__offer-apply" data-ts-cd-action="apply-offer" data-code="{{ code | escape }}" data-track="coupon_apply" data-track-label="offer_list" data-track-coupon="{{ code | escape }}">Apply</button>
                       {%- endif -%}
                     {%- endif -%}
                   </li>

@@ -59,6 +59,9 @@
 >
   <a
     class="collection-card__link"
+    data-track="collection_tile_click"
+    data-track-label="{{ collection.title | escape }}"
+    data-track-section="{{ section.id }}"
     {% unless onboarding %}
       href="{{ collection.url }}"
     {% endunless %}

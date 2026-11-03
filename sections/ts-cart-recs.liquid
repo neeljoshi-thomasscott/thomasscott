@@ -28,14 +28,15 @@
       endif
       assign available_variants = product.variants | where: 'available'
     -%}
-    <div class="ts-cd-rec" data-product-id="{{ product.id }}">
-      <a class="ts-cd-rec__media" href="{{ product.url }}">
+    {%- capture rec_track -%}data-track-product-id="{{ product.id }}" data-track-product-title="{{ product.title | escape }}" data-track-price="{{ variant.price | money_without_currency | remove: ',' }}" data-track-list="cart_drawer_recs" data-track-position="{{ forloop.index }}"{%- endcapture -%}
+    <div class="ts-cd-rec" data-product-id="{{ product.id }}" {{ rec_track }}>
+      <a class="ts-cd-rec__media" href="{{ product.url }}" data-track="cart_upsell_click" data-track-label="image" {{ rec_track }}>
         {%- if product.featured_image -%}
           {{ product.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: product.title, sizes: '88px' }}
         {%- endif -%}
       </a>
       <div class="ts-cd-rec__info">
-        <a class="ts-cd-rec__title" href="{{ product.url }}">{{ product.title | escape }}</a>
+        <a class="ts-cd-rec__title" href="{{ product.url }}" data-track="cart_upsell_click" data-track-label="title" {{ rec_track }}>{{ product.title | escape }}</a>
         {%- if variant.compare_at_price > variant.price -%}
           <s>{{ variant.compare_at_price | money }}</s>
         {%- endif -%}
@@ -47,14 +48,14 @@
         <span></span>
       {%- endif -%}
       {%- if product.has_only_default_variant or available_variants.size == 1 -%}
-        <button type="button" class="ts-cd-rec__add" data-ts-cd-action="rec-add" data-variant-id="{{ available_variants.first.id }}">+ Add</button>
+        <button type="button" class="ts-cd-rec__add" data-ts-cd-action="rec-add" data-variant-id="{{ available_variants.first.id }}" data-track="cart_upsell_click" data-track-label="add" data-track-variant-id="{{ available_variants.first.id }}" data-track-variant-title="{{ available_variants.first.title | escape }}" {{ rec_track }}>+ Add</button>
       {%- else -%}
-        <button type="button" class="ts-cd-rec__add" data-ts-cd-action="rec-pick" aria-expanded="false">+ Add</button>
+        <button type="button" class="ts-cd-rec__add" data-ts-cd-action="rec-pick" aria-expanded="false" data-track="cart_upsell_click" data-track-label="open_size_picker" {{ rec_track }}>+ Add</button>
         <div class="ts-cd-rec__sizes" hidden>
           <span class="ts-cd-rec__sizes-label">Select size</span>
           <div class="ts-cd-rec__sizes-list">
             {%- for v in available_variants -%}
-              <button type="button" data-ts-cd-action="rec-add" data-variant-id="{{ v.id }}">{{ v.title | escape }}</button>
+              <button type="button" data-ts-cd-action="rec-add" data-variant-id="{{ v.id }}" data-track="cart_upsell_click" data-track-label="add_size" data-track-variant-id="{{ v.id }}" data-track-variant-title="{{ v.title | escape }}" data-track-price="{{ v.price | money_without_currency | remove: ',' }}" data-track-product-id="{{ product.id }}" data-track-product-title="{{ product.title | escape }}" data-track-list="cart_drawer_recs" data-track-position="{{ forloop.parentloop.index }}">{{ v.title | escape }}</button>
             {%- endfor -%}
           </div>
           <button type="button" class="ts-cd-rec__sizes-close" data-ts-cd-action="rec-pick-close" aria-label="Close size picker">
