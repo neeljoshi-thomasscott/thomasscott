@@ -118,6 +118,10 @@
       disabled
     {% endif %}
     form="cart-form"
+    data-track="cart_checkout_click"
+    data-track-label="mobile_sticky"
+    data-track-value="{{ cart.total_price | money_without_currency | remove: ',' }}"
+    data-track-quantity="{{ cart.item_count }}"
   >
     {%- comment -%}
       FIX 1: 'content.pay' was a missing key — hardcoded "PAY" instead.

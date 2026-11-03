@@ -194,6 +194,8 @@
         type="button"
         id="accelerated-checkout"
         class="sticky-add-to-cart__button add-to-cart-button button"
+        data-track="pdp_buy_now_click"
+        data-track-source="sticky_bar"
         ref="acceleratedCheckoutButtonContainer"
        {{ block.shopify_attributes }}
     {% if request.visual_preview_mode %}
@@ -244,6 +246,8 @@
       <button
         type="button"
         class="sticky-add-to-cart__button add-to-cart-button add-cart-btn button"
+        data-track="pdp_add_to_bag_click"
+        data-track-source="sticky_bar"
         ref="addToCartButton"
         on:click="/handleAddToCartClick"
         {% unless current_variant.available %}

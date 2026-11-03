@@ -6,7 +6,7 @@ customer-review
     <h3 class="thomasxlheading">{{ block.settings.heading }}</h3>
     {% endif %}
     {% if block.settings.url %}
-    <a href="{{ block.settings.url }}" class="thomas-btn thomas-black-btn hovertime">{{ block.settings.viewall }}</a>
+    <a href="{{ block.settings.url }}" class="thomas-btn thomas-black-btn hovertime" data-track="banner_click" data-track-label="{{ block.settings.heading | append: ' - ' | append: block.settings.viewall | escape }}" data-track-section="{{ section.id }}">{{ block.settings.viewall }}</a>
     {% endif %}
 </div>
 {% schema %}

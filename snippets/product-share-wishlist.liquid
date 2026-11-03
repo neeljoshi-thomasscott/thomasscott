@@ -36,6 +36,8 @@
 <div class="pdp-share-sec">
     <!-- Share Button -->
     <button class="pdp-share share-button"
+        data-track="share_click"
+        data-track-label="pdp_share_sec"
         data-share-url="{{ request.origin }}{{ product.url }}"
         data-share-title="{{ product.title | escape }}"
     >

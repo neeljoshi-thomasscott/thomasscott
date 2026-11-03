@@ -9,7 +9,7 @@
     %}
     <div class="mobile-footer-nav">
       {% if section.settings.show_home %}
-        <a href="/" class="footer-nav-item">
+        <a href="/" class="footer-nav-item" data-track="bottom_menu_click" data-track-label="Home" data-track-section="{{ section.id }}">
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M6.55659 18.75H3.07306C1.78976 18.75 0.75 17.6999 0.75 16.4039V9.50228C0.750782 8.9995 0.857936 8.5027 1.06428 8.04514C1.27063 7.58759 1.57141 7.17985 1.94647 6.84923L8.22529 1.32605C8.6481 0.954588 9.1896 0.75 9.75 0.75C10.3104 0.75 10.8519 0.954588 11.2747 1.32605L17.5535 6.8503C17.9285 7.1808 18.2292 7.58837 18.4355 8.04573C18.6418 8.50309 18.7491 8.99968 18.75 9.50228V16.4039C18.75 17.0259 18.5054 17.6225 18.07 18.0625C17.6345 18.5024 17.0439 18.7497 16.428 18.75H13.2335V11.7126C13.2335 10.7417 12.4542 9.95355 11.4918 9.95355H8.29941C7.33694 9.95355 6.55765 10.7417 6.55765 11.7126L6.55659 18.75ZM6.55659 18.75H13.2346" stroke="#1E1E1E" stroke-width="1.5" stroke-linejoin="round"/>
@@ -28,7 +28,7 @@
 
       {% if section.settings.show_menu %}
         <div class="header-left">
-          <button class="nav-icon  footer-nav-item js-open-menu">
+          <button class="nav-icon  footer-nav-item js-open-menu" data-track="bottom_menu_click" data-track-label="Menu" data-track-section="{{ section.id }}">
             <span>MENU</span>
           </button>
 
@@ -36,7 +36,7 @@
       {% endif %}
 
   {% if section.settings.show_account %}
-    <a href="{{ routes.account_url }}" class="footer-nav-item">
+    <a href="{{ routes.account_url }}" class="footer-nav-item" data-track="bottom_menu_click" data-track-label="Account" data-track-section="{{ section.id }}">
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
           <path d="M1.01162 16.7141L1.18982 15.331C1.52068 12.7801 3.7257 10.8691 6.33875 10.8691H11.0175C13.6305 10.8691 15.8361 12.7807 16.1647 15.331L16.3435 16.7141C16.4406 17.4627 15.8977 18.0693 15.1311 18.0693H2.2246C1.45795 18.0693 0.915022 17.4627 1.01162 16.7141Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> <path d="M12.0001 4.19688C12.0001 6.0444 10.4756 7.54263 8.59478 7.54263C6.71396 7.54263 5.18994 6.04482 5.18994 4.19688C5.18994 2.34894 6.71439 0.851562 8.59522 0.851562C10.476 0.851562 12.0005 2.34936 12.0005 4.19688H12.0001Z" stroke="#1E1E1E" stroke-width="1.70264" stroke-linecap="round" stroke-linejoin="round"/>
@@ -46,7 +46,7 @@
   {% endif %}
 
   {% if section.settings.show_cart %}
-    <button class="footer-nav-item js-open-cart" on:click="/open">
+    <button class="footer-nav-item js-open-cart" on:click="/open" data-track="bottom_menu_click" data-track-label="Cart" data-track-section="{{ section.id }}">
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
           <path d="M12.0479 8.0921V4.22368C12.0479 3.36871 11.7022 2.54875 11.0869 1.9442C10.4715 1.33964 9.63692 1 8.76668 1C7.89644 1 7.06184 1.33964 6.44649 1.9442C5.83113 2.54875 5.48543 3.36871 5.48543 4.22368V8.0921M15.4219 6.37882L16.5271 16.6946C16.5883 17.2663 16.1333 17.7632 15.5479 17.7632H1.98543C1.84736 17.7633 1.71081 17.7349 1.58463 17.6798C1.45846 17.6247 1.3455 17.5442 1.25308 17.4434C1.16065 17.3427 1.09084 17.2239 1.04818 17.0949C1.00551 16.9659 0.990948 16.8295 1.00543 16.6946L2.11143 6.37882C2.13694 6.14118 2.2511 5.92123 2.4319 5.76139C2.6127 5.60154 2.84733 5.51311 3.09055 5.51316H14.4428C14.9468 5.51316 15.3694 5.8871 15.4219 6.37882ZM5.81355 8.0921C5.81355 8.1776 5.77898 8.2596 5.71745 8.32005C5.65591 8.38051 5.57245 8.41447 5.48543 8.41447C5.39841 8.41447 5.31495 8.38051 5.25341 8.32005C5.19188 8.2596 5.1573 8.1776 5.1573 8.0921C5.1573 8.00661 5.19188 7.92461 5.25341 7.86416C5.31495 7.8037 5.39841 7.76974 5.48543 7.76974C5.57245 7.76974 5.65591 7.8037 5.71745 7.86416C5.77898 7.92461 5.81355 8.00661 5.81355 8.0921ZM12.3761 8.0921C12.3761 8.1776 12.3415 8.2596 12.2799 8.32005C12.2184 8.38051 12.135 8.41447 12.0479 8.41447C11.9609 8.41447 11.8774 8.38051 11.8159 8.32005C11.7544 8.2596 11.7198 8.1776 11.7198 8.0921C11.7198 8.00661 11.7544 7.92461 11.8159 7.86416C11.8774 7.8037 11.9609 7.76974 12.0479 7.76974C12.135 7.76974 12.2184 7.8037 12.2799 7.86416C12.3415 7.92461 12.3761 8.00661 12.3761 8.0921Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

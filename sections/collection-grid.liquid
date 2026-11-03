@@ -74,7 +74,7 @@
                 {{- block.settings.tag_text | escape -}}
               </span>
             {%- endif -%}
-            <a href="{{ block_collection.url }}">
+            <a href="{{ block_collection.url }}" data-track="collection_tile_click" data-track-label="{{ custom_title | default: block_collection.title | escape }}" data-track-section="{{ section.id }}">
 
               <div class="categroy-thumb">
 
@@ -148,7 +148,7 @@
                 {{- block.settings.tag_text | escape -}}
               </span>
             {%- endif -%}
-            <a href="{{ block_collection.url }}">
+            <a href="{{ block_collection.url }}" data-track="collection_tile_click" data-track-label="{{ custom_title | default: block_collection.title | escape }}" data-track-section="{{ section.id }}">
 
               <div class="categroy-thumb">
 

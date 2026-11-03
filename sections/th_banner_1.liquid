@@ -1,6 +1,6 @@
 
 <section class="season-banner test {% if section.settings.heading!=blank  %} best-season-banner {% endif %} relative {{ section.settings.custom_class }}">
-   <a href="{{ section.settings.button_link }}" class="">
+   <a href="{{ section.settings.button_link }}" class="" data-track="banner_click" data-track-label="{{ section.settings.heading | default: section.settings.button_text | default: section.settings.desktop_image.alt | escape }}" data-track-section="{{ section.id }}">
   <picture class="picture">
     
     {% if section.settings.mobile_image != blank %}

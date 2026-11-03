@@ -296,14 +296,14 @@ or page.handle == 'faqs' %}
     <div class="header-left">
       {% if enable_secondary_header == true %}
       <span class="menu-icon">
-        <a href="{{ routes.root_url }}" class="footer-nav-item">
+        <a href="{{ routes.root_url }}" class="footer-nav-item" data-track="logo_click" data-track-label="Home icon" data-track-section="{{ section.id }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M6.55659 18.75H3.07306C1.78976 18.75 0.75 17.6999 0.75 16.4039V9.50228C0.750782 8.9995 0.857936 8.5027 1.06428 8.04514C1.27063 7.58759 1.57141 7.17985 1.94647 6.84923L8.22529 1.32605C8.6481 0.954588 9.1896 0.75 9.75 0.75C10.3104 0.75 10.8519 0.954588 11.2747 1.32605L17.5535 6.8503C17.9285 7.1808 18.2292 7.58837 18.4355 8.04573C18.6418 8.50309 18.7491 8.99968 18.75 9.50228V16.4039C18.75 17.0259 18.5054 17.6225 18.07 18.0625C17.6345 18.5024 17.0439 18.7497 16.428 18.75H13.2335V11.7126C13.2335 10.7417 12.4542 9.95355 11.4918 9.95355H8.29941C7.33694 9.95355 6.55765 10.7417 6.55765 11.7126L6.55659 18.75ZM6.55659 18.75H13.2346" stroke="#1E1E1E" stroke-width="1.5" stroke-linejoin="round"></path>
             </svg>
         </a>
       </span>
       {% else %}
-      <button class="nav-icon">
+      <button class="nav-icon" data-track="menu_open" data-track-label="Hamburger" data-track-section="{{ section.id }}">
           <svg width="21" height="18" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 9H19.6667" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M1 1H14.3333" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -330,7 +330,7 @@ or page.handle == 'faqs' %}
       
       <nav class="menu">
         
-        <button class="header-close-btn" type="button">
+        <button class="header-close-btn" type="button" data-track="popup_close" data-track-label="Menu drawer" data-track-section="{{ section.id }}">
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3.55786 3.5542L10.6699 10.6662" stroke="#1E1E1E" stroke-width="1.23529" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M3.55396 10.666L10.666 3.55399" stroke="#1E1E1E" stroke-width="1.23529" stroke-linecap="round" stroke-linejoin="round"/>
@@ -384,7 +384,7 @@ or page.handle == 'faqs' %}
   {% for link in linklists[section.settings.left_menu].links %}
     <li class="menu-item">
 
-      <a href="{{ link.url }}">{{ link.title }}</a>
+      <a href="{{ link.url }}" data-track="menu_click" data-track-label="{{ link.title | escape }}" data-track-level="1" data-track-section="{{ section.id }}">{{ link.title }}</a>
   {% if link.links.size > 0 %}
     <span class="menu-arrow">
       <svg aria-hidden="true" focusable="false" fill="none" width="12" class="icon icon-chevron-right" viewBox="0 0 10 10">
@@ -411,6 +411,7 @@ or page.handle == 'faqs' %}
                 <a
   href="{{ childlink.url }}"
   class="menu-link-with-image"
+  data-track="menu_click" data-track-label="{{ childlink.title | escape }}" data-track-level="2" data-track-section="{{ section.id }}"
   {% if menu_image %}
     data-image="{{ menu_image | image_url: width: 800 }}"
   {% endif %}
@@ -441,7 +442,7 @@ or page.handle == 'faqs' %}
                     <ul class="submenu">
                       {% for grandchild in childlink.links %}
                         <li>
-                          <a href="{{ grandchild.url }}">
+                          <a href="{{ grandchild.url }}" data-track="menu_click" data-track-label="{{ grandchild.title | escape }}" data-track-level="3" data-track-section="{{ section.id }}">
                             {{ grandchild.title }}
                           </a>
                            {% if grandchild.links.size > 0 %}
@@ -474,7 +475,7 @@ or page.handle == 'faqs' %}
 
         <!-- Logo -->
         <div class="header-logo">
-          <a href="{{ routes.root_url }}">
+          <a href="{{ routes.root_url }}" data-track="logo_click" data-track-label="Logo" data-track-section="{{ section.id }}">
             {% if enable_secondary_header == true %}
             {% comment %} <button type="button" class="nav-icon nav-icon-menu ">
                Menu
@@ -511,7 +512,7 @@ or page.handle == 'faqs' %}
 
 
 
-      <a href="{{ link.url }}">
+      <a href="{{ link.url }}" data-track="menu_click" data-track-label="{{ link.title | escape }}" data-track-level="1" data-track-section="{{ section.id }}">
   {% comment %} <span class="menu-link-content"> {% endcomment %}
     {{ link.title }}
 
@@ -546,7 +547,7 @@ or page.handle == 'faqs' %}
 
                 <div class="mega-column">
 
-                  <a href="{{ childlink.url }}" class="menu-link-with-image">
+                  <a href="{{ childlink.url }}" class="menu-link-with-image" data-track="menu_click" data-track-label="{{ childlink.title | escape }}" data-track-level="2" data-track-section="{{ section.id }}">
 
                     {% if menu_image %}
                       <span class="menu-thumb">
@@ -586,7 +587,7 @@ or page.handle == 'faqs' %}
       {% assign grandchild_image = grandchild_collection.featured_image %}
 
       <li>
-        <a href="{{ grandchild.url }}" class="menu-link-with-image">
+        <a href="{{ grandchild.url }}" class="menu-link-with-image" data-track="menu_click" data-track-label="{{ grandchild.title | escape }}" data-track-level="3" data-track-section="{{ section.id }}">
 
           {% if grandchild_image %}
             <span class="menu-thumb">
@@ -635,7 +636,7 @@ or page.handle == 'faqs' %}
 </ul>
 </div>   
 <div class="store-locator">
-  <a href="/pages/store-locator" class="store-loc-text">
+  <a href="/pages/store-locator" class="store-loc-text" data-track="menu_click" data-track-label="Store locator" data-track-level="1" data-track-section="{{ section.id }}">
      {% comment %} <img
       src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/STORE_locator_1.png?v=1787035501"
       class="store-loc-icon"
@@ -657,11 +658,11 @@ or page.handle == 'faqs' %}
     </div>
     <div class="header-logo header-logo-mobile">
       {% if enable_secondary_header == true %}
-        <a href="javascript:void(0)" class="nav-icon nav-icon-menu">
+        <a href="javascript:void(0)" class="nav-icon nav-icon-menu" data-track="menu_open" data-track-label="Menu" data-track-section="{{ section.id }}">
             Menu
         </a>
       {% else %}
-        <a href="{{ routes.root_url }}">
+        <a href="{{ routes.root_url }}" data-track="logo_click" data-track-label="Logo (mobile)" data-track-section="{{ section.id }}">
            <img src="{{ section.settings.logo | image_url }}" width="120"> </a>
       {% endif %}
       
@@ -670,7 +671,7 @@ or page.handle == 'faqs' %}
     <!-- Right Icons -->
     <div class="header-right">
     
-  <a href="/pages/store-locator" class="store-loc-text store-desktop">
+  <a href="/pages/store-locator" class="store-loc-text store-desktop" data-track="menu_click" data-track-label="Store locator" data-track-level="1" data-track-section="{{ section.id }}">
      {% comment %} <img
       src="https://cdn.shopify.com/s/files/1/0821/2738/8922/files/STORE_locator_1.png?v=1787035501"
       class="store-loc-icon"
@@ -688,7 +689,7 @@ or page.handle == 'faqs' %}
   </a>
 
       {% render 'wishlisthero-header-icon.liquid' %}
-      <a href="{{ routes.account_url }}" class="header-user header__icon--account">
+      <a href="{{ routes.account_url }}" class="header-user header__icon--account" data-track="account_click" data-track-label="Account" data-track-section="{{ section.id }}">
         <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0.76125 16.8948L0.939451 15.487C1.27031 12.8906 3.47533 10.9455 6.08838 10.9455H10.7671C13.3802 10.9455 15.5857 12.8911 15.9144 15.487L16.0931 16.8948C16.1903 17.6568 15.6473 18.2742 14.8807 18.2742H1.97423C1.20758 18.2742 0.664656 17.6568 0.76125 16.8948Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
           <path style d="M11.7497 4.15506C11.7497 6.03556 10.2252 7.56055 8.34441 7.56055C6.46359 7.56055 4.93958 6.036 4.93958 4.15506C4.93958 2.27411 6.46403 0.75 8.34485 0.75C10.2257 0.75 11.7501 2.27455 11.7501 4.15506H11.7497Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -753,6 +754,7 @@ or page.handle == 'faqs' %}
             aria-label="{{ 'accessibility.cart' | t }}"
             aria-describedby="cart-bubble-text"
             data-testid="cart-drawer-trigger"
+            data-track="header_cart_click" data-track-label="Cart" data-track-section="{{ section.id }}"
           >
             {{ cart_icon }}
           </button>
@@ -833,6 +835,7 @@ or page.handle == 'faqs' %}
           class="header-actions__action action__cart{% if display_style == 'text' %} header-actions__text-style{% endif %}"
           aria-label="{{ 'accessibility.cart' | t }}"
           aria-describedby="cart-bubble-text"
+          data-track="header_cart_click" data-track-label="Cart" data-track-section="{{ section.id }}"
         >
           {{ cart_icon }}
         </a>

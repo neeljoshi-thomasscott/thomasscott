@@ -59,6 +59,10 @@
                   <a
                     class="pills__pill predictive-search-results__pill"
                     href="{{ resource.url }}"
+                    data-track="predictive_search_result_click"
+                    data-track-label="{{ resource.text | escape }}"
+                    data-track-result-type="query"
+                    data-track-section="{{ section.id }}"
                   >
                     <span
                       aria-label="{{ resource.text }}"

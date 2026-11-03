@@ -27,6 +27,8 @@
 {% if accelerated_checkout_button != blank %}
   <div
     class="accelerated-checkout-block"
+    data-track="pdp_buy_now_click"
+    data-track-source="product_page"
     ref="acceleratedCheckoutButtonContainer"
     {{ block.shopify_attributes }}
     {% if request.visual_preview_mode %}

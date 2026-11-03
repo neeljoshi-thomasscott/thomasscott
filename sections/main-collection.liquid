@@ -105,6 +105,10 @@
       
       <a
         href="{{ subColl.url }}"
+        data-track="collection_tile_click"
+        data-track-label="{% if forloop.first %}All{% else %}{{ subColl.metafields.custom.sub_coll_title.value | default: subColl.title | escape }}{% endif %}"
+        data-track-action="sub_collection_pill"
+        data-track-section="{{ section.id }}"
         class="pills__pill {% if request.path == subColl.url %}active{% endif %}">
         <p style="text-align:center">
           {% if forloop.first == true %}
@@ -452,6 +456,10 @@
     {%- for subColl in sub_collections.value -%}
       <a
         href="{{ subColl.url }}"
+        data-track="collection_tile_click"
+        data-track-label="{% if forloop.first %}All{% else %}{{ subColl.metafields.custom.sub_coll_title.value | default: subColl.title | escape }}{% endif %}"
+        data-track-action="sub_collection_pill"
+        data-track-section="{{ section.id }}"
         class="pills__pill {% if request.path == subColl.url %}active{% endif %}">
         <p style="text-align:center">
           {% if forloop.first == true %}

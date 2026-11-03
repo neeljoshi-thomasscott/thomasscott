@@ -42,6 +42,9 @@
             <a
               href="{{ block.settings.button_link }}"
               class="thomas-wht-btn hovertime"
+              data-track="banner_click"
+              data-track-label="{{ block.settings.heading | default: block.settings.button_text | escape }}"
+              data-track-section="{{ section.id }}"
             >
               {{ block.settings.button_text }}
             </a>

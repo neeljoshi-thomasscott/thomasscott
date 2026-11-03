@@ -95,6 +95,8 @@
             aria-label="{{ 'accessibility.close_dialog' | t }}"
             on:click="dialog-component/closeDialog"
             ref="closeModalButton"
+            data-track="popup_close"
+            data-track-label="Search modal"
           >
             <span class="svg-wrapper">
               {{ 'icon-close.svg' | inline_asset_content }}
@@ -120,6 +122,8 @@
             <button
               class="button predictive-search__search-button"
               ref="viewAllButton"
+              data-track="search_submit"
+              data-track-label="{{ 'content.search_results_view_all' | t | escape }}"
             >
               {{ 'content.search_results_view_all' | t }}
             </button>

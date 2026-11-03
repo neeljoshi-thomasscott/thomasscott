@@ -241,6 +241,16 @@ export class QuickAddComponent extends Component {
 
     morph(modalContent, productGrid);
 
+    // GTM: give the dialog this card's product attributes (data-product-*, data-list-name, data-index)
+    const card = this.closest('[data-track-product]');
+    const dialogComponent = document.getElementById('quick-add-dialog');
+    if (card && dialogComponent) {
+      dialogComponent.setAttribute('data-track-product', '');
+      for (const name of ['data-product-id', 'data-product-title', 'data-product-price', 'data-product-compare-price', 'data-product-type', 'data-list-name', 'data-index']) {
+        dialogComponent.setAttribute(name, card.getAttribute(name) || '');
+      }
+    }
+
     this.#syncVariantSelection(modalContent);
   }
 
@@ -323,14 +333,41 @@ class QuickAddDialog extends DialogComponent {
     this.addEventListener(ThemeEvents.variantUpdate, this.#updateProductTitleLink);
 
     this.addEventListener(DialogCloseEvent.eventName, this.#handleDialogClose);
+
+    // GTM: content is product page markup and gets re-morphed on variant change, so keep retagging it
+    this.#trackingObserver.observe(this, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-track', 'data-track-source'],
+    });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
     this.#abortController.abort();
+    this.#trackingObserver.disconnect();
     this.removeEventListener(DialogCloseEvent.eventName, this.#handleDialogClose);
   }
+
+  /**
+   * GTM: renames product page data-track events inside the modal to their quick-add equivalents
+   */
+  #trackingObserver = new MutationObserver(() => {
+    /** @type {Record<string, string>} */
+    const renames = {
+      pdp_add_to_bag_click: 'quick_add_to_bag_click',
+      pdp_buy_now_click: 'quick_buy_now_click',
+      pdp_size_select: 'size_select',
+    };
+    for (const el of this.querySelectorAll('#quick-add-modal-content [data-track]')) {
+      if (!(el instanceof HTMLElement) || !el.dataset.track) continue;
+      const renamed = renames[el.dataset.track];
+      if (renamed) el.dataset.track = renamed;
+      if (el.dataset.trackSource !== 'quick_add') el.dataset.trackSource = 'quick_add';
+    }
+  });
 
   /**
    * Closes the dialog

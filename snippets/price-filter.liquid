@@ -162,6 +162,8 @@
         {% if should_render_clear %}
           <facet-clear-component
             class="clear-filter"
+            data-track="filter_clear"
+            data-track-filter="{{ filter.label | escape }}"
             tabindex="{% if has_active_values %}0{% else %}-1{% endif %}"
             on:click="/clearFilter"
             on:keydown="/clearFilter"
@@ -393,6 +395,8 @@
         {% if should_render_clear %}
           <facet-clear-component
             class="clear-filter"
+            data-track="filter_clear"
+            data-track-filter="{{ filter.label | escape }}"
             tabindex="{% if has_active_values %}0{% else %}-1{% endif %}"
             on:click="/clearFilter"
             on:keydown="/clearFilter"
@@ -645,6 +649,9 @@
               value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | remove: ',' | remove: ' ' }}{% else %}0{% endif %}"
               step="1"
               aria-label="Minimum price"
+              data-track="filter_apply"
+              data-track-filter="{{ filter.label | escape }}"
+              data-track-value="min"
             >
             <input
               type="range"
@@ -654,6 +661,9 @@
               value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | remove: ',' | remove: ' ' }}{% else %}{{ filter.range_max | money_without_currency | remove: ',' | remove: ' ' }}{% endif %}"
               step="1"
               aria-label="Maximum price"
+              data-track="filter_apply"
+              data-track-filter="{{ filter.label | escape }}"
+              data-track-value="max"
             >
           </div>
         </div>
@@ -670,6 +680,8 @@
         {% if should_render_clear %}
           <facet-clear-component
             class="clear-filter"
+            data-track="filter_clear"
+            data-track-filter="{{ filter.label | escape }}"
             tabindex="{% if has_active_values %}0{% else %}-1{% endif %}"
             on:click="/clearFilter"
             on:keydown="/clearFilter"

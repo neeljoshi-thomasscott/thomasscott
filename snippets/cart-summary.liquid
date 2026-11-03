@@ -101,7 +101,7 @@
             FIX: was 'actions.apply' | t | default: 'APPLY'
             'actions.apply' already EXISTS in locale = "Apply" ✅ — removed useless default
           {%- endcomment -%}
-          <button type="submit" class="cart-inline-discount__button">
+          <button type="submit" class="cart-inline-discount__button" data-track="coupon_apply" data-track-label="cart_summary">
             {{ 'actions.apply' | t }}
           </button>
         </form>
@@ -130,6 +130,8 @@
                   on:click="/removeDiscount"
                   class="cart-discount__pill-remove svg-wrapper svg-wrapper--smaller button-unstyled"
                   aria-label="{{ 'actions.remove_discount' | t: code: discount_code }}"
+                  data-track="coupon_remove"
+                  data-track-coupon="{{ discount_code | escape }}"
                 >
                   {{- 'icon-filters-close.svg' | inline_asset_content -}}
                 </button>
@@ -238,6 +240,10 @@
       disabled
     {% endif %}
     form="cart-form"
+    data-track="cart_checkout_click"
+    data-track-label="cart_summary"
+    data-track-value="{{ cart.total_price | money_without_currency | remove: ',' }}"
+    data-track-quantity="{{ cart.item_count }}"
   >
     {%- comment -%}
       FIX 1: 'content.pay' was a missing key — hardcoded "PAY" instead.

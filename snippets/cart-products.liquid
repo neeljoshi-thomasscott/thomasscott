@@ -46,6 +46,8 @@
     <a
       class="button cart-items__empty-button"
       href="{{ settings.empty_cart_button_link | default: routes.all_products_collection_url }}"
+      data-track="continue_shopping_click"
+      data-track-label="cart_empty"
     >
       <span class="button-text">
         {{ 'actions.continue_shopping' | t }}
@@ -122,6 +124,7 @@
 
           <tbody role="rowgroup">
             {% for item in cart.items %}
+              {%- capture ts_track_item -%}data-track-product-id="{{ item.product_id }}" data-track-product-title="{{ item.product.title | escape }}" data-track-variant-id="{{ item.variant_id }}" data-track-variant-title="{{ item.variant.title | escape }}" data-track-price="{{ item.final_price | money_without_currency | remove: ',' }}" data-track-quantity="{{ item.quantity }}"{%- endcapture -%}
               <tr
                 role="row"
                 class="cart-items__table-row{% if item.parent_relationship.parent != null %} cart-items__nested-line{% endif %}{% unless item.unit_price_measurement %} cart-items__table-row--full-width-variants{% endunless %}"
@@ -130,6 +133,7 @@
                 data-variant-id="{{ item.variant.id }}"
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
+                {{ ts_track_item }}
               >
                 <td
                   class="cart-items__media"
@@ -155,6 +159,9 @@
                       href="{{ item.url }}"
                       class="cart-items__media-container"
                       style="--ratio:{{ ratio }};"
+                      data-track="cart_item_click"
+                      data-track-label="image"
+                      {{ ts_track_item }}
                     >
                       {%- liquid
                         echo item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override
@@ -172,6 +179,9 @@
                       <a
                         href="{{ item.url }}"
                         class="cart-items__title"
+                        data-track="cart_item_click"
+                        data-track-label="title"
+                        {{ ts_track_item }}
                         {% if item.parent_relationship.parent != null %}
                           aria-label="{{ 'accessibility.nested_product' | t: product_title: item.product.title, parent_title: item.parent_relationship.parent.title | escape }}"
                         {% endif %}
@@ -226,7 +236,7 @@
                           </div>
                           <div class="cart-option-wrapper cart-qty-wrapper">
                             <span class="option-name">Qty:</span>
-                            <select data-qty-select>
+                            <select data-qty-select data-track="cart_qty_change" data-track-label="select" {{ ts_track_item }}>
                               {% for i in (1..10) %}
                                 <option value="{{ i }}" {% if item.quantity == i %}selected{% endif %}>
                                   {{ i | prepend: '0' | slice: -2, 2 }}
@@ -386,6 +396,8 @@
                       type="button"
                       aria-label="{{ 'accessibility.remove_item' | t: title: item.title | escape }}"
                       on:click="/onLineItemRemove/{{ item.index | plus: 1 }}"
+                      data-track="cart_remove"
+                      {{ ts_track_item }}
                       {% assign can_remove = item.instructions.can_remove | default: true, allow_false: true %}
                       {% if can_remove == false %}
                         hidden

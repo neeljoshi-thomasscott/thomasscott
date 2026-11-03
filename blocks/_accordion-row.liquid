@@ -15,7 +15,7 @@
     {% endif %}
     {{ block.shopify_attributes }}
   >
-    <summary class="details__header">
+    <summary class="details__header" data-track="pdp_accordion_click" data-track-label="{{ block_settings.heading | strip_html | escape }}">
       {% render 'icon-or-image',
         icon: block_settings.icon,
         image_upload: block_settings.image_upload,

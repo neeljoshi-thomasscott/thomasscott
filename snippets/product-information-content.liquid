@@ -81,6 +81,13 @@
   class="product-information  container section relative"
   
   data-testid="product-information"
+  data-track-product
+  data-product-id="{{ product.id }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-price="{{ product.price | money_without_currency | remove: ',' }}"
+  data-product-compare-price="{{ product.compare_at_price | money_without_currency | remove: ',' }}"
+  data-product-type="{{ product.type | escape }}"
+  data-list-name="Product page"
 >
   {% if settings.desktop_media_position == 'left' and product_has_media and request.page_type == 'product' %}
     {% assign product_href = '#ProductInformation-' | append: section_id %}
@@ -103,6 +110,8 @@
           </a>
            <!-- Share Button -->
     <button class="pdp-share share-button"
+        data-track="share_click"
+        data-track-label="pdp_share"
         data-share-url="{{ request.origin }}{{ product.url }}"
         data-share-title="{{ product.title | escape }}"
     >

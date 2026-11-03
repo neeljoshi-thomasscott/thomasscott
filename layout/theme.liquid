@@ -599,6 +599,10 @@
           card.id = (newCard.id || '') + '_' + uid;
           card.className = Array.from(newCard.classList).map(function (c) { return c + ' _' + uid; }).join(' ');
           card.innerHTML = newCard.innerHTML;
+          // GTM: the swapped-in colour is a different product; keep list name and position
+          ['data-product-id', 'data-product-title', 'data-product-price', 'data-product-compare-price', 'data-product-type'].forEach(function (name) {
+            card.setAttribute(name, newCard.getAttribute(name) || '');
+          });
         }
       } catch (e) { console.error(e); }
       btn.classList.remove('loading');

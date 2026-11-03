@@ -195,6 +195,9 @@
                     type="button"
                     class="button-unstyled facets__clear-all-link facets__clear-all-link--horizontal {% if is_active %}facets__clear-all-link--active{% endif %}"
                     ref="clearButton"
+                    data-track="filter_clear"
+                    data-track-label="clear_all"
+                    data-track-section="{{ section.id }}"
                     on:click="/removeFilter?form="
                     on:keydown="/removeFilter?form="
                   >
@@ -449,6 +452,9 @@
             type="button"
             class="button-secondary facets__clear-all{% if is_active %} facets__clear-all--active{% endif %}"
             ref="clearButton"
+            data-track="filter_clear"
+            data-track-label="clear_all_drawer"
+            data-track-section="{{ section.id }}"
             on:click="/removeFilter?form={{ form_component }}"
             on:keydown="/removeFilter?form={{ form_component }}"
           >
@@ -460,6 +466,9 @@
           <button
             class="button facets__see-results"
             type="button"
+            data-track="filter_apply"
+            data-track-label="apply_button"
+            data-track-section="{{ section.id }}"
             on:click="dialog-component/closeDialog"
           >
             {{- 'actions.apply_btn' | t -}}

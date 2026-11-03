@@ -7,6 +7,8 @@
             class="product-cart-btn" 
             {{  card_attr }}
             onclick="toggleAddToCart(this,true)"
+            data-track="quick_add_close"
+            data-track-source="quick_add_inline"
         >&times;</button> 
           <div class="select-size">
             Select Size
@@ -22,6 +24,10 @@
                 data-variant-id="{{ variant.id }}"
                 data-available="{{ variant.available }}"
                 onclick="triggerAddToCartDesktop(this)"
+                data-track="size_select"
+                data-track-size="{{ option_label | escape }}"
+                data-track-available="{{ variant.available }}"
+                data-track-source="quick_add_inline"
                 {% unless variant.available %}
                   disabled
                   aria-disabled="true"
