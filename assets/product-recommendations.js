@@ -103,7 +103,13 @@ class ProductRecommendations extends Component {
   //     }
   //   });
   // });
-  const swiper = new Swiper('.custom-product-swiper', {
+  // Only this block's slider: a page-wide selector re-initialised other sections' sliders
+  // and threw in getComputedStyle when the loaded block had no slider (mini cart).
+  const slider = this.querySelector('.custom-product-swiper');
+  if (!slider || typeof Swiper === 'undefined') return;
+  if (slider.swiper) slider.swiper.destroy(true, true);
+
+  const swiper = new Swiper(slider, {
     slidesPerView: 2,
     spaceBetween: 12,
     observer: true,
