@@ -219,6 +219,22 @@ function() {
 }`, CARD_FOLDER, 'GA4 items array for click-based ecommerce events (select_item, add_to_wishlist)');
 
 constVar('const - GA4 Measurement ID', GA4_ID, CLICK_FOLDER);
+
+jsVar('cjs - click_text', `
+function() {
+  var el = {{Click Element}};
+  if (!el || !el.closest) return undefined;
+  var t = el.closest('[data-track], a, button') || el;
+  var txt = (t.innerText || t.textContent || t.getAttribute('aria-label') || '').replace(/\\s+/g, ' ').trim();
+  return txt ? txt.slice(0, 100) : undefined;
+}`, CLICK_FOLDER, 'Text of the tracked element. Replaces built-in Click Text, which errors on SVG icons (bag, heart, arrows).');
+jsVar('cjs - click_url', `
+function() {
+  var el = {{Click Element}};
+  if (!el || !el.closest) return undefined;
+  var a = el.closest('a[href]');
+  return a ? a.href : undefined;
+}`, CLICK_FOLDER, 'href of the clicked link, also when an icon inside it was clicked');
 constVar('const - Meta Pixel ID', META_ID, META_FOLDER);
 
 // ---------- triggers ----------
@@ -305,8 +321,8 @@ const clickParams = [
   ['product_price', '{{cjs - product_price}}'],
   ['list_name', '{{cjs - list_name}}'],
   ['item_index', '{{cjs - item_index}}'],
-  ['link_text', '{{Click Text}}'],
-  ['link_url', '{{Click URL}}'],
+  ['link_text', '{{cjs - click_text}}'],
+  ['link_url', '{{cjs - click_url}}'],
 ];
 const extraClickParams = {
   quick_add_close: [['size_selected', '{{cjs - size_selected}}']],
@@ -436,7 +452,7 @@ if (contactTriggers.length) {
 
 // ---------- built-in variables ----------
 const builtIns = [
-  ['CLICK_ELEMENT', 'Click Element'], ['CLICK_CLASSES', 'Click Classes'], ['CLICK_ID', 'Click ID'], ['CLICK_TEXT', 'Click Text'],
+  ['CLICK_ELEMENT', 'Click Element'], ['CLICK_CLASSES', 'Click Classes'], ['CLICK_ID', 'Click ID'],
   ['CLICK_URL', 'Click URL'], ['PAGE_PATH', 'Page Path'], ['PAGE_URL', 'Page URL'], ['PAGE_HOSTNAME', 'Page Hostname'], ['REFERRER', 'Referrer'], ['EVENT', 'Event'], ['FORM_ELEMENT', 'Form Element'],
 ].map(([type, name]) => ({ ...base, type, name }));
 

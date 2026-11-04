@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-11-03 13:20:12",
+  "exportTime": "2026-11-04 07:46:21",
   "containerVersion": {
     "path": "accounts/6345737611/containers/247128781/versions/0",
     "accountId": "6345737611",
@@ -20,7 +20,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "99",
+        "tagId": "101",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - Google tag",
         "type": "googtag",
@@ -60,7 +60,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "100",
+        "tagId": "102",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - account_click",
         "type": "gaawe",
@@ -275,7 +275,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -290,7 +290,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -298,14 +298,14 @@
           }
         ],
         "firingTriggerId": [
-          "32"
+          "34"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "101",
+        "tagId": "103",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - add_to_wishlist",
         "type": "gaawe",
@@ -378,14 +378,14 @@
           }
         ],
         "firingTriggerId": [
-          "84"
+          "86"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "102",
+        "tagId": "104",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - announcement_click",
         "type": "gaawe",
@@ -600,7 +600,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -615,7 +615,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -623,14 +623,14 @@
           }
         ],
         "firingTriggerId": [
-          "33"
+          "35"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "103",
+        "tagId": "105",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - banner_click",
         "type": "gaawe",
@@ -845,7 +845,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -860,7 +860,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -868,14 +868,14 @@
           }
         ],
         "firingTriggerId": [
-          "34"
+          "36"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "104",
+        "tagId": "106",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - bottom_menu_click",
         "type": "gaawe",
@@ -1090,7 +1090,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -1105,7 +1105,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -1113,14 +1113,14 @@
           }
         ],
         "firingTriggerId": [
-          "35"
+          "37"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "105",
+        "tagId": "107",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - breadcrumb_click",
         "type": "gaawe",
@@ -1335,7 +1335,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -1350,7 +1350,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -1358,14 +1358,14 @@
           }
         ],
         "firingTriggerId": [
-          "36"
+          "38"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "106",
+        "tagId": "108",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - bundle_add_to_bag_click",
         "type": "gaawe",
@@ -1580,7 +1580,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -1595,7 +1595,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -1603,14 +1603,14 @@
           }
         ],
         "firingTriggerId": [
-          "37"
+          "39"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "107",
+        "tagId": "109",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_checkout_click",
         "type": "gaawe",
@@ -1825,7 +1825,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -1840,7 +1840,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -1848,14 +1848,14 @@
           }
         ],
         "firingTriggerId": [
-          "38"
+          "40"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "108",
+        "tagId": "110",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_close",
         "type": "gaawe",
@@ -2070,7 +2070,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -2085,7 +2085,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -2093,14 +2093,14 @@
           }
         ],
         "firingTriggerId": [
-          "39"
+          "41"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "109",
+        "tagId": "111",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_item_click",
         "type": "gaawe",
@@ -2315,7 +2315,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -2330,7 +2330,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -2338,14 +2338,14 @@
           }
         ],
         "firingTriggerId": [
-          "40"
+          "42"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "110",
+        "tagId": "112",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_qty_change",
         "type": "gaawe",
@@ -2560,7 +2560,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -2575,7 +2575,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -2613,14 +2613,14 @@
           }
         ],
         "firingTriggerId": [
-          "41"
+          "43"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "111",
+        "tagId": "113",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_remove",
         "type": "gaawe",
@@ -2835,7 +2835,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -2850,7 +2850,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -2873,14 +2873,14 @@
           }
         ],
         "firingTriggerId": [
-          "42"
+          "44"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "112",
+        "tagId": "114",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_upsell_click",
         "type": "gaawe",
@@ -3095,7 +3095,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -3110,7 +3110,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -3118,14 +3118,14 @@
           }
         ],
         "firingTriggerId": [
-          "43"
+          "45"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "113",
+        "tagId": "115",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - collection_tile_click",
         "type": "gaawe",
@@ -3340,7 +3340,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -3355,7 +3355,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -3363,14 +3363,14 @@
           }
         ],
         "firingTriggerId": [
-          "44"
+          "46"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "114",
+        "tagId": "116",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - contact_click",
         "type": "gaawe",
@@ -3585,7 +3585,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -3600,7 +3600,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -3608,14 +3608,14 @@
           }
         ],
         "firingTriggerId": [
-          "45"
+          "47"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "115",
+        "tagId": "117",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - continue_shopping_click",
         "type": "gaawe",
@@ -3830,7 +3830,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -3845,7 +3845,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -3853,14 +3853,14 @@
           }
         ],
         "firingTriggerId": [
-          "46"
+          "48"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "116",
+        "tagId": "118",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - coupon_apply",
         "type": "gaawe",
@@ -4075,7 +4075,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -4090,7 +4090,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -4113,14 +4113,14 @@
           }
         ],
         "firingTriggerId": [
-          "47"
+          "49"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "117",
+        "tagId": "119",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - coupon_remove",
         "type": "gaawe",
@@ -4335,7 +4335,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -4350,7 +4350,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -4373,14 +4373,14 @@
           }
         ],
         "firingTriggerId": [
-          "48"
+          "50"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "118",
+        "tagId": "120",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - filter_apply",
         "type": "gaawe",
@@ -4595,7 +4595,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -4610,7 +4610,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -4648,14 +4648,14 @@
           }
         ],
         "firingTriggerId": [
-          "49"
+          "51"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "119",
+        "tagId": "121",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - filter_clear",
         "type": "gaawe",
@@ -4870,7 +4870,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -4885,7 +4885,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -4893,14 +4893,14 @@
           }
         ],
         "firingTriggerId": [
-          "50"
+          "52"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "120",
+        "tagId": "122",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - footer_link_click",
         "type": "gaawe",
@@ -5115,7 +5115,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -5130,7 +5130,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -5138,14 +5138,14 @@
           }
         ],
         "firingTriggerId": [
-          "51"
+          "53"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "121",
+        "tagId": "123",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - grid_color_more_click",
         "type": "gaawe",
@@ -5360,7 +5360,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -5375,7 +5375,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -5383,14 +5383,14 @@
           }
         ],
         "firingTriggerId": [
-          "52"
+          "54"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "122",
+        "tagId": "124",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - grid_color_select",
         "type": "gaawe",
@@ -5605,7 +5605,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -5620,7 +5620,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -5628,14 +5628,14 @@
           }
         ],
         "firingTriggerId": [
-          "53"
+          "55"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "123",
+        "tagId": "125",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - header_cart_click",
         "type": "gaawe",
@@ -5850,7 +5850,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -5865,7 +5865,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -5873,14 +5873,14 @@
           }
         ],
         "firingTriggerId": [
-          "54"
+          "56"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "124",
+        "tagId": "126",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - hero_cta_click",
         "type": "gaawe",
@@ -6095,7 +6095,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -6110,7 +6110,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -6118,14 +6118,14 @@
           }
         ],
         "firingTriggerId": [
-          "55"
+          "57"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "125",
+        "tagId": "127",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - logo_click",
         "type": "gaawe",
@@ -6340,7 +6340,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -6355,7 +6355,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -6363,14 +6363,14 @@
           }
         ],
         "firingTriggerId": [
-          "56"
+          "58"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "126",
+        "tagId": "128",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - menu_click",
         "type": "gaawe",
@@ -6585,7 +6585,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -6600,7 +6600,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -6623,14 +6623,14 @@
           }
         ],
         "firingTriggerId": [
-          "57"
+          "59"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "127",
+        "tagId": "129",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - menu_open",
         "type": "gaawe",
@@ -6845,7 +6845,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -6860,7 +6860,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -6868,14 +6868,14 @@
           }
         ],
         "firingTriggerId": [
-          "58"
+          "60"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "128",
+        "tagId": "130",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - sign_up (newsletter_signup)",
         "type": "gaawe",
@@ -6948,14 +6948,14 @@
           }
         ],
         "firingTriggerId": [
-          "59"
+          "61"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "129",
+        "tagId": "131",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pagination_click",
         "type": "gaawe",
@@ -7170,7 +7170,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -7185,7 +7185,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -7193,14 +7193,14 @@
           }
         ],
         "firingTriggerId": [
-          "60"
+          "62"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "130",
+        "tagId": "132",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pdp_accordion_click",
         "type": "gaawe",
@@ -7415,7 +7415,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -7430,7 +7430,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -7438,14 +7438,14 @@
           }
         ],
         "firingTriggerId": [
-          "61"
+          "63"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "131",
+        "tagId": "133",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pdp_add_to_bag_click",
         "type": "gaawe",
@@ -7660,7 +7660,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -7675,7 +7675,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -7683,14 +7683,14 @@
           }
         ],
         "firingTriggerId": [
-          "62"
+          "64"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "132",
+        "tagId": "134",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pdp_buy_now_click",
         "type": "gaawe",
@@ -7905,7 +7905,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -7920,7 +7920,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -7928,14 +7928,14 @@
           }
         ],
         "firingTriggerId": [
-          "63"
+          "65"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "133",
+        "tagId": "135",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pdp_color_select",
         "type": "gaawe",
@@ -8150,7 +8150,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -8165,7 +8165,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -8173,14 +8173,14 @@
           }
         ],
         "firingTriggerId": [
-          "64"
+          "66"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "134",
+        "tagId": "136",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pdp_faq_click",
         "type": "gaawe",
@@ -8395,7 +8395,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -8410,7 +8410,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -8418,14 +8418,14 @@
           }
         ],
         "firingTriggerId": [
-          "65"
+          "67"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "135",
+        "tagId": "137",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pdp_size_select",
         "type": "gaawe",
@@ -8640,7 +8640,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -8655,7 +8655,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -8663,14 +8663,14 @@
           }
         ],
         "firingTriggerId": [
-          "66"
+          "68"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "136",
+        "tagId": "138",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - pincode_check",
         "type": "gaawe",
@@ -8885,7 +8885,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -8900,7 +8900,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -8908,14 +8908,14 @@
           }
         ],
         "firingTriggerId": [
-          "86"
+          "88"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "137",
+        "tagId": "139",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - popup_close",
         "type": "gaawe",
@@ -9130,7 +9130,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -9145,7 +9145,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -9153,14 +9153,14 @@
           }
         ],
         "firingTriggerId": [
-          "67"
+          "69"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "138",
+        "tagId": "140",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - predictive_search_result_click",
         "type": "gaawe",
@@ -9375,7 +9375,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -9390,7 +9390,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -9398,14 +9398,14 @@
           }
         ],
         "firingTriggerId": [
-          "68"
+          "70"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "139",
+        "tagId": "141",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - quick_add_close",
         "type": "gaawe",
@@ -9620,7 +9620,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -9635,7 +9635,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               },
@@ -9658,14 +9658,14 @@
           }
         ],
         "firingTriggerId": [
-          "69"
+          "71"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "140",
+        "tagId": "142",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - quick_add_open",
         "type": "gaawe",
@@ -9880,7 +9880,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -9895,7 +9895,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -9903,14 +9903,14 @@
           }
         ],
         "firingTriggerId": [
-          "70"
+          "72"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "141",
+        "tagId": "143",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - quick_add_to_bag_click",
         "type": "gaawe",
@@ -10125,7 +10125,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -10140,7 +10140,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -10148,14 +10148,14 @@
           }
         ],
         "firingTriggerId": [
-          "71"
+          "73"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "142",
+        "tagId": "144",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - quick_buy_now_click",
         "type": "gaawe",
@@ -10370,7 +10370,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -10385,7 +10385,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -10393,14 +10393,14 @@
           }
         ],
         "firingTriggerId": [
-          "72"
+          "74"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "143",
+        "tagId": "145",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - review_click",
         "type": "gaawe",
@@ -10615,7 +10615,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -10630,7 +10630,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -10638,14 +10638,14 @@
           }
         ],
         "firingTriggerId": [
-          "87"
+          "89"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "144",
+        "tagId": "146",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - search_open",
         "type": "gaawe",
@@ -10860,7 +10860,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -10875,7 +10875,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -10883,14 +10883,14 @@
           }
         ],
         "firingTriggerId": [
-          "73"
+          "75"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "145",
+        "tagId": "147",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - search_submit",
         "type": "gaawe",
@@ -11105,7 +11105,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -11120,7 +11120,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -11128,14 +11128,14 @@
           }
         ],
         "firingTriggerId": [
-          "74"
+          "76"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "146",
+        "tagId": "148",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - select_item",
         "type": "gaawe",
@@ -11208,14 +11208,14 @@
           }
         ],
         "firingTriggerId": [
-          "75"
+          "77"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "147",
+        "tagId": "149",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - share (share_click)",
         "type": "gaawe",
@@ -11303,14 +11303,14 @@
           }
         ],
         "firingTriggerId": [
-          "76"
+          "78"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "148",
+        "tagId": "150",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - shop_the_look_click",
         "type": "gaawe",
@@ -11525,7 +11525,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -11540,7 +11540,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -11548,14 +11548,14 @@
           }
         ],
         "firingTriggerId": [
-          "77"
+          "79"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "149",
+        "tagId": "151",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - size_guide_click",
         "type": "gaawe",
@@ -11770,7 +11770,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -11785,7 +11785,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -11793,14 +11793,14 @@
           }
         ],
         "firingTriggerId": [
-          "78"
+          "80"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "150",
+        "tagId": "152",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - size_guide_close",
         "type": "gaawe",
@@ -12015,7 +12015,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -12030,7 +12030,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -12038,14 +12038,14 @@
           }
         ],
         "firingTriggerId": [
-          "79"
+          "81"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "151",
+        "tagId": "153",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - size_select",
         "type": "gaawe",
@@ -12260,7 +12260,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -12275,7 +12275,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -12283,14 +12283,14 @@
           }
         ],
         "firingTriggerId": [
-          "80"
+          "82"
         ],
         "parentFolderId": "2"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "152",
+        "tagId": "154",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - social_click",
         "type": "gaawe",
@@ -12505,7 +12505,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -12520,7 +12520,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -12528,14 +12528,14 @@
           }
         ],
         "firingTriggerId": [
-          "81"
+          "83"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "153",
+        "tagId": "155",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - sort_change",
         "type": "gaawe",
@@ -12750,7 +12750,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -12765,7 +12765,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -12773,14 +12773,14 @@
           }
         ],
         "firingTriggerId": [
-          "82"
+          "84"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "154",
+        "tagId": "156",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - view_toggle",
         "type": "gaawe",
@@ -12995,7 +12995,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -13010,7 +13010,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -13018,14 +13018,14 @@
           }
         ],
         "firingTriggerId": [
-          "83"
+          "85"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "155",
+        "tagId": "157",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - wishlist_header_click",
         "type": "gaawe",
@@ -13240,7 +13240,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click Text}}"
+                    "value": "{{cjs - click_text}}"
                   }
                 ]
               },
@@ -13255,7 +13255,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{Click URL}}"
+                    "value": "{{cjs - click_url}}"
                   }
                 ]
               }
@@ -13263,14 +13263,14 @@
           }
         ],
         "firingTriggerId": [
-          "85"
+          "87"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "156",
+        "tagId": "158",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - search_submit (form)",
         "type": "gaawe",
@@ -13328,14 +13328,14 @@
           }
         ],
         "firingTriggerId": [
-          "88"
+          "90"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "158",
+        "tagId": "160",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "Listener - select change",
         "type": "html",
@@ -13352,14 +13352,14 @@
           }
         ],
         "firingTriggerId": [
-          "89"
+          "91"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "159",
+        "tagId": "161",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - sort_change (select)",
         "type": "gaawe",
@@ -13477,14 +13477,14 @@
           }
         ],
         "firingTriggerId": [
-          "90"
+          "92"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "160",
+        "tagId": "162",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "GA4 - cart_qty_change (select)",
         "type": "gaawe",
@@ -13602,14 +13602,14 @@
           }
         ],
         "firingTriggerId": [
-          "91"
+          "93"
         ],
         "parentFolderId": "1"
       },
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "161",
+        "tagId": "163",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "Meta - Base code (no PageView)",
         "type": "html",
@@ -13633,7 +13633,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "162",
+        "tagId": "164",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "Meta - AddToWishlist",
         "type": "html",
@@ -13650,7 +13650,7 @@
           }
         ],
         "firingTriggerId": [
-          "84"
+          "86"
         ],
         "setupTag": [
           {
@@ -13663,7 +13663,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "163",
+        "tagId": "165",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "Meta - Lead (newsletter)",
         "type": "html",
@@ -13680,7 +13680,7 @@
           }
         ],
         "firingTriggerId": [
-          "59"
+          "61"
         ],
         "setupTag": [
           {
@@ -13693,7 +13693,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "tagId": "164",
+        "tagId": "166",
         "tagFiringOption": "ONCE_PER_EVENT",
         "name": "Meta - Contact",
         "type": "html",
@@ -13710,7 +13710,7 @@
           }
         ],
         "firingTriggerId": [
-          "45"
+          "47"
         ],
         "setupTag": [
           {
@@ -13725,7 +13725,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "32",
+        "triggerId": "34",
         "name": "Click - account_click",
         "type": "CLICK",
         "filter": [
@@ -13750,7 +13750,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "33",
+        "triggerId": "35",
         "name": "Click - announcement_click",
         "type": "CLICK",
         "filter": [
@@ -13775,7 +13775,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "34",
+        "triggerId": "36",
         "name": "Click - banner_click",
         "type": "CLICK",
         "filter": [
@@ -13800,7 +13800,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "35",
+        "triggerId": "37",
         "name": "Click - bottom_menu_click",
         "type": "CLICK",
         "filter": [
@@ -13825,7 +13825,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "36",
+        "triggerId": "38",
         "name": "Click - breadcrumb_click",
         "type": "CLICK",
         "filter": [
@@ -13850,7 +13850,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "37",
+        "triggerId": "39",
         "name": "Click - bundle_add_to_bag_click",
         "type": "CLICK",
         "filter": [
@@ -13875,7 +13875,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "38",
+        "triggerId": "40",
         "name": "Click - cart_checkout_click",
         "type": "CLICK",
         "filter": [
@@ -13900,7 +13900,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "39",
+        "triggerId": "41",
         "name": "Click - cart_close",
         "type": "CLICK",
         "filter": [
@@ -13925,7 +13925,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "40",
+        "triggerId": "42",
         "name": "Click - cart_item_click",
         "type": "CLICK",
         "filter": [
@@ -13950,7 +13950,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "41",
+        "triggerId": "43",
         "name": "Click - cart_qty_change",
         "type": "CLICK",
         "filter": [
@@ -13975,7 +13975,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "42",
+        "triggerId": "44",
         "name": "Click - cart_remove",
         "type": "CLICK",
         "filter": [
@@ -14000,7 +14000,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "43",
+        "triggerId": "45",
         "name": "Click - cart_upsell_click",
         "type": "CLICK",
         "filter": [
@@ -14025,7 +14025,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "44",
+        "triggerId": "46",
         "name": "Click - collection_tile_click",
         "type": "CLICK",
         "filter": [
@@ -14050,7 +14050,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "45",
+        "triggerId": "47",
         "name": "Click - contact_click",
         "type": "CLICK",
         "filter": [
@@ -14075,7 +14075,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "46",
+        "triggerId": "48",
         "name": "Click - continue_shopping_click",
         "type": "CLICK",
         "filter": [
@@ -14100,7 +14100,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "47",
+        "triggerId": "49",
         "name": "Click - coupon_apply",
         "type": "CLICK",
         "filter": [
@@ -14125,7 +14125,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "48",
+        "triggerId": "50",
         "name": "Click - coupon_remove",
         "type": "CLICK",
         "filter": [
@@ -14150,7 +14150,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "49",
+        "triggerId": "51",
         "name": "Click - filter_apply",
         "type": "CLICK",
         "filter": [
@@ -14175,7 +14175,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "50",
+        "triggerId": "52",
         "name": "Click - filter_clear",
         "type": "CLICK",
         "filter": [
@@ -14200,7 +14200,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "51",
+        "triggerId": "53",
         "name": "Click - footer_link_click",
         "type": "CLICK",
         "filter": [
@@ -14225,7 +14225,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "52",
+        "triggerId": "54",
         "name": "Click - grid_color_more_click",
         "type": "CLICK",
         "filter": [
@@ -14250,7 +14250,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "53",
+        "triggerId": "55",
         "name": "Click - grid_color_select",
         "type": "CLICK",
         "filter": [
@@ -14275,7 +14275,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "54",
+        "triggerId": "56",
         "name": "Click - header_cart_click",
         "type": "CLICK",
         "filter": [
@@ -14300,7 +14300,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "55",
+        "triggerId": "57",
         "name": "Click - hero_cta_click",
         "type": "CLICK",
         "filter": [
@@ -14325,7 +14325,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "56",
+        "triggerId": "58",
         "name": "Click - logo_click",
         "type": "CLICK",
         "filter": [
@@ -14350,7 +14350,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "57",
+        "triggerId": "59",
         "name": "Click - menu_click",
         "type": "CLICK",
         "filter": [
@@ -14375,7 +14375,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "58",
+        "triggerId": "60",
         "name": "Click - menu_open",
         "type": "CLICK",
         "filter": [
@@ -14400,7 +14400,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "59",
+        "triggerId": "61",
         "name": "Click - newsletter_signup",
         "type": "CLICK",
         "filter": [
@@ -14425,7 +14425,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "60",
+        "triggerId": "62",
         "name": "Click - pagination_click",
         "type": "CLICK",
         "filter": [
@@ -14450,7 +14450,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "61",
+        "triggerId": "63",
         "name": "Click - pdp_accordion_click",
         "type": "CLICK",
         "filter": [
@@ -14475,7 +14475,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "62",
+        "triggerId": "64",
         "name": "Click - pdp_add_to_bag_click",
         "type": "CLICK",
         "filter": [
@@ -14500,7 +14500,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "63",
+        "triggerId": "65",
         "name": "Click - pdp_buy_now_click",
         "type": "CLICK",
         "filter": [
@@ -14525,7 +14525,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "64",
+        "triggerId": "66",
         "name": "Click - pdp_color_select",
         "type": "CLICK",
         "filter": [
@@ -14550,7 +14550,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "65",
+        "triggerId": "67",
         "name": "Click - pdp_faq_click",
         "type": "CLICK",
         "filter": [
@@ -14575,7 +14575,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "66",
+        "triggerId": "68",
         "name": "Click - pdp_size_select",
         "type": "CLICK",
         "filter": [
@@ -14600,7 +14600,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "67",
+        "triggerId": "69",
         "name": "Click - popup_close",
         "type": "CLICK",
         "filter": [
@@ -14625,7 +14625,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "68",
+        "triggerId": "70",
         "name": "Click - predictive_search_result_click",
         "type": "CLICK",
         "filter": [
@@ -14650,7 +14650,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "69",
+        "triggerId": "71",
         "name": "Click - quick_add_close",
         "type": "CLICK",
         "filter": [
@@ -14675,7 +14675,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "70",
+        "triggerId": "72",
         "name": "Click - quick_add_open",
         "type": "CLICK",
         "filter": [
@@ -14700,7 +14700,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "71",
+        "triggerId": "73",
         "name": "Click - quick_add_to_bag_click",
         "type": "CLICK",
         "filter": [
@@ -14725,7 +14725,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "72",
+        "triggerId": "74",
         "name": "Click - quick_buy_now_click",
         "type": "CLICK",
         "filter": [
@@ -14750,7 +14750,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "73",
+        "triggerId": "75",
         "name": "Click - search_open",
         "type": "CLICK",
         "filter": [
@@ -14775,7 +14775,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "74",
+        "triggerId": "76",
         "name": "Click - search_submit",
         "type": "CLICK",
         "filter": [
@@ -14800,7 +14800,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "75",
+        "triggerId": "77",
         "name": "Click - select_item",
         "type": "CLICK",
         "filter": [
@@ -14825,7 +14825,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "76",
+        "triggerId": "78",
         "name": "Click - share_click",
         "type": "CLICK",
         "filter": [
@@ -14850,7 +14850,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "77",
+        "triggerId": "79",
         "name": "Click - shop_the_look_click",
         "type": "CLICK",
         "filter": [
@@ -14875,7 +14875,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "78",
+        "triggerId": "80",
         "name": "Click - size_guide_click",
         "type": "CLICK",
         "filter": [
@@ -14900,7 +14900,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "79",
+        "triggerId": "81",
         "name": "Click - size_guide_close",
         "type": "CLICK",
         "filter": [
@@ -14925,7 +14925,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "80",
+        "triggerId": "82",
         "name": "Click - size_select",
         "type": "CLICK",
         "filter": [
@@ -14950,7 +14950,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "81",
+        "triggerId": "83",
         "name": "Click - social_click",
         "type": "CLICK",
         "filter": [
@@ -14975,7 +14975,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "82",
+        "triggerId": "84",
         "name": "Click - sort_change",
         "type": "CLICK",
         "filter": [
@@ -15000,7 +15000,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "83",
+        "triggerId": "85",
         "name": "Click - view_toggle",
         "type": "CLICK",
         "filter": [
@@ -15025,7 +15025,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "84",
+        "triggerId": "86",
         "name": "Click - add_to_wishlist (app) - add only",
         "type": "CLICK",
         "filter": [
@@ -15065,7 +15065,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "85",
+        "triggerId": "87",
         "name": "Click - wishlist_header_click (app)",
         "type": "CLICK",
         "filter": [
@@ -15090,7 +15090,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "86",
+        "triggerId": "88",
         "name": "Click - pincode_check (app)",
         "type": "CLICK",
         "filter": [
@@ -15115,7 +15115,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "87",
+        "triggerId": "89",
         "name": "Click - review_click (app)",
         "type": "CLICK",
         "filter": [
@@ -15140,7 +15140,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "88",
+        "triggerId": "90",
         "name": "Form - search_submit",
         "type": "FORM_SUBMISSION",
         "filter": [
@@ -15180,7 +15180,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "89",
+        "triggerId": "91",
         "name": "DOM Ready - All Pages",
         "type": "DOM_READY",
         "parentFolderId": "1"
@@ -15188,7 +15188,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "90",
+        "triggerId": "92",
         "name": "CE - select_change - sort_change",
         "type": "CUSTOM_EVENT",
         "customEventFilter": [
@@ -15230,7 +15230,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "triggerId": "91",
+        "triggerId": "93",
         "name": "CE - select_change - cart_qty_change",
         "type": "CUSTOM_EVENT",
         "customEventFilter": [
@@ -15706,6 +15706,38 @@
         "accountId": "6345737611",
         "containerId": "247128781",
         "variableId": "31",
+        "name": "cjs - click_text",
+        "type": "jsm",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "javascript",
+            "value": "function() {\n  var el = {{Click Element}};\n  if (!el || !el.closest) return undefined;\n  var t = el.closest('[data-track], a, button') || el;\n  var txt = (t.innerText || t.textContent || t.getAttribute('aria-label') || '').replace(/\\s+/g, ' ').trim();\n  return txt ? txt.slice(0, 100) : undefined;\n}"
+          }
+        ],
+        "parentFolderId": "1",
+        "notes": "Text of the tracked element. Replaces built-in Click Text, which errors on SVG icons (bag, heart, arrows)."
+      },
+      {
+        "accountId": "6345737611",
+        "containerId": "247128781",
+        "variableId": "32",
+        "name": "cjs - click_url",
+        "type": "jsm",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "javascript",
+            "value": "function() {\n  var el = {{Click Element}};\n  if (!el || !el.closest) return undefined;\n  var a = el.closest('a[href]');\n  return a ? a.href : undefined;\n}"
+          }
+        ],
+        "parentFolderId": "1",
+        "notes": "href of the clicked link, also when an icon inside it was clicked"
+      },
+      {
+        "accountId": "6345737611",
+        "containerId": "247128781",
+        "variableId": "33",
         "name": "const - Meta Pixel ID",
         "type": "c",
         "parameter": [
@@ -15720,7 +15752,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "92",
+        "variableId": "94",
         "name": "dlv - track_event",
         "type": "v",
         "parameter": [
@@ -15745,7 +15777,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "93",
+        "variableId": "95",
         "name": "dlv - track_value",
         "type": "v",
         "parameter": [
@@ -15770,7 +15802,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "94",
+        "variableId": "96",
         "name": "dlv - track_label",
         "type": "v",
         "parameter": [
@@ -15795,7 +15827,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "95",
+        "variableId": "97",
         "name": "dlv - track_section",
         "type": "v",
         "parameter": [
@@ -15820,7 +15852,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "96",
+        "variableId": "98",
         "name": "dlv - product_id",
         "type": "v",
         "parameter": [
@@ -15845,7 +15877,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "97",
+        "variableId": "99",
         "name": "dlv - product_title",
         "type": "v",
         "parameter": [
@@ -15870,7 +15902,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "98",
+        "variableId": "100",
         "name": "dlv - variant_id",
         "type": "v",
         "parameter": [
@@ -15895,7 +15927,7 @@
       {
         "accountId": "6345737611",
         "containerId": "247128781",
-        "variableId": "157",
+        "variableId": "159",
         "name": "cjs - form_search_term",
         "type": "jsm",
         "parameter": [
@@ -15947,12 +15979,6 @@
         "containerId": "247128781",
         "type": "CLICK_ID",
         "name": "Click ID"
-      },
-      {
-        "accountId": "6345737611",
-        "containerId": "247128781",
-        "type": "CLICK_TEXT",
-        "name": "Click Text"
       },
       {
         "accountId": "6345737611",
