@@ -109,6 +109,7 @@
         "blocks": {
           "banner_rWgR9K": {
             "type": "banner",
+            "disabled": true,
             "settings": {
               "title": "FESTIVE SALE IS LIVE!",
               "show_subtext": false,
@@ -145,6 +146,7 @@
           },
           "ts-cart-drawer-1": {
             "type": "reward",
+            "disabled": true,
             "settings": {
               "goal": 3,
               "reward_type": "free_gift",
@@ -159,6 +161,7 @@
           },
           "reward_wLhT4D": {
             "type": "reward",
+            "disabled": true,
             "settings": {
               "goal": 5,
               "reward_type": "free_gift",
