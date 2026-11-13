@@ -28,6 +28,7 @@
         },
         "slide_kwmVBJ": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/b2g1-offer-pdp-desktop-image.webp",
             "mobile_image": "shopify://shop_images/b2g1-offer-pdp-mobile-image.webp",
