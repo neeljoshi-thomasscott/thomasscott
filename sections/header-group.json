@@ -18,14 +18,22 @@
           "type": "announcement",
           "settings": {
             "text": "Archive Sale is live now",
-            "link": ""
+            "link": "",
+            "start_date": "2026-11-23",
+            "start_time": "00:00",
+            "end_date": "2026-11-17",
+            "end_time": "23:59"
           }
         },
         "announcement_Rm3VcU": {
           "type": "announcement",
           "settings": {
             "text": "Free Shipping on Prepaid orders",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "announcement_mLbYeV": {
@@ -33,21 +41,33 @@
           "disabled": true,
           "settings": {
             "text": "Extra 500 off on orders above 4499",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "announcement_FM8Fr8": {
           "type": "announcement",
           "settings": {
             "text": "Archive Sale is live now",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "announcement_8cEkdR": {
           "type": "announcement",
           "settings": {
             "text": "Free Shipping on Prepaid orders",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         }
       },
