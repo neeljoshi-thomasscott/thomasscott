@@ -25,6 +25,17 @@
             "end_time": "23:59"
           }
         },
+        "announcement_CmHbY4": {
+          "type": "announcement",
+          "settings": {
+            "text": "Black Friday : Limited Edition Sale is Live Now",
+            "link": "shopify://collections/black-friday-sale",
+            "start_date": "2026-11-20",
+            "start_time": "00:00",
+            "end_date": "2026-11-22",
+            "end_time": "23:59"
+          }
+        },
         "announcement_Rm3VcU": {
           "type": "announcement",
           "settings": {
@@ -75,6 +86,7 @@
       },
       "block_order": [
         "announcement_qBLYL6",
+        "announcement_CmHbY4",
         "announcement_Rm3VcU",
         "announcement_mLbYeV",
         "announcement_FM8Fr8",
