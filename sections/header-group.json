@@ -50,6 +50,7 @@
         },
         "announcement_FM8Fr8": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "Archive Sale is live now",
             "link": "",
@@ -61,6 +62,7 @@
         },
         "announcement_8cEkdR": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping on Prepaid orders",
             "link": "",
