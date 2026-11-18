@@ -36,6 +36,17 @@
             "end_time": "23:59"
           }
         },
+        "announcement_3NP79i": {
+          "type": "announcement",
+          "settings": {
+            "text": "Buy 3 Get 3 Free + 5% Off on Prepaid Orders.",
+            "link": "shopify://collections/black-friday-sale",
+            "start_date": "2026-11-20",
+            "start_time": "00:00",
+            "end_date": "2026-11-22",
+            "end_time": "23:59"
+          }
+        },
         "announcement_Rm3VcU": {
           "type": "announcement",
           "settings": {
@@ -87,6 +98,7 @@
       "block_order": [
         "announcement_qBLYL6",
         "announcement_CmHbY4",
+        "announcement_3NP79i",
         "announcement_Rm3VcU",
         "announcement_mLbYeV",
         "announcement_FM8Fr8",
