@@ -11,6 +11,7 @@
   "sections": {
     "offer_banner_pdp": {
       "type": "offer-banner",
+      "disabled": true,
       "name": "Offer Banner",
       "settings": {
         "desktop_image": "shopify://shop_images/desktop-pdp-offer_banner.jpg",

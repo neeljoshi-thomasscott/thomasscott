@@ -19,13 +19,9 @@
         "heading": "{{ collection.title }}"
       }
     },
-    "breadcrumb_mhekgp": {
-      "type": "breadcrumb",
-      "name": "Breadcrumb",
-      "settings": {}
-    },
     "offer_banner_plp": {
       "type": "offer-banner",
+      "disabled": true,
       "name": "Offer Banner",
       "settings": {
         "desktop_image": "shopify://shop_images/desktop-pdp-offer_banner.jpg",
@@ -38,6 +34,11 @@
         "end_date": "2026-11-12",
         "end_time": "23:59"
       }
+    },
+    "breadcrumb_mhekgp": {
+      "type": "breadcrumb",
+      "name": "Breadcrumb",
+      "settings": {}
     },
     "section": {
       "type": "section",

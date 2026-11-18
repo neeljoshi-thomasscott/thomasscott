@@ -12,11 +12,26 @@
     "th_home_page_banner_UyyE9D": {
       "type": "th_home_page_banner",
       "blocks": {
-        "slide_kwmVBJ": {
+        "slide_9LjfQX": {
           "type": "slide",
           "settings": {
-            "desktop_image": "shopify://shop_images/b2g1-b3g2-desktop-home-banner.webp",
-            "mobile_image": "shopify://shop_images/b2g1-b3g2-desktop-mobile-banner.webp",
+            "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
+            "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
+            "heading": "",
+            "button_text": "",
+            "button_link": "shopify://collections/plus-size",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "2026-10-14",
+            "end_time": "00:00"
+          }
+        },
+        "slide_kwmVBJ": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "desktop_image": "shopify://shop_images/b2g1-offer-pdp-desktop-image.webp",
+            "mobile_image": "shopify://shop_images/b2g1-offer-pdp-mobile-image.webp",
             "heading": "",
             "button_text": "",
             "button_link": "shopify://collections/new-arrivals",
@@ -44,7 +59,6 @@
         "slide_VXt7W4": {
           "type": "slide",
           "name": "Plus Size",
-          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
             "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
@@ -239,6 +253,7 @@
         }
       },
       "block_order": [
+        "slide_9LjfQX",
         "slide_kwmVBJ",
         "slide_nkYm46",
         "slide_VXt7W4",
@@ -267,12 +282,12 @@
             "collection": "new-arrivals",
             "custom_image": "shopify://shop_images/Shirt_Icon_4fd52588-1881-4e0c-851e-2fa4a24ff8bb.png",
             "custom_title": "",
-            "tag_text": "FESTIVE PICK",
+            "tag_text": "",
             "tag_bg_start": "#5a0f24",
             "tag_bg_end": "#a8264f",
             "tag_color": "#f3d27a",
-            "start_date": "",
-            "start_time": "",
+            "start_date": "2026-10-14",
+            "start_time": "00:00",
             "end_date": "",
             "end_time": ""
           }
@@ -603,9 +618,9 @@
       "type": "th_banner_1",
       "name": "Season Banner",
       "settings": {
-        "desktop_image": "shopify://shop_images/Shopify_banners-11.webp",
+        "desktop_image": "shopify://shop_images/Shopify_banners_799.webp",
         "custom_class": "",
-        "mobile_image": "shopify://shop_images/Shopify_banners-14.webp",
+        "mobile_image": "shopify://shop_images/Shopify_banners_799_M.webp",
         "heading": "",
         "button_text": "",
         "button_link": "shopify://collections/under-799"
@@ -617,7 +632,7 @@
         "card_kQJRrF": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/Shopify_banners-12.webp",
+            "image": "shopify://shop_images/Under_699.webp",
             "title": "",
             "link": "shopify://collections/under-699",
             "button_label": ""
@@ -626,7 +641,7 @@
         "card_TrQT6g": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/Shopify_banners-13.webp",
+            "image": "shopify://shop_images/Under_999.webp",
             "title": "",
             "link": "shopify://collections/under-999",
             "button_label": ""

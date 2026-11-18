@@ -138,8 +138,8 @@
       }
       .shop-look-content .inclusive { display: none; }
       .shop-look-content .price-mrp { order: 2; }
-      .shop-look-content .price-discount,
-      .product-card .price-discount { display: none; }
+      {% comment %} .shop-look-content .price-discount,
+      .product-card .price-discount { display: none; } {% endcomment %}
 
       .collection-flat-70-80-off  .product-card .price-discount{
         display: inline-block ;
@@ -1039,5 +1039,8 @@ window.addEventListener('pageshow', function (e) {
   </style>
 {% endif %}
 {% comment %} till here {% endcomment %}
+
+{% comment %} kwik-edd widget inject {% endcomment %}
+<script src="https://cdn.gokwik.co/kwikship/kwik-edd-analytics.js" defer></script>
   </body>
 </html>
