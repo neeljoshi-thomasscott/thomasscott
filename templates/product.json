@@ -14,14 +14,14 @@
       "disabled": true,
       "name": "Offer Banner",
       "settings": {
-        "desktop_image": "shopify://shop_images/desktop-pdp-offer_banner.jpg",
-        "mobile_image": "shopify://shop_images/mobile_pdp_offer_banner.jpg",
-        "link": "",
+        "desktop_image": "shopify://shop_images/desktop-pdp-offer_banner_3b8ea6eb-ebfe-48a0-b306-029ec80daaec.jpg",
+        "mobile_image": "shopify://shop_images/mobile_pdp_offer_banner_c1e2ee32-97de-4838-95c6-f3511eaacd74.jpg",
+        "link": "shopify://collections/black-friday-sale",
         "alt": "Festive Sale offer",
         "loading": "eager",
-        "start_date": "2026-10-14",
+        "start_date": "2026-11-18",
         "start_time": "00:00",
-        "end_date": "2026-11-12",
+        "end_date": "2026-11-22",
         "end_time": "23:59"
       }
     },
