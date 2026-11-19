@@ -34,17 +34,27 @@
     assign show = true
   endif
 -%}
-{%- if show and block.settings.text != blank -%}
+{%- if show -%}
   <div id="SaleBadge-{{ block.id }}" class="sale-badge-wrap" {{ block.shopify_attributes }}>
-    <span class="sale-badge" {% render 'schedule', s: block.settings %}>
-      {{- block.settings.text | escape -}}
-    </span>
+    {%- if block.settings.text_2 != blank -%}
+      <span class="sale-badge sale-badge--2" {% render 'schedule', s: block.settings %}>
+        {{- block.settings.text_2 | escape -}}
+      </span>
+    {%- endif -%}
+    {%- if block.settings.text != blank -%}
+      <span class="sale-badge" {% render 'schedule', s: block.settings %}>
+        {{- block.settings.text | escape -}}
+      </span>
+    {%- endif -%}
   </div>
   {%- assign badge_root = 'SaleBadge-' | append: block.id -%}
   {% render 'schedule-filter', root: badge_root %}
 
   {%- style -%}
     #SaleBadge-{{ block.id }} {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
       margin-bottom: 8px;
       line-height: 0;
     }
@@ -68,6 +78,10 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       border-radius: 2px;
+    }
+    #SaleBadge-{{ block.id }} .sale-badge--2 {
+      background: {{ block.settings.bg_color_2 }};
+      color: {{ block.settings.text_color_2 }};
     }
   {%- endstyle -%}
 {%- endif -%}
@@ -102,6 +116,28 @@
     {
       "type": "color",
       "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Second ribbon (shown first)"
+    },
+    {
+      "type": "text",
+      "id": "text_2",
+      "label": "Ribbon text",
+      "default": "Buy 3 Get 3 Free"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_2",
+      "label": "Background",
+      "default": "#d0021b"
+    },
+    {
+      "type": "color",
+      "id": "text_color_2",
       "label": "Text",
       "default": "#ffffff"
     },
