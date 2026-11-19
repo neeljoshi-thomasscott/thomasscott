@@ -188,10 +188,10 @@
                         "text_2": "",
                         "bg_color_2": "#d0021b",
                         "text_color_2": "#ffffff",
-                        "start_date": "",
-                        "start_time": "",
-                        "end_date": "",
-                        "end_time": ""
+                        "start_date": "2026-11-20",
+                        "start_time": "00:00",
+                        "end_date": "2026-11-22",
+                        "end_time": "23:59"
                       },
                       "blocks": {}
                     },
