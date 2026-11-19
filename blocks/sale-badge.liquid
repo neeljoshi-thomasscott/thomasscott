@@ -44,6 +44,10 @@
   {% render 'schedule-filter', root: badge_root %}
 
   {%- style -%}
+    #SaleBadge-{{ block.id }} {
+      margin-bottom: 8px;
+      line-height: 0;
+    }
     .sale-badge-wrap:not(:has(.sale-badge)) {
       display: none;
     }
@@ -72,7 +76,7 @@
       "type": "text",
       "id": "text",
       "label": "Badge text",
-      "default": "Black Friday"
+      "default": "Black Friday Sale"
     },
     {
       "type": "collection",

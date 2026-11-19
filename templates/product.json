@@ -180,7 +180,7 @@
                       "type": "sale-badge",
                       "name": "Sale badge",
                       "settings": {
-                        "text": "Black Friday",
+                        "text": "Black Friday Sale",
                         "collection": "black-friday-sale",
                         "product_tag": "",
                         "bg_color": "#000000",
