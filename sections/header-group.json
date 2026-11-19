@@ -18,14 +18,44 @@
           "type": "announcement",
           "settings": {
             "text": "Archive Sale is live now",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "2026-11-19",
+            "end_time": "23:59"
+          }
+        },
+        "announcement_CmHbY4": {
+          "type": "announcement",
+          "settings": {
+            "text": "Black Friday : Limited Edition Sale is Live Now",
+            "link": "shopify://collections/black-friday-sale",
+            "start_date": "2026-11-20",
+            "start_time": "00:00",
+            "end_date": "2026-11-22",
+            "end_time": "23:59"
+          }
+        },
+        "announcement_3NP79i": {
+          "type": "announcement",
+          "settings": {
+            "text": "Buy 3 Get 3 Free + 5% Off on Prepaid Orders.",
+            "link": "shopify://collections/black-friday-sale",
+            "start_date": "2026-11-20",
+            "start_time": "00:00",
+            "end_date": "2026-11-22",
+            "end_time": "23:59"
           }
         },
         "announcement_Rm3VcU": {
           "type": "announcement",
           "settings": {
             "text": "Free Shipping on Prepaid orders",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "announcement_mLbYeV": {
@@ -33,26 +63,42 @@
           "disabled": true,
           "settings": {
             "text": "Extra 500 off on orders above 4499",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "announcement_FM8Fr8": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "Archive Sale is live now",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "announcement_8cEkdR": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping on Prepaid orders",
-            "link": ""
+            "link": "",
+            "start_date": "",
+            "start_time": "",
+            "end_date": "",
+            "end_time": ""
           }
         }
       },
       "block_order": [
         "announcement_qBLYL6",
+        "announcement_CmHbY4",
+        "announcement_3NP79i",
         "announcement_Rm3VcU",
         "announcement_mLbYeV",
         "announcement_FM8Fr8",

@@ -47,6 +47,21 @@
 
 {%- comment -%} Site-wide sale (Theme settings → Offer ribbons): both ribbons on every card and no Flat Price badge. {%- endcomment -%}
 {%- capture sitewide_offer -%}{% render 'offer-sitewide-active' %}{%- endcapture -%}
+{%- liquid
+  # Flat Price badge stays hidden only on products the site-wide ribbons actually cover.
+  assign sitewide_covers_card = sitewide_offer
+  assign offer_only_tag = settings.offer_ribbons_only_tag | strip | downcase
+  if sitewide_offer == 'true' and offer_only_tag != blank
+    assign sitewide_covers_card = 'false'
+    for t in product.tags
+      assign t_norm = t | strip | downcase
+      if t_norm == offer_only_tag
+        assign sitewide_covers_card = 'true'
+        break
+      endif
+    endfor
+  endif
+-%}
 {% capture card_attr %}
     data-variant-title="{{ option_label | escape }}"
     data-quick-add-cart="true"
@@ -103,7 +118,7 @@
     <div class="card-image-wrapper">
      {% if is_sold_out %}
           <div class="sold-out-badge sale-badge">Sold Out</div>
-          {% elsif sitewide_offer != 'true' and collection.handle == 'archive-sale' or sitewide_offer != 'true' and template.suffix == 'archive-sale' %}
+          {% elsif sitewide_covers_card != 'true' and collection.handle == 'archive-sale' or sitewide_covers_card != 'true' and template.suffix == 'archive-sale' %}
           <div class="flat-price-badge sale-badge">Flat Price</div>
            {% elsif is_new_product %}
           <div class="new-badge sale-badge">New Arrivals</div>

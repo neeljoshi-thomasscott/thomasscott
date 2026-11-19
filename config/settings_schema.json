@@ -158,6 +158,40 @@
         "label": "Hide after time (HH:MM 24-hour, e.g. 23:59)",
         "placeholder": "HH:MM",
         "info": "Defaults to 23:59. Dates and times use the store's time zone."
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbons_only_tag",
+        "label": "Site-wide: only products with this tag",
+        "info": "Optional, e.g. Black Friday Sale. Leave empty to show on every product."
+      },
+      {
+        "type": "header",
+        "content": "Ribbon text and colours"
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbon_1_text",
+        "label": "Ribbon 1 text (tag offer-b2g1)",
+        "default": "Buy 2 Get 1 Free"
+      },
+      {
+        "type": "color",
+        "id": "offer_ribbon_1_bg",
+        "label": "Ribbon 1 background",
+        "default": "#8f1d2c"
+      },
+      {
+        "type": "text",
+        "id": "offer_ribbon_2_text",
+        "label": "Ribbon 2 text (tag offer-b3g2)",
+        "default": "Buy 3 Get 2 Free"
+      },
+      {
+        "type": "color",
+        "id": "offer_ribbon_2_bg",
+        "label": "Ribbon 2 background",
+        "default": "#000000"
       }
     ]
   },

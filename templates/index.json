@@ -28,17 +28,16 @@
         },
         "slide_kwmVBJ": {
           "type": "slide",
-          "disabled": true,
           "settings": {
-            "desktop_image": "shopify://shop_images/b2g1-offer-pdp-desktop-image.webp",
-            "mobile_image": "shopify://shop_images/b2g1-offer-pdp-mobile-image.webp",
+            "desktop_image": "shopify://shop_images/Black_friday-17.webp",
+            "mobile_image": "shopify://shop_images/Black_friday-18.webp",
             "heading": "",
             "button_text": "",
-            "button_link": "shopify://collections/new-arrivals",
-            "start_date": "2026-10-14",
+            "button_link": "shopify://collections/black-friday-sale",
+            "start_date": "2026-11-20",
             "start_time": "00:00",
-            "end_date": "",
-            "end_time": ""
+            "end_date": "2026-11-22",
+            "end_time": "23:59"
           }
         },
         "slide_nkYm46": {

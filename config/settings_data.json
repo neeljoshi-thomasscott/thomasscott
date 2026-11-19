@@ -19,10 +19,15 @@
     "sale_timer_restart_value": 18,
     "sale_timer_restart_unit": "hours",
     "offer_ribbons_all_products": true,
-    "offer_ribbons_start_date": "2026-10-14",
+    "offer_ribbons_start_date": "2026-11-20",
     "offer_ribbons_start_time": "00:00",
-    "offer_ribbons_end_date": "2026-11-12",
+    "offer_ribbons_end_date": "2026-11-22",
     "offer_ribbons_end_time": "23:59",
+    "offer_ribbons_only_tag": "Black Friday Sale",
+    "offer_ribbon_1_text": "Buy 3 Get 3 Free",
+    "offer_ribbon_1_bg": "#d0021b",
+    "offer_ribbon_2_text": "Black Friday Sale",
+    "offer_ribbon_2_bg": "#000000",
     "logo": "shopify://shop_images/thomas-logo.svg",
     "logo_height": 36,
     "logo_height_mobile": 28,
@@ -109,15 +114,14 @@
         "blocks": {
           "banner_rWgR9K": {
             "type": "banner",
-            "disabled": true,
             "settings": {
-              "title": "FESTIVE SALE IS LIVE!",
+              "title": "BLACK FRIDAY SALE IS LIVE!",
               "show_subtext": false,
               "subtext": "",
-              "start_date": "2026-10-14",
+              "start_date": "2026-11-20",
               "start_time": "00:00",
-              "end_date": "",
-              "end_time": ""
+              "end_date": "2026-11-22",
+              "end_time": "23:59"
             }
           },
           "ts-cart-drawer-0": {
@@ -146,17 +150,16 @@
           },
           "ts-cart-drawer-1": {
             "type": "reward",
-            "disabled": true,
             "settings": {
-              "goal": 3,
+              "goal": 6,
               "reward_type": "free_gift",
-              "reward_text": "B2G1",
+              "reward_text": "B3G3",
               "suffix": "",
-              "before_text": "Add {{goal}} more items to unlock B2G1",
-              "start_date": "2026-10-14",
+              "before_text": "Add {{goal}} more items to unlock B3G3",
+              "start_date": "2026-11-20",
               "start_time": "00:00",
-              "end_date": "",
-              "end_time": ""
+              "end_date": "2026-11-22",
+              "end_time": "23:59"
             }
           },
           "reward_wLhT4D": {
