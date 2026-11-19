@@ -114,15 +114,14 @@
         "blocks": {
           "banner_rWgR9K": {
             "type": "banner",
-            "disabled": true,
             "settings": {
-              "title": "FESTIVE SALE IS LIVE!",
+              "title": "BLACK FRIDAY SALE IS LIVE!",
               "show_subtext": false,
               "subtext": "",
-              "start_date": "2026-10-14",
+              "start_date": "2026-11-20",
               "start_time": "00:00",
-              "end_date": "",
-              "end_time": ""
+              "end_date": "2026-11-22",
+              "end_time": "23:59"
             }
           },
           "ts-cart-drawer-0": {
