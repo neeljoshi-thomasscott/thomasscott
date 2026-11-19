@@ -1,6 +1,8 @@
 {%- comment -%}
   Buy 2 Get 1 / Buy 3 Get 2 ribbons for a product: from its tags ("offer-b2g1", "offer-b3g2"),
-  or both on every product while the site-wide offer is on (Theme settings → Offer ribbons).
+  or both on every product while the site-wide offer is on (Theme settings → Offer ribbons),
+  limited to products with the "only products with this tag" setting when it is filled in.
+  Ribbon text and colours come from Theme settings.
   They take turns when a product has both.
 
   Accepts:
@@ -20,10 +22,23 @@
 
   assign has_b2g1 = false
   assign has_b3g2 = false
-  if sitewide == 'true'
+  assign only_tag = settings.offer_ribbons_only_tag | strip | downcase
+  assign in_scope = true
+  if only_tag != blank
+    assign in_scope = false
+    for tag in product.tags
+      assign normalized_tag = tag | strip | downcase
+      if normalized_tag == only_tag
+        assign in_scope = true
+        break
+      endif
+    endfor
+  endif
+
+  if sitewide == 'true' and in_scope
     assign has_b2g1 = true
     assign has_b3g2 = true
-  else
+  elsif sitewide != 'true'
     for tag in product.tags
       assign normalized_tag = tag | strip | downcase
       if normalized_tag == 'offer-b2g1'
@@ -35,8 +50,8 @@
   endif
 -%}
 {%- if has_b2g1 or has_b3g2 -%}
-  <div class="offer-ribbons{% if has_b2g1 and has_b3g2 %} offer-ribbons--rotate{% endif %} {{ class }}">
-    {%- if has_b2g1 -%}<span class="offer-ribbon offer-ribbon--b2g1">Buy 2 Get 1 Free</span>{%- endif -%}
-    {%- if has_b3g2 -%}<span class="offer-ribbon offer-ribbon--b3g2">Buy 3 Get 2 Free</span>{%- endif -%}
+  <div class="offer-ribbons{% if has_b2g1 and has_b3g2 %} offer-ribbons--rotate{% endif %} {{ class }}" style="--offer-ribbon-1-bg: {{ settings.offer_ribbon_1_bg }}; --offer-ribbon-2-bg: {{ settings.offer_ribbon_2_bg }};">
+    {%- if has_b2g1 -%}<span class="offer-ribbon offer-ribbon--b2g1">{{ settings.offer_ribbon_1_text | default: 'Buy 2 Get 1 Free' | escape }}</span>{%- endif -%}
+    {%- if has_b3g2 -%}<span class="offer-ribbon offer-ribbon--b3g2">{{ settings.offer_ribbon_2_text | default: 'Buy 3 Get 2 Free' | escape }}</span>{%- endif -%}
   </div>
 {%- endif -%}
