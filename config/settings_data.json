@@ -118,7 +118,7 @@
               "title": "BLACK FRIDAY SALE IS LIVE!",
               "show_subtext": false,
               "subtext": "",
-              "start_date": "2026-11-19",
+              "start_date": "2026-11-20",
               "start_time": "00:00",
               "end_date": "2026-11-22",
               "end_time": "23:59"
@@ -156,7 +156,7 @@
               "reward_text": "B3G3",
               "suffix": "",
               "before_text": "Add {{goal}} more items to unlock B3G3",
-              "start_date": "2026-11-19",
+              "start_date": "2026-11-20",
               "start_time": "00:00",
               "end_date": "2026-11-22",
               "end_time": "23:59"
