@@ -21,7 +21,7 @@
             "link": "",
             "start_date": "",
             "start_time": "",
-            "end_date": "2026-11-19",
+            "end_date": "2026-11-18",
             "end_time": "23:59"
           }
         },
@@ -30,7 +30,7 @@
           "settings": {
             "text": "Black Friday : Limited Edition Sale is Live Now",
             "link": "shopify://collections/black-friday-sale",
-            "start_date": "2026-11-20",
+            "start_date": "2026-11-19",
             "start_time": "00:00",
             "end_date": "2026-11-22",
             "end_time": "23:59"
@@ -41,7 +41,7 @@
           "settings": {
             "text": "Buy 3 Get 3 Free + 5% Off on Prepaid Orders.",
             "link": "shopify://collections/black-friday-sale",
-            "start_date": "2026-11-20",
+            "start_date": "2026-11-19",
             "start_time": "00:00",
             "end_date": "2026-11-22",
             "end_time": "23:59"
