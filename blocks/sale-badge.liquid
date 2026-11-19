@@ -1,0 +1,136 @@
+{%- comment -%}
+  Sale badge for the product page (e.g. "BLACK FRIDAY").
+  Shows only when the product is in the chosen collection, or carries the chosen tag,
+  and (optionally) only inside the schedule window.
+{%- endcomment -%}
+{%- liquid
+  assign p = closest.product
+  assign show = false
+
+  if p != blank
+    if block.settings.collection != blank
+      for c in p.collections
+        if c.id == block.settings.collection.id
+          assign show = true
+          break
+        endif
+      endfor
+    endif
+
+    assign tag = block.settings.product_tag | strip
+    if show == false and tag != blank
+      for t in p.tags
+        assign t_down = t | downcase
+        assign tag_down = tag | downcase
+        if t_down == tag_down
+          assign show = true
+          break
+        endif
+      endfor
+    endif
+  endif
+
+  if request.design_mode and p == blank
+    assign show = true
+  endif
+-%}
+{%- if show and block.settings.text != blank -%}
+  <div id="SaleBadge-{{ block.id }}" class="sale-badge-wrap" {{ block.shopify_attributes }}>
+    <span class="sale-badge" {% render 'schedule', s: block.settings %}>
+      {{- block.settings.text | escape -}}
+    </span>
+  </div>
+  {%- assign badge_root = 'SaleBadge-' | append: block.id -%}
+  {% render 'schedule-filter', root: badge_root %}
+
+  {%- style -%}
+    .sale-badge-wrap:not(:has(.sale-badge)) {
+      display: none;
+    }
+    #SaleBadge-{{ block.id }} .sale-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      background: {{ block.settings.bg_color }};
+      color: {{ block.settings.text_color }};
+      font-family: var(--font-body--family);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+  {%- endstyle -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Sale badge",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Badge text",
+      "default": "Black Friday"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Show on products in this collection"
+    },
+    {
+      "type": "text",
+      "id": "product_tag",
+      "label": "Or on products with this tag (optional)"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Schedule (optional)"
+    },
+    {
+      "type": "text",
+      "id": "start_date",
+      "label": "Show from date (YYYY-MM-DD)",
+      "placeholder": "YYYY-MM-DD"
+    },
+    {
+      "type": "text",
+      "id": "start_time",
+      "label": "Show from time (HH:MM 24-hour)",
+      "placeholder": "HH:MM",
+      "info": "Defaults to 00:00."
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "Hide after date (YYYY-MM-DD)",
+      "placeholder": "YYYY-MM-DD"
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "Hide after time (HH:MM 24-hour)",
+      "placeholder": "HH:MM",
+      "info": "Defaults to 23:59. Dates and times use the store's time zone."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sale badge"
+    }
+  ]
+}
+{% endschema %}

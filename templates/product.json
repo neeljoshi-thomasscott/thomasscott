@@ -176,6 +176,22 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {
+                    "sale_badge_bf26": {
+                      "type": "sale-badge",
+                      "name": "Sale badge",
+                      "settings": {
+                        "text": "Black Friday",
+                        "collection": "black-friday-sale",
+                        "product_tag": "",
+                        "bg_color": "#000000",
+                        "text_color": "#ffffff",
+                        "start_date": "",
+                        "start_time": "",
+                        "end_date": "",
+                        "end_time": ""
+                      },
+                      "blocks": {}
+                    },
                     "product_title_VQJBwA": {
                       "type": "product-title",
                       "name": "t:names.title",
@@ -254,6 +270,7 @@
                     }
                   },
                   "block_order": [
+                    "sale_badge_bf26",
                     "product_title_VQJBwA",
                     "price_4BXVaa",
                     "custom_liquid_qK9N7b",
