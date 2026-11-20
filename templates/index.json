@@ -14,6 +14,7 @@
       "blocks": {
         "slide_9LjfQX": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
             "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
@@ -43,6 +44,7 @@
         "slide_nkYm46": {
           "type": "slide",
           "name": "Archive Sale",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Archieve_sale-01.webp",
             "mobile_image": "shopify://shop_images/Archieve_sale-02.webp",
@@ -58,6 +60,7 @@
         "slide_VXt7W4": {
           "type": "slide",
           "name": "Plus Size",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
             "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
