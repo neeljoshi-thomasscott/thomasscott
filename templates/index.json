@@ -14,17 +14,16 @@
       "blocks": {
         "slide_9LjfQX": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Shopify_banners-19.webp",
             "mobile_image": "shopify://shop_images/Shopify_banners-20.webp",
             "heading": "",
             "button_text": "",
             "button_link": "shopify://collections/plus-size",
-            "start_date": "",
-            "start_time": "",
-            "end_date": "2026-10-14",
-            "end_time": "00:00"
+            "start_date": "2026-10-23",
+            "start_time": "00:00",
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_kwmVBJ": {
