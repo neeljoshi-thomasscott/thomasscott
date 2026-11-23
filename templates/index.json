@@ -28,6 +28,7 @@
         },
         "slide_kwmVBJ": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Black_friday-17.webp",
             "mobile_image": "shopify://shop_images/Black_friday-18.webp",
@@ -42,6 +43,7 @@
         },
         "slide_9eWXNH": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Shopify_banners-17.webp",
             "mobile_image": "shopify://shop_images/Shopify_banners-18.webp",
@@ -57,7 +59,6 @@
         "slide_nkYm46": {
           "type": "slide",
           "name": "Archive Sale",
-          "disabled": true,
           "settings": {
             "desktop_image": "shopify://shop_images/Archieve_sale-01.webp",
             "mobile_image": "shopify://shop_images/Archieve_sale-02.webp",
@@ -66,8 +67,8 @@
             "button_link": "shopify://collections/archive-sale",
             "start_date": "",
             "start_time": "",
-            "end_date": "2026-11-20",
-            "end_time": "23:59"
+            "end_date": "",
+            "end_time": ""
           }
         },
         "slide_VXt7W4": {
