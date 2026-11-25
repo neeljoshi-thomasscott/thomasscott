@@ -124,13 +124,16 @@
             var el;
             if (!p.u || p.u === '#') {
               el = document.createElement('span');
+              el.className = 'breadcrumb-parent-label';
             } else {
               el = document.createElement('a');
               el.href = p.u;
               el.setAttribute('data-track', 'breadcrumb_click');
               el.setAttribute('data-track-label', p.t);
             }
-            el.textContent = p.t;
+            var title = String(p.t).toLowerCase().replace(/(^|\s)\S/g, function (c) { return c.toUpperCase(); });
+            if (el.tagName === 'A') el.setAttribute('data-track-label', title);
+            el.textContent = title;
             parentEl.appendChild(el);
           } catch (e) {}
         })();
@@ -193,5 +196,19 @@
 }
 .breadcrumb-current {
   font-weight: 500;
+}
+.breadcrumb [data-breadcrumb-parent] {
+  display: contents;
+}
+.section-breadcrumb .breadcrumb .breadcrumb-parent-label {
+  font-size: 14px;
+  color: #8F8F93;
+  font-weight: 500;
+  line-height: 19px;
+  text-transform: none;
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .section-breadcrumb .breadcrumb .breadcrumb-parent-label { font-size: 12px; line-height: 16px; }
 }
 </style>
