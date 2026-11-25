@@ -1,0 +1,38 @@
+{%- comment -%}
+  Renders "• Parent" for a collection path, using the header menus.
+  Params: path (e.g. "/collections/formal-shirts-for-men"), separator (html).
+  Always outputs the wrapper so JS can fill/replace it on product pages.
+{%- endcomment -%}
+{%- assign bc_menus = 'liberty-left,right-menu-1' | split: ',' -%}
+{%- assign bc_found = false -%}
+{%- for mh in bc_menus -%}
+  {%- for top in linklists[mh].links -%}
+    {%- if top.links.size > 0 -%}
+      {%- assign top_path = top.url | split: '?' | first -%}
+      {%- if top_path != path -%}
+        {%- for child in top.links -%}
+          {%- assign child_path = child.url | split: '?' | first -%}
+          {%- if child_path == path -%}{%- assign bc_found = true -%}{%- break -%}{%- endif -%}
+          {%- for grand in child.links -%}
+            {%- assign grand_path = grand.url | split: '?' | first -%}
+            {%- if grand_path == path -%}{%- assign bc_found = true -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+          {%- if bc_found -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if bc_found -%}{%- assign bc_top = top -%}{%- break -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if bc_found -%}{%- break -%}{%- endif -%}
+{%- endfor -%}
+<span data-breadcrumb-parent>
+  {%- if bc_found -%}
+    {%- assign bc_top_path = bc_top.url | split: '?' | first -%}
+    {{ separator }}
+    {%- if bc_top_path == '#' or bc_top_path == blank -%}
+      <span>{{ bc_top.title }}</span>
+    {%- else -%}
+      <a href="{{ bc_top_path }}" data-track="breadcrumb_click" data-track-label="{{ bc_top.title | escape }}">{{ bc_top.title }}</a>
+    {%- endif -%}
+  {%- endif -%}
+</span>
