@@ -28,11 +28,14 @@
 <span data-breadcrumb-parent>
   {%- if bc_found -%}
     {%- assign bc_top_path = bc_top.url | split: '?' | first -%}
+    {%- comment -%} Menu titles are uppercase ("SHIRTS") -> "Shirts", "Plus Size" {%- endcomment -%}
+    {%- assign bc_words = bc_top.title | downcase | split: ' ' -%}
+    {%- capture bc_title -%}{%- for w in bc_words -%}{{ w | capitalize }}{%- unless forloop.last %} {% endunless -%}{%- endfor -%}{%- endcapture -%}
     {{ separator }}
     {%- if bc_top_path == '#' or bc_top_path == blank -%}
-      <span>{{ bc_top.title }}</span>
+      <span class="breadcrumb-parent-label">{{ bc_title }}</span>
     {%- else -%}
-      <a href="{{ bc_top_path }}" data-track="breadcrumb_click" data-track-label="{{ bc_top.title | escape }}">{{ bc_top.title }}</a>
+      <a href="{{ bc_top_path }}" data-track="breadcrumb_click" data-track-label="{{ bc_title | escape }}">{{ bc_title }}</a>
     {%- endif -%}
   {%- endif -%}
 </span>
