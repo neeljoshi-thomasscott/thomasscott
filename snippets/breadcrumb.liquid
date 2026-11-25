@@ -82,7 +82,8 @@
       {%- comment -%}
         Swap the collection crumb for the collection the shopper actually
         browsed (referrer, else last collection visited this session),
-        but only if this product is in that collection.
+        if this product is in it; when moving product -> product (colour
+        swatches) the previous trail is kept as-is.
       {%- endcomment -%}
       <script type="application/json" id="BreadcrumbProductCollections">
         {%- capture bc_json -%}{%- for c in product.collections -%}{{ c.handle | json }}:{"t":{{ c.title | json }},"u":{{ c.url | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- endcapture -%}
@@ -98,19 +99,42 @@
             var link = document.querySelector('[data-breadcrumb-collection]');
             var data = JSON.parse(document.getElementById('BreadcrumbProductCollections').textContent);
             if (!link || !data) return;
-            var handle = null;
-            var m = (document.referrer || '').match(/^https?:\/\/[^\/]+\/collections\/([^\/?#]+)/);
-            if (m && document.referrer.indexOf(location.host) !== -1 && data[decodeURIComponent(m[1])]) {
-              handle = decodeURIComponent(m[1]);
-            } else {
-              var last = null;
-              try { last = sessionStorage.getItem('ts_last_collection'); } catch (e) {}
-              if (last && data[last]) handle = last;
+            // Trail = collection shown in the breadcrumb, remembered for this tab:
+            // {h: handle, t: title, u: url}. Set on collection pages and here.
+            var trail = null;
+            try { trail = JSON.parse(sessionStorage.getItem('ts_bc_trail') || 'null'); } catch (e) {}
+            var ref = document.referrer || '';
+            var sameSite = ref.indexOf('//' + location.host + '/') !== -1;
+            var refCol = sameSite ? ref.match(/\/collections\/([^\/?#]+)/) : null;
+            var refHandle = refCol ? decodeURIComponent(refCol[1]) : null;
+            var fromProduct = sameSite && !refCol && /\/products\//.test(ref);
+
+            var chosen = null;
+            if (refHandle && data[refHandle]) {
+              // Came straight from a collection page
+              chosen = { h: refHandle, t: data[refHandle].t, u: data[refHandle].u };
+            } else if (fromProduct && trail && trail.u) {
+              // Moved between products (colour swatch, recommendations):
+              // keep the trail even if this colour isn't in that collection
+              chosen = trail;
+            } else if (trail && trail.h && data[trail.h]) {
+              chosen = { h: trail.h, t: data[trail.h].t, u: data[trail.h].u };
             }
-            if (!handle) return;
-            link.href = data[handle].u;
-            link.textContent = data[handle].t;
-            link.setAttribute('data-track-label', data[handle].t);
+
+            if (!chosen) {
+              // Keep the server fallback, and remember it for the next colour
+              var sm = (link.getAttribute('href') || '').match(/\/collections\/([^\/?#]+)/);
+              if (sm) {
+                try { sessionStorage.setItem('ts_bc_trail', JSON.stringify({ h: decodeURIComponent(sm[1]), t: link.textContent.trim(), u: link.getAttribute('href') })); } catch (e) {}
+              }
+              return;
+            }
+            try { sessionStorage.setItem('ts_bc_trail', JSON.stringify(chosen)); } catch (e) {}
+            var handle = chosen.h;
+            data[handle] = { t: chosen.t, u: chosen.u };
+            link.href = chosen.u;
+            link.textContent = chosen.t;
+            link.setAttribute('data-track-label', chosen.t);
 
             var parentEl = document.querySelector('[data-breadcrumb-parent]');
             if (!parentEl) return;
@@ -149,7 +173,7 @@
         {{ separator }}
         <span class="breadcrumb-current">{{ collection.title }}</span>
         {% if collection.handle %}
-          <script>try { sessionStorage.setItem('ts_last_collection', {{ collection.handle | json }}); } catch (e) {}</script>
+          <script>try { sessionStorage.setItem('ts_bc_trail', JSON.stringify({ h: {{ collection.handle | json }}, t: {{ collection.title | json }}, u: {{ collection.url | json }} })); } catch (e) {}</script>
         {% endif %}
       {% endif %}
     
