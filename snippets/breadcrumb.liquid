@@ -11,6 +11,43 @@
       </span>
     {% endcapture %}
 
+    {%- comment -%}
+      Parent category lookup from the header menus (Shirts > Formal etc.).
+      bc_menu_json maps "/collections/x" -> top-level menu item {t,u}.
+      First menu match wins.
+    {%- endcomment -%}
+    {%- assign bc_menus = 'liberty-left,right-menu-1' | split: ',' -%}
+    {%- assign bc_seen = '|' -%}
+    {%- capture bc_menu_json -%}{%- if template contains 'product' -%}
+      {%- for mh in bc_menus -%}
+        {%- for top in linklists[mh].links -%}
+          {%- if top.links.size > 0 -%}
+            {%- assign top_path = top.url | split: '?' | first -%}
+            {%- for child in top.links -%}
+              {%- assign child_path = child.url | split: '?' | first -%}
+              {%- assign key = '|' | append: child_path | append: '|' -%}
+              {%- if child_path contains '/collections/' and child_path != top_path -%}
+                {%- unless bc_seen contains key -%}
+                  {%- assign bc_seen = bc_seen | append: child_path | append: '|' -%}
+                  {{ child_path | json }}:{"t":{{ top.title | json }},"u":{{ top_path | json }}},
+                {%- endunless -%}
+              {%- endif -%}
+              {%- for grand in child.links -%}
+                {%- assign grand_path = grand.url | split: '?' | first -%}
+                {%- assign key = '|' | append: grand_path | append: '|' -%}
+                {%- if grand_path contains '/collections/' and grand_path != top_path -%}
+                  {%- unless bc_seen contains key -%}
+                    {%- assign bc_seen = bc_seen | append: grand_path | append: '|' -%}
+                    {{ grand_path | json }}:{"t":{{ top.title | json }},"u":{{ top_path | json }}},
+                  {%- endunless -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endif -%}{%- endcapture -%}
+
     {% if template contains 'product' %}
 
       {%- comment -%}
@@ -29,10 +66,12 @@
       {% endif %}
 
       {% if collection %}
+        {% render 'breadcrumb-parent', path: collection.url, separator: separator %}
         {{ separator }}
         <a href="{{ collection.url }}" data-breadcrumb-collection data-track="breadcrumb_click" data-track-label="{{ collection.title | escape }}">{{ collection.title }}</a>
 
       {% elsif first_collection %}
+        {% render 'breadcrumb-parent', path: first_collection.url, separator: separator %}
         {{ separator }}
         <a href="{{ first_collection.url }}" data-breadcrumb-collection data-track="breadcrumb_click" data-track-label="{{ first_collection.title | escape }}">{{ first_collection.title }}</a>
       {% endif %}
@@ -49,6 +88,10 @@
         {%- capture bc_json -%}{%- for c in product.collections -%}{{ c.handle | json }}:{"t":{{ c.title | json }},"u":{{ c.url | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- endcapture -%}
         { {{ bc_json }} }
       </script>
+      <script type="application/json" id="BreadcrumbMenuParents">
+        { {{ bc_menu_json }} "_": 0 }
+      </script>
+      <template id="BreadcrumbSeparator">{{ separator }}</template>
       <script>
         (function () {
           try {
@@ -68,16 +111,39 @@
             link.href = data[handle].u;
             link.textContent = data[handle].t;
             link.setAttribute('data-track-label', data[handle].t);
+
+            var parentEl = document.querySelector('[data-breadcrumb-parent]');
+            if (!parentEl) return;
+            var parents = {};
+            try { parents = JSON.parse(document.getElementById('BreadcrumbMenuParents').textContent); } catch (e) {}
+            var p = parents[data[handle].u];
+            parentEl.innerHTML = '';
+            if (!p) return;
+            var sep = document.getElementById('BreadcrumbSeparator');
+            if (sep) parentEl.appendChild(sep.content.cloneNode(true));
+            var el;
+            if (!p.u || p.u === '#') {
+              el = document.createElement('span');
+            } else {
+              el = document.createElement('a');
+              el.href = p.u;
+              el.setAttribute('data-track', 'breadcrumb_click');
+              el.setAttribute('data-track-label', p.t);
+            }
+            el.textContent = p.t;
+            parentEl.appendChild(el);
           } catch (e) {}
         })();
       </script>
 
     {% elsif template contains 'collection' %}
 
-      {{ separator }}
       {% if template.name == 'list-collections' %}
+        {{ separator }}
         <span class="breadcrumb-current">Collections</span>
       {% else %}
+        {% render 'breadcrumb-parent', path: collection.url, separator: separator %}
+        {{ separator }}
         <span class="breadcrumb-current">{{ collection.title }}</span>
         {% if collection.handle %}
           <script>try { sessionStorage.setItem('ts_last_collection', {{ collection.handle | json }}); } catch (e) {}</script>
