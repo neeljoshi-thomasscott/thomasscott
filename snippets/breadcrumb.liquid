@@ -13,19 +13,64 @@
 
     {% if template contains 'product' %}
 
-      {% assign first_collection = product.collections.first %}
+      {%- comment -%}
+        Fallback when we don't know where the shopper came from:
+        first collection that isn't a sale/offer collection.
+      {%- endcomment -%}
+      {% assign first_collection = nil %}
+      {% for c in product.collections %}
+        {% unless c.handle contains 'sale' or c.handle contains 'black-friday' or c.handle contains 'offer' %}
+          {% assign first_collection = c %}
+          {% break %}
+        {% endunless %}
+      {% endfor %}
+      {% if first_collection == nil %}
+        {% assign first_collection = product.collections.first %}
+      {% endif %}
 
       {% if collection %}
         {{ separator }}
-        <a href="{{ collection.url }}" data-track="breadcrumb_click" data-track-label="{{ collection.title | escape }}">{{ collection.title }}</a>
+        <a href="{{ collection.url }}" data-breadcrumb-collection data-track="breadcrumb_click" data-track-label="{{ collection.title | escape }}">{{ collection.title }}</a>
 
       {% elsif first_collection %}
         {{ separator }}
-        <a href="{{ first_collection.url }}" data-track="breadcrumb_click" data-track-label="{{ first_collection.title | escape }}">{{ first_collection.title }}</a>
+        <a href="{{ first_collection.url }}" data-breadcrumb-collection data-track="breadcrumb_click" data-track-label="{{ first_collection.title | escape }}">{{ first_collection.title }}</a>
       {% endif %}
 
       {{ separator }}
       <span class="breadcrumb-current">{{ product.title }}</span>
+
+      {%- comment -%}
+        Swap the collection crumb for the collection the shopper actually
+        browsed (referrer, else last collection visited this session),
+        but only if this product is in that collection.
+      {%- endcomment -%}
+      <script type="application/json" id="BreadcrumbProductCollections">
+        {%- capture bc_json -%}{%- for c in product.collections -%}{{ c.handle | json }}:{"t":{{ c.title | json }},"u":{{ c.url | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- endcapture -%}
+        { {{ bc_json }} }
+      </script>
+      <script>
+        (function () {
+          try {
+            var link = document.querySelector('[data-breadcrumb-collection]');
+            var data = JSON.parse(document.getElementById('BreadcrumbProductCollections').textContent);
+            if (!link || !data) return;
+            var handle = null;
+            var m = (document.referrer || '').match(/^https?:\/\/[^\/]+\/collections\/([^\/?#]+)/);
+            if (m && document.referrer.indexOf(location.host) !== -1 && data[decodeURIComponent(m[1])]) {
+              handle = decodeURIComponent(m[1]);
+            } else {
+              var last = null;
+              try { last = sessionStorage.getItem('ts_last_collection'); } catch (e) {}
+              if (last && data[last]) handle = last;
+            }
+            if (!handle) return;
+            link.href = data[handle].u;
+            link.textContent = data[handle].t;
+            link.setAttribute('data-track-label', data[handle].t);
+          } catch (e) {}
+        })();
+      </script>
 
     {% elsif template contains 'collection' %}
 
@@ -34,6 +79,9 @@
         <span class="breadcrumb-current">Collections</span>
       {% else %}
         <span class="breadcrumb-current">{{ collection.title }}</span>
+        {% if collection.handle %}
+          <script>try { sessionStorage.setItem('ts_last_collection', {{ collection.handle | json }}); } catch (e) {}</script>
+        {% endif %}
       {% endif %}
     
     {% elsif template contains 'page' %}
